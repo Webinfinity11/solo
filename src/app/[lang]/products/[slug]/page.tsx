@@ -78,7 +78,8 @@ export default async function ProductPage({ params }: { params: Params }) {
     brand: { "@type": "Brand", name: "SOLO Research" },
     image: product.images.map((src) => `${site.url}${src}`),
     category: category?.name,
-    offers: product.variants.map((v) => ({
+    // Prices are published only while the shop is enabled.
+    offers: !site.shopEnabled ? undefined : product.variants.map((v) => ({
       "@type": "Offer",
       sku: v.sku,
       name: `${product.name} ${v.label}`,

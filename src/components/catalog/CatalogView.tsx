@@ -9,10 +9,13 @@ import { cn, isInStock, minPrice } from "@/lib/utils";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
+import { site } from "@/data/site";
 
 const PAGE_SIZE = 12;
-const SORTS = ["featured", "price-asc", "price-desc", "name-asc", "newest"] as const;
-type Sort = (typeof SORTS)[number];
+const ALL_SORTS = ["featured", "price-asc", "price-desc", "name-asc", "newest"] as const;
+type Sort = (typeof ALL_SORTS)[number];
+// Price sorting and the price filter only exist while prices are shown (shop mode).
+const SORTS: readonly Sort[] = site.shopEnabled ? ALL_SORTS : ALL_SORTS.filter((s) => !s.startsWith("price"));
 
 export type CatalogFilters = {
   categories: string[];
@@ -34,8 +37,8 @@ function readFilters(params: URLSearchParams): CatalogFilters {
     categories: list("category"),
     sizes: list("size"),
     inStock: params.get("stock") === "1",
-    min: num("min"),
-    max: num("max"),
+    min: site.shopEnabled ? num("min") : undefined,
+    max: site.shopEnabled ? num("max") : undefined,
     sort: SORTS.includes(sort) ? sort : "featured",
   };
 }
@@ -161,7 +164,8 @@ export function CatalogView({
           {t.catalog.inStockOnly}
         </label>
       </fieldset>
-      <fieldset>
+      {site.shopEnabled ? (
+        <fieldset>
         <legend className="mb-3 text-[13px] font-bold uppercase tracking-[.1em]">{t.catalog.price}</legend>
         <form
           key={`${filters.min}-${filters.max}`}
@@ -180,7 +184,8 @@ export function CatalogView({
             <Icon name="arrow" className="size-4" />
           </button>
         </form>
-      </fieldset>
+        </fieldset>
+      ) : null}
       {active.length ? (
         <button type="button" onClick={clear} className="btn btn-ghost min-h-10 text-[13px]">
           {t.catalog.clear}

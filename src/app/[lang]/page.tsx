@@ -8,7 +8,6 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
-import { HexPattern } from "@/components/brand/HexPattern";
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang, t, href } = await resolveLang(params);
@@ -60,13 +59,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <TrustPromises t={t} href={href} />
 
       <section aria-labelledby="faq-title" className="relative isolate overflow-hidden bg-[linear-gradient(120deg,var(--blue-light),#f6fbff_51%,var(--blue-light))] py-14 sm:py-16">
-        <HexPattern
-          hexes={[
-            { className: "left-[-3%] top-[86px] h-[178px] w-[158px] max-sm:left-[-20%] max-sm:w-[110px] max-sm:h-[129px]", opacity: 0.5 },
-            { className: "left-[6%] top-[258px] h-[99px] w-[87px] max-sm:hidden", opacity: 0.43 },
-            { className: "right-[-5%] top-8 h-[318px] w-[277px] max-sm:right-[-50%]", opacity: 0.38 },
-          ]}
-        />
         <Reveal className="mx-auto w-[calc(100%-2*var(--gutter))] max-w-[730px]">
           <p className="eyebrow mb-1.5">{t.home.faq.eyebrow}</p>
           <h2 id="faq-title" className="mb-6 text-[28px] font-bold tracking-[-.03em] sm:text-[32px]">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useI18n } from "@/i18n/provider";
 import { cn, formatPrice, minPrice } from "@/lib/utils";
+import { site } from "@/data/site";
 import { Modal } from "@/components/ui/Modal";
 import { Icon } from "@/components/ui/Icon";
 import { ProductImage } from "@/components/brand/ProductImage";
@@ -91,7 +92,8 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
               <span className="min-w-0 flex-1">
                 <strong className="mb-1 block text-[15px]">{p.name}</strong>
                 <small className="block truncate text-[12px] text-muted">
-                  {p.variants.map((v) => v.label).join(" · ")} · {t.common.fromPrice(formatPrice(minPrice(p)))}
+                  {p.variants.map((v) => v.label).join(" · ")}
+                  {site.shopEnabled ? ` · ${t.common.fromPrice(formatPrice(minPrice(p)))}` : null}
                 </small>
               </span>
               <Icon name="arrow" className="mr-2 size-[18px]" />

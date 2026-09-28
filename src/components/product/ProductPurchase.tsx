@@ -27,11 +27,15 @@ export function ProductPurchase({ product }: { product: Product }) {
   return (
     <div>
       <div className="mb-6 flex items-baseline gap-3">
-        <p className="text-[30px] font-bold tracking-[-.03em]" aria-live="polite">
-          {formatPrice(variant.price)}
-        </p>
-        {variant.compareAtPrice ? <p className="text-[17px] text-muted line-through">{formatPrice(variant.compareAtPrice)}</p> : null}
-        <p className={cn("ml-auto flex items-center gap-1.5 text-[13px] font-bold", variant.inStock ? "text-success" : "text-oos")}>
+        {site.shopEnabled ? (
+          <>
+            <p className="text-[30px] font-bold tracking-[-.03em]" aria-live="polite">
+              {formatPrice(variant.price)}
+            </p>
+            {variant.compareAtPrice ? <p className="text-[17px] text-muted line-through">{formatPrice(variant.compareAtPrice)}</p> : null}
+          </>
+        ) : null}
+        <p className={cn("flex items-center gap-1.5 text-[13px] font-bold", site.shopEnabled && "ml-auto", variant.inStock ? "text-success" : "text-oos")}>
           <span className={cn("size-2 rounded-full", variant.inStock ? "bg-success" : "bg-oos")} />
           {variant.inStock ? t.product.inStock : t.product.outOfStock}
         </p>
