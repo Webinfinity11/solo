@@ -17,11 +17,11 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { lang, href } = await resolveLang(params);
+  const { lang, alternates } = await resolveLang(params);
   const { slug } = await params;
   const category = await getCategory(lang, slug);
   if (!category) return {};
-  return { title: category.name, description: category.description, alternates: { canonical: href(`/category/${slug}`) } };
+  return { title: category.name, description: category.description, alternates: alternates(`/category/${slug}`) };
 }
 
 export default async function CategoryPage({ params }: { params: Params }) {

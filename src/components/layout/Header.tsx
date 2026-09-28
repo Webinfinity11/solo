@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/provider";
 import { useCart, cartCount } from "@/lib/cart-store";
 import { site } from "@/data/site";
@@ -12,6 +12,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useCatalog } from "./CatalogProvider";
 import { SearchDialog } from "./SearchDialog";
 import { MobileNav } from "./MobileNav";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Header() {
   const { t, href } = useI18n();
@@ -113,6 +114,11 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-0.5 sm:gap-2">
+            <div className="hidden sm:block">
+              <Suspense>
+                <LanguageSwitcher />
+              </Suspense>
+            </div>
             <button type="button" onClick={() => setSearchOpen(true)} aria-label={t.nav.search} className="grid h-10 w-10 place-items-center rounded-sm transition-colors hover:bg-ice">
               <Icon name="search" />
             </button>

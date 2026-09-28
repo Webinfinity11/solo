@@ -7,9 +7,10 @@ import { z } from "zod";
 import { useI18n } from "@/i18n/provider";
 import { useCatalog } from "@/components/layout/CatalogProvider";
 import { Field, FormSuccess } from "./Field";
+import { site } from "@/data/site";
 
 export function WholesaleForm() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { products } = useCatalog();
   const f = t.wholesale.fields;
   const [sent, setSent] = useState(false);
@@ -25,7 +26,7 @@ export function WholesaleForm() {
     message: z.string().trim().optional(),
   });
   type Values = z.infer<typeof schema>;
-  const { register, handleSubmit, reset, formState } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { products: [], country: "საქართველო" } });
+  const { register, handleSubmit, reset, formState } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { products: [], country: site.defaultCountry[lang] } });
   const e = formState.errors;
 
   const onSubmit = handleSubmit(async () => {

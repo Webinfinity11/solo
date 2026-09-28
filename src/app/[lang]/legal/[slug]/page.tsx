@@ -16,10 +16,10 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { lang, href } = await resolveLang(params);
+  const { lang, alternates } = await resolveLang(params);
   const { slug } = await params;
   const doc = await getLegalDocument(lang, slug);
-  return doc ? { title: doc.title, alternates: { canonical: href(`/legal/${slug}`) } } : {};
+  return doc ? { title: doc.title, alternates: alternates(`/legal/${slug}`) } : {};
 }
 
 export default async function LegalPage({ params }: { params: Params }) {

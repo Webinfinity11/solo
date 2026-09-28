@@ -28,7 +28,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
 }
 
 export function CheckoutForm() {
-  const { t, href } = useI18n();
+  const { t, href, lang } = useI18n();
   const router = useRouter();
   const clear = useCart((s) => s.clear);
   const hydrated = useCartHydrated();
@@ -52,7 +52,7 @@ export function CheckoutForm() {
   type Values = z.infer<typeof schema>;
   const { register, handleSubmit, watch, formState } = useForm<Values>({
     resolver: zodResolver(schema),
-    defaultValues: { country: "საქართველო", method: c.methods[0].id },
+    defaultValues: { country: site.defaultCountry[lang], method: c.methods[0].id },
   });
   const e = formState.errors;
   const invalid = (k: keyof Values) => (e[k] ? { "aria-invalid": true as const, "aria-describedby": `co-${k}-error` } : {});

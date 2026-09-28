@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { resolveLang } from "@/i18n/server";
 import { getFaq, getFeaturedProducts, getProducts } from "@/lib/api";
@@ -8,6 +9,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { alternates } = await resolveLang(params);
+  return { alternates: alternates("/") };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang, t, href } = await resolveLang(params);

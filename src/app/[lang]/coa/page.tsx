@@ -8,8 +8,8 @@ import { CoaTable } from "@/components/coa/CoaTable";
 import { Icon } from "@/components/ui/Icon";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.coa.title, description: t.coa.description, alternates: { canonical: href("/coa") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.coa.title, description: t.coa.description, alternates: alternates("/coa") };
 }
 
 export default async function CoaPage({ params }: { params: Promise<{ lang: string }> }) {

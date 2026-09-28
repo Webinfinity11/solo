@@ -22,7 +22,7 @@
   --color-danger: #b3423a;
   --color-oos: #8795a2;
 
-  --font-sans: var(--font-georgian), Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-cyrillic), var(--font-georgian), Arial, Helvetica, sans-serif;
 
   --container-site: 1220px;
   --ease-brand: cubic-bezier(0.2, 0.65, 0.3, 1);

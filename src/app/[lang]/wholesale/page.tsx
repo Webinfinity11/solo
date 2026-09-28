@@ -7,8 +7,8 @@ import { WholesaleForm } from "@/components/forms/WholesaleForm";
 const icons: IconName[] = ["growth", "box", "user"];
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.wholesale.eyebrow, description: t.wholesale.description, alternates: { canonical: href("/wholesale") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.wholesale.eyebrow, description: t.wholesale.description, alternates: alternates("/wholesale") };
 }
 
 export default async function WholesalePage({ params }: { params: Promise<{ lang: string }> }) {

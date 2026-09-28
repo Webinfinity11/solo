@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { Noto_Sans_Georgian, Oswald } from "next/font/google";
+import { Noto_Sans, Noto_Sans_Georgian, Oswald } from "next/font/google";
 import "../globals.css";
 import { isLocale, localeMeta, locales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n";
@@ -22,6 +22,9 @@ const georgian = Noto_Sans_Georgian({
   display: "swap",
 });
 
+
+// Latin + Cyrillic (English/Russian); comes first in the font stack, Georgian glyphs fall through to Noto Sans Georgian.
+const notoSans = Noto_Sans({ subsets: ["cyrillic", "latin"], weight: ["400", "700"], variable: "--font-cyrillic", display: "swap" });
 
 // Condensed face matching the logo lettering; used on vector product labels.
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-label", display: "swap" });
@@ -59,7 +62,7 @@ export default async function LangLayout({ children, params }: { children: React
   const [products, categories] = await Promise.all([getProducts(locale), getCategories(locale)]);
 
   return (
-    <html lang={localeMeta[locale].htmlLang} className={`${georgian.variable} ${oswald.variable}`}>
+    <html lang={localeMeta[locale].htmlLang} className={`${georgian.variable} ${notoSans.variable} ${oswald.variable}`}>
       <body className="font-sans">
         <noscript>
           <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>

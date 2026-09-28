@@ -10,7 +10,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ProductImage } from "@/components/brand/ProductImage";
 import { useCatalog } from "./CatalogProvider";
 
-const normalize = (v: string) => v.toLowerCase().replace(/[^a-z0-9ა-ჿ+]/g, "");
+const normalize = (v: string) => v.toLowerCase().replace(/[^a-z0-9ა-ჿа-яё+]/g, "");
 
 export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, href } = useI18n();

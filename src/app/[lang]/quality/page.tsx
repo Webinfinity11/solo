@@ -8,8 +8,8 @@ import { HexPattern } from "@/components/brand/HexPattern";
 const icons: IconName[] = ["dna", "flask", "shield", "snowflake", "box", "file"];
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.quality.eyebrow, description: t.quality.description, alternates: { canonical: href("/quality") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.quality.eyebrow, description: t.quality.description, alternates: alternates("/quality") };
 }
 
 export default async function QualityPage({ params }: { params: Promise<{ lang: string }> }) {

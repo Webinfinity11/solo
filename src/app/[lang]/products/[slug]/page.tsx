@@ -26,14 +26,14 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { lang, href } = await resolveLang(params);
+  const { lang, alternates } = await resolveLang(params);
   const { slug } = await params;
   const product = await getProduct(lang, slug);
   if (!product) return {};
   return {
     title: product.name,
     description: `${product.name} — ${product.shortDescription}`,
-    alternates: { canonical: href(`/products/${slug}`) },
+    alternates: alternates(`/products/${slug}`),
     openGraph: { images: product.images[0] ? [{ url: product.images[0] }] : undefined },
   };
 }

@@ -5,8 +5,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.shipping.eyebrow, description: t.shipping.description, alternates: { canonical: href("/shipping") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.shipping.eyebrow, description: t.shipping.description, alternates: alternates("/shipping") };
 }
 
 export default async function ShippingPage({ params }: { params: Promise<{ lang: string }> }) {

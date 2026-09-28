@@ -6,12 +6,12 @@ import { Icon } from "@/components/ui/Icon";
 import { ContactForm } from "@/components/forms/ContactForm";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.contact.eyebrow, description: t.contact.description, alternates: { canonical: href("/contact") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.contact.eyebrow, description: t.contact.description, alternates: alternates("/contact") };
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ lang: string }> }) {
-  const { t, href } = await resolveLang(params);
+  const { lang, t, href } = await resolveLang(params);
   const c = t.contact;
 
   return (
@@ -34,7 +34,7 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
             <p className="mb-1 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[.1em] text-eyebrow">
               <Icon name="clock" className="size-4" /> {c.hoursLabel}
             </p>
-            <p className="text-[16px] font-bold">{site.hours}</p>
+            <p className="text-[16px] font-bold">{site.hours[lang]}</p>
           </div>
           <div className="border border-line p-6">
             <p className="mb-3 text-[12px] font-bold uppercase tracking-[.1em] text-eyebrow">{c.socialLabel}</p>

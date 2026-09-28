@@ -7,8 +7,8 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Icon } from "@/components/ui/Icon";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.faq.title, description: t.faq.description, alternates: { canonical: href("/faq") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.faq.title, description: t.faq.description, alternates: alternates("/faq") };
 }
 
 export default async function FaqPage({ params }: { params: Promise<{ lang: string }> }) {

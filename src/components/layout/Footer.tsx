@@ -74,7 +74,7 @@ export function Footer({ lang, t, categories }: { lang: Locale; t: Dictionary; c
                 {site.email}
               </a>
               <br />
-              {site.hours}
+              {site.hours[lang]}
             </p>
           </div>
         </div>

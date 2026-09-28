@@ -6,8 +6,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { CatalogView } from "@/components/catalog/CatalogView";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.catalog.title, description: t.catalog.description, alternates: { canonical: href("/products") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.catalog.title, description: t.catalog.description, alternates: alternates("/products") };
 }
 
 export default async function ProductsPage({ params }: { params: Promise<{ lang: string }> }) {

@@ -8,8 +8,8 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 const icons: IconName[] = ["flask", "file", "dna"];
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { t, href } = await resolveLang(params);
-  return { title: t.about.eyebrow, description: t.about.story[0], alternates: { canonical: href("/about") } };
+  const { t, alternates } = await resolveLang(params);
+  return { title: t.about.eyebrow, description: t.about.story[0], alternates: alternates("/about") };
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {

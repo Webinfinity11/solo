@@ -6,6 +6,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/brand/Logo";
 import { useCatalog } from "./CatalogProvider";
+import { Suspense } from "react";
+import { LanguageLinks } from "./LanguageSwitcher";
 
 export function MobileNav({ open, onClose, onSearch }: { open: boolean; onClose: () => void; onSearch: () => void }) {
   const { t, href } = useI18n();
@@ -72,6 +74,11 @@ export function MobileNav({ open, onClose, onSearch }: { open: boolean; onClose:
             </Link>
           ))}
         </nav>
+        <div className="pt-6">
+          <Suspense>
+            <LanguageLinks onNavigate={onClose} />
+          </Suspense>
+        </div>
         <p className="whitespace-pre-line py-6 text-[13px] leading-relaxed text-muted">{t.nav.mobileNote}</p>
       </div>
     </Modal>
