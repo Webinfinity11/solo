@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+/* SOLO Research brand tokens (from the logo + approved design preview).
+   Change these to recolor the whole interface. */
+:root {
+  --navy: #1a2f42;
+  --blue-accent: #b1d4f4;
+  --blue-light: #dfedfa;
+  --white: #ffffff;
+}
+
+@theme {
+  --color-navy: var(--navy);
+  --color-navy-2: #29475e;
+  --color-blue: var(--blue-accent);
+  --color-ice: var(--blue-light);
+  --color-mist: #f6fbff;
+  --color-muted: #607486;
+  --color-line: #dce7ef;
+  --color-eyebrow: #6c8ca8;
+  --color-success: #2e7d5b;
+  --color-danger: #b3423a;
+  --color-oos: #8795a2;
+
+  --font-sans: var(--font-georgian), Arial, Helvetica, sans-serif;
+
+  --container-site: 1220px;
+  --ease-brand: cubic-bezier(0.2, 0.65, 0.3, 1);
+
+
+  --animate-marquee: marquee 60s linear infinite;
+  --animate-fade-up: fade-up 0.9s var(--ease-brand) both;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  --animate-dialog-in: dialog-in 0.22s var(--ease-brand);
+  --animate-drawer-in: drawer-in 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  @keyframes dialog-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes drawer-in {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes drawer-out {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+  }
+  @keyframes dialog-out {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(12px); }
+  }
+  @keyframes backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes backdrop-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 112px;
+  }
+  body {
+    background: var(--white);
+    color: var(--navy);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 3px solid var(--blue-accent);
+    outline-offset: 4px;
+  }
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+  dialog::backdrop {
+    background: rgb(12 28 41 / 0.65);
+    backdrop-filter: blur(5px);
+  }
+  /* Dialogs (cart drawer, search, menu) scroll without a visible scrollbar. */
+  dialog,
+  dialog * {
+    scrollbar-width: none;
+  }
+  dialog::-webkit-scrollbar,
+  dialog *::-webkit-scrollbar {
+    display: none;
+  }
+  /* Open / close motion for dialogs (see components/ui/Modal.tsx). */
+  dialog[open]::backdrop {
+    animation: backdrop-in 0.35s ease both;
+  }
+  dialog[data-closing]::backdrop {
+    animation: backdrop-out 0.3s ease both;
+  }
+  dialog[data-closing] {
+    animation: dialog-out 0.25s ease both;
+  }
+  dialog[data-variant="drawer"][data-closing] {
+    animation: drawer-out 0.3s cubic-bezier(0.55, 0, 0.8, 0.2) both;
+  }
+}
+
+@layer components {
+  .container-site {
+    width: calc(100% - var(--gutter) * 2);
+    max-width: var(--container-site);
+    margin-inline: auto;
+  }
+  :root {
+    --gutter: clamp(16px, 5.3vw, 80px);
+  }
+
+  /* Small uppercase kicker above headings. Georgian renders in Mtavruli. */
+  .eyebrow {
+    font-size: 11px;
+    line-height: 1.7;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-eyebrow);
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 13px 24px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 700;
+    transition: background 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
+  }
+  .btn:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+  }
+  .btn-primary { background: var(--blue-accent); color: var(--navy); }
+  .btn-primary:not(:disabled):hover { background: var(--blue-light); }
+  .btn-outline { border-color: rgb(177 212 244 / 0.55); background: rgb(26 47 66 / 0.12); color: var(--white); }
+  .btn-outline:hover { background: rgb(177 212 244 / 0.13); border-color: var(--blue-accent); }
+  .btn-navy { background: var(--navy); color: var(--white); }
+  .btn-navy:not(:disabled):hover { background: var(--color-navy-2); }
+  .btn-light { background: var(--blue-light); color: var(--navy); min-height: 42px; font-size: 13px; padding-inline: 20px; }
+  .btn-light:hover { background: var(--blue-accent); }
+  .btn-ghost { background: transparent; border-color: var(--color-line); color: var(--navy); }
+  .btn-ghost:hover { border-color: var(--blue-accent); background: var(--color-mist); }
+
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .text-link svg { transition: transform 0.2s; }
+  .text-link:hover svg { transform: translateX(4px); }
+
+  /* Hexagon — the main decorative motif from the logo. */
+  .hex {
+    position: absolute;
+    display: block;
+    background: var(--blue-accent);
+    clip-path: polygon(50% 0, 96% 25%, 96% 75%, 50% 100%, 4% 75%, 4% 25%);
+    pointer-events: none;
+  }
+  .hex-shape {
+    clip-path: polygon(50% 0, 96% 25%, 96% 75%, 50% 100%, 4% 75%, 4% 25%);
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .field {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 1px solid var(--color-line);
+    border-radius: 2px;
+    background: #f9fcff;
+    font-size: 15px;
+    color: var(--navy);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .field:hover { border-color: var(--blue-accent); }
+  .field:focus { outline: none; border-color: var(--navy); background: var(--white); }
+  .field[aria-invalid="true"] { border-color: var(--color-danger); }
+  .field-error { margin-top: 5px; font-size: 12px; color: var(--color-danger); }
+
+  /* Scroll reveal (see components/ui/Reveal.tsx). */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s var(--ease-brand), transform 0.8s var(--ease-brand);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal][data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+
+  .prose-legal p { margin-bottom: 14px; font-size: 15px; line-height: 1.8; color: var(--color-muted); }
+}
+
+@media (max-width: 700px) {
+  html { scroll-padding-top: 92px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  [data-reveal] { opacity: 1; transform: none; }
+}
