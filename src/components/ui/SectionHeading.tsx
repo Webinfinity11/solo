@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn, mtavruli } from "@/lib/utils";
 
 export function SectionHeading({
   eyebrow,
@@ -24,7 +24,7 @@ export function SectionHeading({
   return (
     <div className={cn("mb-7 flex gap-5", center ? "flex-col items-center text-center" : "flex-wrap items-end justify-between", className)}>
       <div className={cn(center && "max-w-2xl")}>
-        {eyebrow ? <p className={cn("eyebrow mb-1.5", dark && "text-blue")}>{eyebrow}</p> : null}
+        {eyebrow ? <p className={cn("eyebrow mb-1.5", dark && "text-blue")}>{mtavruli(eyebrow)}</p> : null}
         <h2 id={id} className="text-[28px] font-bold leading-[1.15] tracking-[-.03em] text-balance sm:text-[32px]">
           {title}
         </h2>

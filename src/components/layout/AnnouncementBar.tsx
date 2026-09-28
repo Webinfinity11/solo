@@ -1,4 +1,5 @@
 import type { Dictionary } from "@/i18n";
+import { mtavruli } from "@/lib/utils";
 
 // Mini SOLO hexagon cluster used as the ticker separator.
 function HexMark() {
@@ -17,7 +18,7 @@ export function AnnouncementBar({ t }: { t: Dictionary }) {
       {t.ticker.map((item) => (
         <li key={item} className="flex items-center gap-5 pr-5 sm:gap-7 sm:pr-7">
           <HexMark />
-          <span>{item}</span>
+          <span>{mtavruli(item)}</span>
         </li>
       ))}
     </ul>
@@ -25,7 +26,7 @@ export function AnnouncementBar({ t }: { t: Dictionary }) {
 
   return (
     <div className="group relative flex h-9 items-center overflow-hidden bg-[#0f1d2a] text-white" role="region" aria-label="SOLO Research">
-      <div className="flex w-max animate-marquee whitespace-nowrap text-[11px] font-bold uppercase tracking-[.14em] group-hover:[animation-play-state:paused]">
+      <div className="flex w-max animate-marquee whitespace-nowrap text-[11px] font-bold uppercase tracking-[.14em] [font-family:var(--font-display)] group-hover:[animation-play-state:paused]">
         {/* Four copies so one half is wider than any screen; the track shifts by exactly one half. */}
         {group(false)}
         {group(true)}

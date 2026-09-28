@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Noto_Sans, Noto_Sans_Georgian, Oswald } from "next/font/google";
+import localFont from "next/font/local";
 import "../globals.css";
 import { isLocale, localeMeta, locales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n";
@@ -28,6 +29,20 @@ const notoSans = Noto_Sans({ subsets: ["cyrillic", "latin"], weight: ["400", "70
 
 // Condensed face matching the logo lettering; used on vector product labels.
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-label", display: "swap" });
+
+/** TBC Contractica (Georgian + Mtavruli + Latin) — headings and small uppercase labels only. */
+const contractica = localFont({
+  variable: "--font-tbc",
+  display: "swap",
+  // No Arial-based fallback face: it would render Cyrillic headings before Noto Sans.
+  adjustFontFallback: false,
+  src: [
+    { path: "../../fonts/TBCContractica-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../fonts/TBCContractica-Medium.ttf", weight: "500", style: "normal" },
+    { path: "../../fonts/TBCContractica-Bold.ttf", weight: "700", style: "normal" },
+    { path: "../../fonts/TBCContractica-Black.ttf", weight: "900", style: "normal" },
+  ],
+});
 
 export const dynamicParams = false;
 
@@ -62,7 +77,7 @@ export default async function LangLayout({ children, params }: { children: React
   const [products, categories] = await Promise.all([getProducts(locale), getCategories(locale)]);
 
   return (
-    <html lang={localeMeta[locale].htmlLang} className={`${georgian.variable} ${notoSans.variable} ${oswald.variable}`}>
+    <html lang={localeMeta[locale].htmlLang} className={`${georgian.variable} ${notoSans.variable} ${oswald.variable} ${contractica.variable}`}>
       <body className="font-sans">
         <noscript>
           <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>

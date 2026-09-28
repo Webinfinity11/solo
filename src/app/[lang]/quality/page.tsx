@@ -4,6 +4,7 @@ import Link from "next/link";
 import { resolveLang } from "@/i18n/server";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { HexPattern } from "@/components/brand/HexPattern";
+import { mtavruli } from "@/lib/utils";
 
 const icons: IconName[] = ["dna", "flask", "shield", "snowflake", "box", "file"];
 
@@ -20,7 +21,7 @@ export default async function QualityPage({ params }: { params: Promise<{ lang: 
       <section className="relative isolate overflow-hidden bg-navy text-white">
         <div className="container-site grid items-center gap-8 py-14 md:grid-cols-[1.2fr_1fr] md:py-20">
           <div>
-            <p className="eyebrow mb-3 text-blue">{t.quality.eyebrow}</p>
+            <p className="eyebrow mb-3 text-blue">{mtavruli(t.quality.eyebrow)}</p>
             <h1 className="mb-5 text-[36px] font-bold leading-[1.08] tracking-[-.04em] text-balance sm:text-[50px]">{t.quality.title}</h1>
             <p className="max-w-[480px] text-[16px] leading-relaxed text-white/85">{t.quality.description}</p>
           </div>

@@ -23,6 +23,8 @@
   --color-oos: #8795a2;
 
   --font-sans: var(--font-cyrillic), var(--font-georgian), Arial, Helvetica, sans-serif;
+  /* Headings: TBC Contractica; it has no Cyrillic, so Russian falls through to Noto Sans. */
+  --font-display: var(--font-tbc), var(--font-cyrillic), var(--font-georgian), Arial, sans-serif;
 
   --container-site: 1220px;
   --ease-brand: cubic-bezier(0.2, 0.65, 0.3, 1);
@@ -78,6 +80,11 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
@@ -132,6 +139,7 @@
 
   /* Small uppercase kicker above headings. Georgian renders in Mtavruli. */
   .eyebrow {
+    font-family: var(--font-display);
     font-size: 11px;
     line-height: 1.7;
     letter-spacing: 0.2em;

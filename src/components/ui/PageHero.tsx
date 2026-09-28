@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { HexPattern } from "@/components/brand/HexPattern";
 import { Breadcrumbs, type Crumb } from "./Breadcrumbs";
+import { mtavruli } from "@/lib/utils";
 
 // Light page header used by inner pages.
 export function PageHero({
@@ -26,7 +27,7 @@ export function PageHero({
       />
       <div className="container-site relative">
         {crumbs ? <Breadcrumbs items={crumbs} /> : null}
-        {eyebrow ? <p className="eyebrow mb-2">{eyebrow}</p> : null}
+        {eyebrow ? <p className="eyebrow mb-2">{mtavruli(eyebrow)}</p> : null}
         <h1 className="max-w-3xl text-[32px] font-bold leading-[1.12] tracking-[-.035em] text-balance sm:text-[44px]">{title}</h1>
         {description ? <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted sm:text-[16px]">{description}</p> : null}
         {children}

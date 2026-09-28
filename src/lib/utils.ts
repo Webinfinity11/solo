@@ -7,6 +7,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Uppercase for small caps-style labels. CSS text-transform leaves Georgian untouched,
+ * but toUpperCase() maps Mkhedruli to Mtavruli (Unicode 11), Latin/Cyrillic as usual.
+ */
+export function mtavruli(value: string): string {
+  return value.toUpperCase();
+}
+
 export function formatPrice(value: number): string {
   const rounded = Number.isInteger(value) ? String(value) : value.toFixed(2);
   return `${site.currencySymbol}${rounded}`;

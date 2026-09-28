@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Dictionary } from "@/i18n";
 import { HeroMotion } from "./HeroMotion";
+import { mtavruli } from "@/lib/utils";
 
 export function Hero({ t, href }: { t: Dictionary; href: (p: string) => string }) {
   const h = t.home.hero;
@@ -19,7 +20,7 @@ export function Hero({ t, href }: { t: Dictionary; href: (p: string) => string }
 
       <div className="container-site pointer-events-none relative flex items-center xl:h-full">
         <div className="pointer-events-auto relative z-10 w-full py-10 sm:py-14 xl:max-w-[780px] xl:py-0">
-          <p className="mb-4 animate-fade-up text-[11px] uppercase leading-relaxed tracking-[.3em] text-white/60 sm:mb-5">{h.eyebrow}</p>
+          <p className="mb-4 animate-fade-up text-[11px] uppercase leading-relaxed tracking-[.3em] text-white/60 [font-family:var(--font-display)] sm:mb-5">{mtavruli(h.eyebrow)}</p>
           <h1 id="hero-title" className="animate-fade-up text-[32px] font-bold leading-[1.12] tracking-[-.035em] [animation-delay:.1s] sm:text-[46px] xl:text-[50px] 2xl:text-[54px]">
             {h.titleStart}
             <br />

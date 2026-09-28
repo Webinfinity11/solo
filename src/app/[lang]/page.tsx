@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
+import { mtavruli } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { alternates } = await resolveLang(params);
@@ -66,7 +67,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
       <section aria-labelledby="faq-title" className="relative isolate overflow-hidden bg-[linear-gradient(120deg,var(--blue-light),#f6fbff_51%,var(--blue-light))] py-14 sm:py-16">
         <Reveal className="mx-auto w-[calc(100%-2*var(--gutter))] max-w-[730px]">
-          <p className="eyebrow mb-1.5">{t.home.faq.eyebrow}</p>
+          <p className="eyebrow mb-1.5">{mtavruli(t.home.faq.eyebrow)}</p>
           <h2 id="faq-title" className="mb-6 text-[28px] font-bold tracking-[-.03em] sm:text-[32px]">
             {t.home.faq.title}
           </h2>

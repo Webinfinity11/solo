@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn, mtavruli } from "@/lib/utils";
 import { Icon } from "./Icon";
 
 // Native <dialog>: focus trap, Escape and top-layer come from the browser.
@@ -73,7 +73,7 @@ export function Modal({
       <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between gap-4 border-b border-line bg-white px-5 py-4 sm:px-7 sm:py-5">
         {header ?? (
           <div>
-            {eyebrow ? <p className="eyebrow mb-1 text-[10px]">{eyebrow}</p> : null}
+            {eyebrow ? <p className="eyebrow mb-1 text-[10px]">{mtavruli(eyebrow)}</p> : null}
             <h2 className="text-[22px] font-bold leading-tight tracking-[-.03em] sm:text-[24px]">{title}</h2>
           </div>
         )}

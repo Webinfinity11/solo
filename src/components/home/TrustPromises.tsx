@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Dictionary } from "@/i18n";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
+import { mtavruli } from "@/lib/utils";
 
 const visuals: { image: string; icon: IconName; path: string }[] = [
   { image: "/images/site/promise-research.webp", icon: "flask", path: "/quality" },
@@ -17,7 +18,7 @@ export function TrustPromises({ t, href }: { t: Dictionary; href: (p: string) =>
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_0,rgba(177,212,244,.13),transparent_67%)]" />
       <div className="container-site">
         <div className="mb-9 text-center">
-          <p className="eyebrow mb-2.5 text-blue">{t.home.promises.eyebrow}</p>
+          <p className="eyebrow mb-2.5 text-blue">{mtavruli(t.home.promises.eyebrow)}</p>
           <h2 id="promises-title" className="mx-auto max-w-[560px] text-[28px] font-bold leading-[1.18] tracking-[-.03em] text-balance sm:text-[34px]">
             {t.home.promises.title}
           </h2>
