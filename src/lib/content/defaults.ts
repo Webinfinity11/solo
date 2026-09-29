@@ -26,8 +26,8 @@ export const defaultContent: SiteContent = {
   })),
   settings: {
     email: site.email,
-    phone: "",
-    whatsapp: "",
+    phone: "+1 (347) 728-4844",
+    whatsapp: "+1 (347) 728-4844",
     hours: site.hours,
     social: site.social,
     bank: { recipient: "", bankName: "", iban: "" },

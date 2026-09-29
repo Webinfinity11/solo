@@ -75,7 +75,7 @@ export function Footer({ lang, t, categories, settings }: { lang: Locale; t: Dic
               {settings.phone ? (
                 <>
                   <br />
-                  <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="hover:text-blue">
+                  <a href={`tel:${settings.phone.replace(/[^\d+]/g, "")}`} className="hover:text-blue">
                     {settings.phone}
                   </a>
                 </>
