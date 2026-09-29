@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useI18n } from "@/i18n/provider";
 import { loginCustomer, logoutCustomer, registerCustomer, type AccountResult } from "@/lib/customers/actions";
 import { useCustomer } from "@/components/account/useCustomer";
+import { AccountDashboard } from "@/components/account/AccountDashboard";
 import { Tabs } from "@/components/ui/Tabs";
 import { Icon } from "@/components/ui/Icon";
 
@@ -50,30 +51,16 @@ export function AccountTabs() {
 
   if (customer) {
     return (
-      <div className="mx-auto max-w-[520px] border border-line bg-white p-6 sm:p-8">
-        <p className="eyebrow mb-2">{a.welcome}</p>
-        <h2 className="mb-1 text-[24px] font-bold">{customer.name}</h2>
-        <p className="mb-5 text-[14px] text-muted">{customer.email}</p>
-        <p className="mb-6 text-[15px] leading-relaxed">{a.loggedInText}</p>
-        <div className="flex flex-wrap gap-3">
-          <Link href={`${href("/coa")}#reviews`} className="btn btn-navy">
-            {a.goToReviews} <Icon name="arrow" className="size-[18px]" />
-          </Link>
-          <button
-            type="button"
-            className="btn btn-ghost"
-            disabled={pending}
-            onClick={() =>
-              startTransition(async () => {
-                await logoutCustomer();
-                setCustomer(null);
-              })
-            }
-          >
-            {a.logout}
-          </button>
-        </div>
-      </div>
+      <AccountDashboard
+        customer={customer}
+        onCustomer={setCustomer}
+        onLogout={() =>
+          startTransition(async () => {
+            await logoutCustomer();
+            setCustomer(null);
+          })
+        }
+      />
     );
   }
 

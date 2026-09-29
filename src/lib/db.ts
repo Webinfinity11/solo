@@ -40,6 +40,10 @@ async function createSchema(sql: Sql) {
     )`;
   // Photos/videos attached to a review: [{ url, type: "image" | "video" }].
   await sql`alter table reviews add column if not exists media jsonb not null default '[]'::jsonb`;
+  // Profile details the customer keeps in their account; used to prefill checkout.
+  await sql`alter table customers add column if not exists phone text not null default ''`;
+  await sql`alter table customers add column if not exists city text not null default ''`;
+  await sql`alter table customers add column if not exists address text not null default ''`;
   await sql`
     create table if not exists orders (
       id serial primary key,

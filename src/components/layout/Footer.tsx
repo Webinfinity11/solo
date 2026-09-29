@@ -33,7 +33,7 @@ export function Footer({ lang, t, categories, settings }: { lang: Locale; t: Dic
         { href: href("/contact"), label: t.nav.contact },
         { href: href("/faq"), label: t.nav.faq },
         { href: href("/account"), label: t.nav.account },
-        ...(site.shopEnabled ? [{ href: href("/account"), label: t.footer.trackOrder }] : []),
+        ...(site.shopEnabled ? [{ href: `${href("/account")}#orders`, label: t.footer.trackOrder }] : []),
       ],
     },
   ];

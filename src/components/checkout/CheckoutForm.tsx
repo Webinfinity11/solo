@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useCart, useCartHydrated } from "@/lib/cart-store";
 import { useI18n } from "@/i18n/provider";
 import { placeOrder } from "@/lib/orders";
@@ -14,6 +14,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Field } from "@/components/forms/Field";
 import { useCartLines } from "@/components/cart/CartLine";
 import { OrderSummary } from "./OrderSummary";
+import { useCustomer } from "@/components/account/useCustomer";
 
 function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
   return (
@@ -50,13 +51,31 @@ export function CheckoutForm() {
     confirm: z.literal(true, { message: t.common.required }),
   });
   type Values = z.infer<typeof schema>;
-  const { register, handleSubmit, watch, formState } = useForm<Values>({
+  const { register, handleSubmit, watch, formState, getValues, setValue } = useForm<Values>({
     resolver: zodResolver(schema),
     defaultValues: { payment: "bank" },
   });
   const e = formState.errors;
   const invalid = (k: keyof Values) => (e[k] ? { "aria-invalid": true as const, "aria-describedby": `co-${k}-error` } : {});
   const payment = watch("payment");
+
+  // Signed-in customers: fill empty fields from the account profile.
+  const { customer } = useCustomer();
+  useEffect(() => {
+    if (!customer) return;
+    const [firstName, ...rest] = customer.name.trim().split(/\s+/);
+    const profile: Partial<Record<keyof Values, string>> = {
+      firstName,
+      lastName: rest.join(" "),
+      email: customer.email,
+      phone: customer.phone,
+      city: customer.city,
+      address: customer.address,
+    };
+    for (const [key, value] of Object.entries(profile) as [keyof Values, string][]) {
+      if (value && !getValues(key)) setValue(key, value as never);
+    }
+  }, [customer, getValues, setValue]);
 
   const onSubmit = handleSubmit(async (values) => {
     setError(false);

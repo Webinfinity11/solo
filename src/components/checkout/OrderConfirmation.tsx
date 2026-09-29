@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n/provider";
 import type { SiteSettings } from "@/lib/content/types";
 import { formatPrice } from "@/lib/utils";
 import { Icon } from "@/components/ui/Icon";
+import { useCustomer } from "@/components/account/useCustomer";
 
 export function OrderConfirmation({ bank }: { bank: SiteSettings["bank"] }) {
   const { t, href } = useI18n();
@@ -14,6 +15,7 @@ export function OrderConfirmation({ bank }: { bank: SiteSettings["bank"] }) {
   const number = params.get("order");
   const isBank = params.get("pay") === "bank";
   const total = Number(params.get("total"));
+  const { customer } = useCustomer();
 
   const rows: [string, string][] = [
     [c.bank.recipient, bank.recipient],
@@ -46,9 +48,16 @@ export function OrderConfirmation({ bank }: { bank: SiteSettings["bank"] }) {
         </dl>
       ) : null}
 
-      <Link href={href("/products")} className="btn btn-navy">
-        {c.successCta} <Icon name="arrow" className="size-[18px]" />
-      </Link>
+      <div className="flex flex-wrap justify-center gap-3">
+        {customer ? (
+          <Link href={`${href("/account")}#orders`} className="btn btn-navy">
+            <Icon name="box" className="size-[18px]" /> {t.account.dash.viewInAccount}
+          </Link>
+        ) : null}
+        <Link href={href("/products")} className={customer ? "btn btn-ghost bg-white" : "btn btn-navy"}>
+          {c.successCta} <Icon name="arrow" className="size-[18px]" />
+        </Link>
+      </div>
     </>
   );
 }

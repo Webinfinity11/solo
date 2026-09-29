@@ -1,5 +1,5 @@
 // Customer accounts: scrypt password hashes and a signed, expiring session cookie
-// (SESSION_SECRET). Only used for reviews for now; no personal data beyond name + email.
+// (SESSION_SECRET). The account holds name, email and an optional delivery address.
 import { createHmac, randomBytes, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import { cookies } from "next/headers";
@@ -9,7 +9,7 @@ const scrypt = promisify(scryptCb) as (password: string, salt: string, keylen: n
 const COOKIE = "solo_customer";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
-export type Customer = { id: number; name: string; email: string };
+export type Customer = { id: number; name: string; email: string; phone: string; city: string; address: string };
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16).toString("base64url");
@@ -66,6 +66,6 @@ export async function currentCustomer(): Promise<Customer | null> {
   if (expected.length !== given.length || !timingSafeEqual(expected, given)) return null;
   const sql = await db();
   if (!sql) return null;
-  const rows = (await sql`select id, name, email from customers where id = ${Number(id)}`) as Customer[];
+  const rows = (await sql`select id, name, email, phone, city, address from customers where id = ${Number(id)}`) as Customer[];
   return rows[0] ?? null;
 }

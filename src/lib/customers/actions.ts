@@ -5,6 +5,9 @@ import { db } from "@/lib/db";
 import { locales } from "@/i18n/config";
 import { getContent } from "@/lib/content/store";
 import { isReviewMediaUrl, type ReviewMedia } from "@/lib/reviews";
+import type { OrderItem } from "@/lib/orders";
+import type { OrderStatus } from "@/lib/admin/order-status";
+import type { SiteSettings } from "@/lib/content/types";
 import {
   accountsAvailable,
   currentCustomer,
@@ -44,7 +47,7 @@ export async function registerCustomer(input: { name: string; email: string; pas
     const rows = (await sql`
       insert into customers (email, name, password_hash) values (${parsed.data.email}, ${name}, ${await hashPassword(password)})
       on conflict (email) do nothing
-      returning id, name, email`) as Customer[];
+      returning id, name, email, phone, city, address`) as Customer[];
     if (!rows[0]) return { ok: false, error: "emailTaken" };
     await startCustomerSession(rows[0].id);
     return { ok: true, customer: rows[0] };
@@ -60,14 +63,15 @@ export async function loginCustomer(input: { email: string; password: string }):
   if (!parsed.success) return { ok: false, error: "invalid" };
   try {
     const sql = (await db())!;
-    const rows = (await sql`select id, name, email, password_hash from customers where email = ${parsed.data.email}`) as (Customer & { password_hash: string })[];
+    const rows = (await sql`select id, name, email, phone, city, address, password_hash from customers where email = ${parsed.data.email}`) as (Customer & { password_hash: string })[];
     const row = rows[0];
     if (!row || !(await verifyPassword(parsed.data.password, row.password_hash))) {
       await new Promise((r) => setTimeout(r, 600)); // slow down guessing
       return { ok: false, error: "invalid" };
     }
     await startCustomerSession(row.id);
-    return { ok: true, customer: { id: row.id, name: row.name, email: row.email } };
+    const { password_hash: _hash, ...customer } = row;
+    return { ok: true, customer };
   } catch (e) {
     console.error(e);
     return { ok: false, error: "unavailable" };
@@ -106,5 +110,99 @@ export async function submitReview(input: { productSlug: string; rating: number;
   } catch (e) {
     console.error(e);
     return { ok: false, error: "error" };
+  }
+}
+
+// ---------- account dashboard ----------
+
+export type AccountOrder = {
+  number: string;
+  status: OrderStatus;
+  payment: "bank" | "cod";
+  items: OrderItem[];
+  total: number;
+  city: string;
+  address: string;
+  createdAt: string;
+};
+export type AccountReview = { id: number; productSlug: string; rating: number; body: string; status: "pending" | "approved" | "rejected"; date: string; mediaCount: number };
+export type AccountData = { customer: Customer; orders: AccountOrder[]; reviews: AccountReview[]; bank: SiteSettings["bank"] };
+
+/** Everything the account page shows. Orders placed with the same email before signing up are included. */
+export async function getAccountData(): Promise<AccountData | null> {
+  const customer = await getCurrentCustomer();
+  if (!customer) return null;
+  const sql = (await db())!;
+  const [orders, reviews, content] = await Promise.all([
+    sql`select number, status, payment, items, total, city, address, created_at from orders
+        where customer_id = ${customer.id} or lower(email) = lower(${customer.email})
+        order by created_at desc limit 100` as Promise<Record<string, unknown>[]>,
+    sql`select id, product_slug, rating, body, status, media, updated_at from reviews
+        where customer_id = ${customer.id} order by updated_at desc` as Promise<Record<string, unknown>[]>,
+    getContent(),
+  ]);
+  return {
+    customer,
+    bank: content.settings.bank,
+    orders: orders.map((o) => ({
+      number: o.number as string,
+      status: o.status as OrderStatus,
+      payment: o.payment as AccountOrder["payment"],
+      items: o.items as OrderItem[],
+      total: Number(o.total),
+      city: o.city as string,
+      address: o.address as string,
+      createdAt: new Date(o.created_at as string).toISOString(),
+    })),
+    reviews: reviews.map((r) => ({
+      id: r.id as number,
+      productSlug: r.product_slug as string,
+      rating: r.rating as number,
+      body: r.body as string,
+      status: r.status as AccountReview["status"],
+      date: new Date(r.updated_at as string).toISOString().slice(0, 10),
+      mediaCount: Array.isArray(r.media) ? r.media.length : 0,
+    })),
+  };
+}
+
+export type ProfileResult = { ok: true; customer: Customer } | { ok: false; error: "invalid" | "login" | "wrongPassword" | "passwordShort" | "unavailable" };
+
+export async function updateProfile(input: { name: string; phone: string; city: string; address: string }): Promise<ProfileResult> {
+  const customer = await getCurrentCustomer();
+  if (!customer) return { ok: false, error: "login" };
+  const parsed = z
+    .object({ name: z.string().trim().min(2).max(80), phone: z.string().trim().max(40), city: z.string().trim().max(80), address: z.string().trim().max(300) })
+    .safeParse(input);
+  if (!parsed.success) return { ok: false, error: "invalid" };
+  const { name, phone, city, address } = parsed.data;
+  try {
+    const sql = (await db())!;
+    const rows = (await sql`
+      update customers set name = ${name}, phone = ${phone}, city = ${city}, address = ${address}
+      where id = ${customer.id} returning id, name, email, phone, city, address`) as Customer[];
+    return { ok: true, customer: rows[0] };
+  } catch (e) {
+    console.error(e);
+    return { ok: false, error: "unavailable" };
+  }
+}
+
+export async function changePassword(input: { current: string; next: string }): Promise<ProfileResult> {
+  const customer = await getCurrentCustomer();
+  if (!customer) return { ok: false, error: "login" };
+  if (typeof input.next !== "string" || input.next.length < 8 || input.next.length > 200) return { ok: false, error: "passwordShort" };
+  try {
+    const sql = (await db())!;
+    const rows = (await sql`select password_hash from customers where id = ${customer.id}`) as { password_hash: string }[];
+    if (!rows[0] || !(await verifyPassword(String(input.current ?? ""), rows[0].password_hash))) {
+      await new Promise((r) => setTimeout(r, 600));
+      return { ok: false, error: "wrongPassword" };
+    }
+    await sql`update customers set password_hash = ${await hashPassword(input.next)} where id = ${customer.id}`;
+    return { ok: true, customer };
+  } catch (e) {
+    console.error(e);
+    return { ok: false, error: "unavailable" };
   }
 }
