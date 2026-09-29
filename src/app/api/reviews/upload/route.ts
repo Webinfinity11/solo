@@ -19,7 +19,8 @@ export async function POST(request: Request): Promise<Response> {
         const isVideo = clientPayload === "video";
         return {
           allowedContentTypes: isVideo ? VIDEO_TYPES : IMAGE_TYPES,
-          maximumSizeInBytes: (isVideo ? 50 : 10) * 1024 * 1024,
+          // Photos are downscaled in the browser first; the cap only catches files it could not shrink.
+          maximumSizeInBytes: (isVideo ? 15 : 8) * 1024 * 1024,
           addRandomSuffix: true,
         };
       },

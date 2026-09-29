@@ -13,8 +13,25 @@ import { cn, formatDate } from "@/lib/utils";
 
 const PAGE = 6;
 const MAX_FILES = 4;
-const MAX_IMAGE_MB = 10;
-const MAX_VIDEO_MB = 50;
+const MAX_VIDEO_MB = 15;
+const IMAGE_MAX_SIDE = 1600;
+
+/** Downscale a photo in the browser before upload (phone photos are often 5–12 MB). */
+async function compressImage(file: File): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, IMAGE_MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    return blob && blob.size < file.size ? blob : file;
+  } catch {
+    return file; // format the browser cannot decode: send as is, the server limit still applies
+  }
+}
 
 function Stars({ value, className }: { value: number; className?: string }) {
   return (
@@ -197,6 +214,7 @@ function ReviewForm({ products, fixed, defaultProduct, loginHref }: { products: 
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, startTransition] = useTransition();
   const fileInput = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
   const selected = fixed ?? (product || defaultProduct);
 
   function removeMedia(url: string) {
@@ -212,15 +230,20 @@ function ReviewForm({ products, fixed, defaultProduct, loginHref }: { products: 
     const room = MAX_FILES - media.length - uploading;
     for (const file of Array.from(files).slice(0, Math.max(0, room))) {
       const type = file.type.startsWith("video/") ? "video" : file.type.startsWith("image/") ? "image" : null;
-      const limit = (type === "video" ? MAX_VIDEO_MB : MAX_IMAGE_MB) * 1024 * 1024;
-      if (!type || file.size > limit) {
+      if (!type) {
         setMessage({ ok: false, text: r.uploadError });
+        continue;
+      }
+      if (type === "video" && file.size > MAX_VIDEO_MB * 1024 * 1024) {
+        setMessage({ ok: false, text: r.tooLarge });
         continue;
       }
       setUploading((n) => n + 1);
       try {
-        const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
-        const blob = await upload(`reviews/${safe}`, file, { access: "public", handleUploadUrl: "/api/reviews/upload", clientPayload: type });
+        const data = type === "image" ? await compressImage(file) : file;
+        const base = file.name.toLowerCase().replace(/\.[^.]+$/, "").replace(/[^a-z0-9]+/g, "-") || "media";
+        const ext = type === "image" ? (data === file ? file.name.split(".").pop()?.toLowerCase() ?? "jpg" : "jpg") : file.name.split(".").pop()?.toLowerCase() ?? "mp4";
+        const blob = await upload(`reviews/${base}.${ext}`, data, { access: "public", handleUploadUrl: "/api/reviews/upload", clientPayload: type, contentType: data.type || file.type });
         setMedia((list) => [...list, { url: blob.url, type, preview: URL.createObjectURL(file), name: file.name }]);
       } catch {
         setMessage({ ok: false, text: r.uploadError });
@@ -317,55 +340,73 @@ function ReviewForm({ products, fixed, defaultProduct, loginHref }: { products: 
             />
           </div>
 
-          {/* Photos / videos, uploaded straight to storage; shown after moderation. */}
-          <div>
-            <div className="flex flex-wrap gap-2">
-              {media.map((m) => (
-                <div key={m.url} className="relative size-[72px] overflow-hidden border border-line bg-ice">
-                  {m.type === "image" ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={m.preview} alt={m.name} className="size-full object-cover" />
-                  ) : (
-                    <video src={m.preview} muted playsInline className="size-full object-cover" />
-                  )}
-                  <button
-                    type="button"
-                    aria-label={`${r.remove}: ${m.name}`}
-                    onClick={() => removeMedia(m.url)}
-                    className="absolute end-1 top-1 grid size-6 place-items-center rounded-full bg-navy/85 text-white hover:bg-navy"
-                  >
-                    <Icon name="close" className="size-3.5" />
-                  </button>
-                </div>
-              ))}
-              {Array.from({ length: uploading }, (_, i) => (
-                <div key={`u${i}`} className="grid size-[72px] animate-pulse place-items-center border border-dashed border-line bg-mist text-[11px] text-muted">
-                  {r.uploading}
-                </div>
-              ))}
-              {media.length + uploading < MAX_FILES ? (
-                <button
-                  type="button"
-                  onClick={() => fileInput.current?.click()}
-                  className="flex size-[72px] flex-col items-center justify-center gap-1 border border-dashed border-navy/40 text-[11px] font-bold leading-tight text-navy transition-colors hover:border-navy hover:bg-mist"
-                >
-                  <Icon name="plus" className="size-5" />
-                  {r.addMedia}
-                </button>
-              ) : null}
-            </div>
-            <input
-              ref={fileInput}
-              type="file"
-              hidden
-              multiple
-              accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/webm,video/quicktime"
-              onChange={(e) => addFiles(e.target.files)}
-            />
-            <p className="mt-1.5 text-[12px] text-muted">{r.mediaHint}</p>
+          {/* Photos / videos: optional, uploaded straight to storage, shown after moderation. */}
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              addFiles(e.dataTransfer.files);
+            }}
+          >
+            {media.length + uploading < MAX_FILES ? (
+              <button
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-sm border-2 border-dashed px-4 py-3.5 text-start transition-colors",
+                  dragging ? "border-navy bg-ice" : "border-line bg-mist hover:border-navy/50 hover:bg-ice",
+                )}
+              >
+                <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-navy shadow-[0_2px_8px_rgba(26,47,66,.12)]">
+                  <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.3l1.4-2h5.6l1.4 2h1.3A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z" />
+                    <circle cx="12" cy="12.5" r="3.5" />
+                  </svg>
+                </span>
+                <span className="text-[14px] font-bold text-navy">{r.addMedia}</span>
+                <Icon name="plus" className="ms-auto size-5 text-navy/60" />
+              </button>
+            ) : null}
+            {media.length || uploading ? (
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                {media.map((m) => (
+                  <div key={m.url} className="group relative aspect-square overflow-hidden rounded-sm bg-ice">
+                    {m.type === "image" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.preview} alt={m.name} className="size-full object-cover" />
+                    ) : (
+                      <>
+                        <video src={m.preview} muted playsInline className="size-full object-cover" />
+                        <span aria-hidden="true" className="absolute inset-0 grid place-items-center bg-navy/30 text-[16px] text-white">
+                          ▶
+                        </span>
+                      </>
+                    )}
+                    <button
+                      type="button"
+                      aria-label={`${r.remove}: ${m.name}`}
+                      onClick={() => removeMedia(m.url)}
+                      className="absolute end-1 top-1 grid size-6 place-items-center rounded-full bg-white/95 text-navy shadow hover:bg-white"
+                    >
+                      <Icon name="close" className="size-3.5" />
+                    </button>
+                  </div>
+                ))}
+                {Array.from({ length: uploading }, (_, i) => (
+                  <div key={`u${i}`} aria-label={r.uploading} className="grid aspect-square animate-pulse place-items-center rounded-sm bg-ice">
+                    <span className="size-5 animate-spin rounded-full border-2 border-navy/20 border-t-navy" />
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            <input ref={fileInput} type="file" hidden multiple accept="image/*,video/mp4,video/webm,video/quicktime" onChange={(e) => addFiles(e.target.files)} />
           </div>
 
-          <p className="text-[12px] leading-relaxed text-muted">{r.rules}</p>
           {message ? (
             <p role="status" className={cn("text-[13px] font-bold", message.ok ? "text-success" : "text-danger")}>
               {message.text}
