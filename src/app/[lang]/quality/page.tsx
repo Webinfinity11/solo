@@ -18,16 +18,22 @@ export default async function QualityPage({ params }: { params: Promise<{ lang: 
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-navy text-white">
+      <section className="relative isolate overflow-hidden bg-[#020b16] text-white">
+        {/* Same lab scene as the home hero, shaded behind the copy (mirrored for right-to-left). */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10">
+          <Image src="/images/hero/background.webp" alt="" fill priority sizes="100vw" className="object-cover object-[70%_50%] rtl:-scale-x-100" />
+          <div className="absolute inset-0 bg-[#020b16]/55 md:bg-[linear-gradient(90deg,rgba(2,11,22,.94)_0%,rgba(2,11,22,.78)_40%,rgba(2,11,22,.25)_75%,rgba(2,11,22,.1)_100%)] md:rtl:bg-[linear-gradient(270deg,rgba(2,11,22,.94)_0%,rgba(2,11,22,.78)_40%,rgba(2,11,22,.25)_75%,rgba(2,11,22,.1)_100%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#020b16]/70 to-transparent" />
+        </div>
         <div className="container-site grid items-center gap-8 py-14 md:grid-cols-[1.2fr_1fr] md:py-20">
           <div>
             <p className="eyebrow mb-3 text-blue">{mtavruli(t.quality.eyebrow)}</p>
             <h1 className="mb-5 text-[36px] font-bold leading-[1.08] tracking-[-.04em] text-balance sm:text-[50px]">{t.quality.title}</h1>
             <p className="max-w-[480px] text-[16px] leading-relaxed text-white/85">{t.quality.description}</p>
           </div>
-          <div className="relative mx-auto aspect-[373/355] w-full max-w-[420px]">
-            <span aria-hidden="true" className="hex -start-8 -top-6 h-[140px] w-[122px] opacity-25" />
-            <Image src="/images/site/hero-vial.webp" alt="" fill sizes="420px" className="object-cover [mask-image:radial-gradient(circle,#000_55%,transparent_75%)]" />
+          <div className="relative mx-auto aspect-[493/725] w-full max-w-[250px] sm:max-w-[300px]">
+            <span aria-hidden="true" className="absolute inset-x-[-30%] bottom-[-6%] h-[22%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(177,212,244,.45),transparent)] blur-md" />
+            <Image src="/images/hero/vial.webp" alt="SOLO Research" fill priority sizes="300px" className="animate-float object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,.55)]" />
           </div>
         </div>
       </section>

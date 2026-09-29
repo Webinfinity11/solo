@@ -6,10 +6,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { mtavruli } from "@/lib/utils";
 
 const visuals: { image: string; icon: IconName; path: string }[] = [
-  { image: "/images/site/promise-research.webp", icon: "flask", path: "/quality" },
-  { image: "/images/site/promise-purity.webp", icon: "file", path: "/coa" },
-  { image: "/images/site/hero-vial.webp", icon: "snowflake", path: "/quality" },
-  { image: "/images/site/promise-shipping.webp", icon: "truck", path: "/shipping" },
+  { image: "/images/site/promise-testing.webp", icon: "flask", path: "/quality" },
+  { image: "/images/site/promise-coa.webp", icon: "file", path: "/coa" },
+  { image: "/images/site/promise-cold.webp", icon: "snowflake", path: "/quality" },
+  { image: "/images/site/promise-delivery.webp", icon: "truck", path: "/shipping" },
 ];
 
 export function TrustPromises({ t, href }: { t: Dictionary; href: (p: string) => string }) {

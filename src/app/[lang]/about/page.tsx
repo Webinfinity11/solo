@@ -26,7 +26,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           ))}
         </div>
         <div className="relative aspect-[1.83] overflow-hidden border border-line">
-          <Image src="/images/site/promise-research.webp" alt="" fill sizes="(max-width: 768px) 100vw, 45vw" className="object-cover" />
+          <Image src="/images/site/promise-testing.webp" alt="" fill sizes="(max-width: 768px) 100vw, 45vw" className="object-cover" />
         </div>
       </section>
       <section className="bg-navy py-14 text-white">
