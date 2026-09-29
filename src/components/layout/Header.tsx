@@ -48,7 +48,6 @@ export function Header() {
     { href: href("/coa"), label: t.nav.labResults },
     { href: href("/quality"), label: t.nav.quality },
     { href: href("/shipping"), label: t.nav.shipping },
-    { href: href("/wholesale"), label: t.nav.wholesale },
     { href: href("/faq"), label: t.nav.faq },
   ];
   const isActive = (link: string) => pathname === link || pathname.startsWith(`${link}/`);

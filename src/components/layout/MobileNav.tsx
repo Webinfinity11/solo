@@ -17,7 +17,6 @@ export function MobileNav({ open, onClose, onSearch }: { open: boolean; onClose:
     { href: href("/coa"), label: t.nav.labResults },
     { href: href("/quality"), label: t.nav.quality },
     { href: href("/shipping"), label: t.nav.shipping },
-    { href: href("/wholesale"), label: t.nav.wholesale },
     { href: href("/faq"), label: t.nav.faq },
     { href: href("/about"), label: t.nav.about },
     { href: href("/contact"), label: t.nav.contact },

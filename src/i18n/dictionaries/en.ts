@@ -32,12 +32,12 @@ const en: Dictionary = {
   },
 
   ageGate: {
-    title: "You must be 21+ to enter",
+    title: "You must be 18+ to enter",
     text: "All products on this site are intended for laboratory research use only. They are not intended for human or animal consumption and are not medicinal products.",
     agree: "I agree to the Terms & Conditions and the Research Use Only (RUO) Agreement",
     enter: "I agree",
     exit: "Exit",
-    exitMessage: "Sorry — access to this site is restricted to researchers aged 21 and over.",
+    exitMessage: "Sorry — access to this site is restricted to researchers aged 18 and over.",
   },
 
   // Scrolling ticker above the header.
@@ -199,8 +199,8 @@ const en: Dictionary = {
       labTests: "View lab tests",
       whatsapp: "Message us on WhatsApp",
       benefits: [
-        { label: "Delivery", value: "24h" },
-        { label: "Purity", value: "99%+" },
+        { label: "Delivery", value: "24", unit: "hours" },
+        { label: "Purity", value: "99%", unit: "+" },
       ],
     },
     featured: { eyebrow: "Bestsellers", title: "Most requested" },
@@ -441,7 +441,7 @@ const en: Dictionary = {
     password: "Password",
     passwordHint: "At least 8 characters",
     name: "Full name",
-    confirm: "I confirm that I am 21+ and agree to the terms",
+    confirm: "I confirm that I am 18+ and agree to the terms",
     forgot: "Forgot your password?",
     notice: "With an account you can leave reviews on the lab results page.",
     welcome: "Welcome",
@@ -476,7 +476,7 @@ const en: Dictionary = {
       { id: "cod", label: "Pay the courier", text: "Pay in cash or by card when you receive the order." },
     ],
     deliveryText: "Free delivery in Georgia",
-    confirm: "I confirm that I am 21+ and that these products are for research use only",
+    confirm: "I confirm that I am 18+ and that these products are for research use only",
     summary: "Order summary",
     place: "Place order",
     empty: "Your cart is empty — nothing to check out.",

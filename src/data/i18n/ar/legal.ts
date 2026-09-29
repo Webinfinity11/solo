@@ -12,7 +12,7 @@ export const legalDocuments: LegalDocument[] = [
     updated,
     sections: [
       { id: "general", title: "أحكام عامة", paragraphs: ["باستخدامك هذا الموقع، فإنك توافق على هذه الشروط والأحكام.", placeholder] },
-      { id: "eligibility", title: "الأهلية", paragraphs: ["لا يحق الشراء إلا للأشخاص الذين تبلغ أعمارهم 21 عامًا فأكثر ممن يجرون أبحاثًا مخبرية."] },
+      { id: "eligibility", title: "الأهلية", paragraphs: ["لا يحق الشراء إلا للأشخاص الذين تبلغ أعمارهم 18 عامًا فأكثر ممن يجرون أبحاثًا مخبرية."] },
       { id: "orders", title: "الطلبات والأسعار", paragraphs: ["الأسعار قابلة للتغيير دون إشعار مسبق.", placeholder] },
       { id: "liability", title: "المسؤولية", paragraphs: ["يتحمّل المشتري المسؤولية الكاملة عن التعامل السليم مع المنتجات واستخدامها.", placeholder] },
     ],

@@ -94,7 +94,7 @@ export const faq: (FaqItem & { home?: boolean })[] = [
   },
   {
     group: "legal",
-    question: "Why is the 21+ age requirement necessary?",
+    question: "Why is the 18+ age requirement necessary?",
     answer:
       "This site is intended for qualified researchers. When purchasing, you confirm your age and that the products will be used for research purposes only.",
   },

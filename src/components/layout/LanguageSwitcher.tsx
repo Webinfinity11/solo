@@ -76,12 +76,12 @@ export function LanguageSwitcher() {
   );
 }
 
-// Inline list for the mobile menu.
-export function LanguageLinks({ onNavigate }: { onNavigate?: () => void }) {
+// Inline list for the mobile menu and the age gate (`full` shows language names).
+export function LanguageLinks({ onNavigate, full, className }: { onNavigate?: () => void; full?: boolean; className?: string }) {
   const { lang } = useI18n();
   const hrefFor = useLocaleHref();
   return (
-    <div className="flex gap-2">
+    <div className={cn("flex gap-2", className)}>
       {locales.map((l) => (
         <Link
           key={l}
@@ -91,10 +91,11 @@ export function LanguageLinks({ onNavigate }: { onNavigate?: () => void }) {
           aria-current={l === lang ? "true" : undefined}
           className={cn(
             "flex-1 border px-3 py-2.5 text-center text-[13px] font-bold transition-colors",
+            full && "px-2 py-2 text-[12px] sm:text-[13px]",
             l === lang ? "border-navy bg-navy text-white" : "border-line hover:border-navy",
           )}
         >
-          {localeMeta[l].short}
+          {full ? localeMeta[l].label : localeMeta[l].short}
         </Link>
       ))}
     </div>

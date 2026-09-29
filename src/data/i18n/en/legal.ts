@@ -12,7 +12,7 @@ export const legalDocuments: LegalDocument[] = [
     updated,
     sections: [
       { id: "general", title: "General provisions", paragraphs: ["By using this site, you agree to these Terms & Conditions.", placeholder] },
-      { id: "eligibility", title: "Eligibility", paragraphs: ["Purchases may be made only by persons aged 21 or over who conduct laboratory research."] },
+      { id: "eligibility", title: "Eligibility", paragraphs: ["Purchases may be made only by persons aged 18 or over who conduct laboratory research."] },
       { id: "orders", title: "Orders & pricing", paragraphs: ["Prices are subject to change without prior notice.", placeholder] },
       { id: "liability", title: "Liability", paragraphs: ["The buyer accepts full responsibility for the proper handling and use of the products.", placeholder] },
     ],
