@@ -4,20 +4,38 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ProductImage } from "@/components/brand/ProductImage";
 
-// Main image with hover zoom (follows the cursor) and thumbnails when there are several photos.
+// Main image with hover zoom (follows the cursor). Size photos are not listed as thumbnails:
+// they differ only by the label, so the gallery shows the photo of the size picked in
+// ProductPurchase. Thumbnails appear only for extra photos that belong to no size.
 /** Window event carrying the image URL of the size picked in ProductPurchase. */
 export const VARIANT_IMAGE_EVENT = "solo:variant-image";
 
-export function ProductGallery({ name, images, label }: { name: string; images: string[]; label?: string }) {
-  const [index, setIndex] = useState(0);
+export function ProductGallery({
+  name,
+  images,
+  variantImages = [],
+  initial,
+  label,
+}: {
+  name: string;
+  images: string[];
+  variantImages?: string[];
+  initial?: string;
+  label?: string;
+}) {
+  const [variantImage, setVariantImage] = useState(initial ?? images[0]);
+  const [current, setCurrent] = useState(initial ?? images[0]);
   const [origin, setOrigin] = useState("50% 50%");
   const [zoom, setZoom] = useState(false);
-  const current = images[index];
+  const extras = images.filter((src) => !variantImages.includes(src));
+  const thumbs = extras.length ? [...(variantImage && variantImages.includes(variantImage) ? [variantImage] : []), ...extras] : [];
 
   useEffect(() => {
     const onVariant = (e: Event) => {
-      const i = images.indexOf((e as CustomEvent<string>).detail);
-      if (i >= 0) setIndex(i);
+      const src = (e as CustomEvent<string>).detail;
+      if (!images.includes(src)) return;
+      setVariantImage(src);
+      setCurrent(src);
     };
     window.addEventListener(VARIANT_IMAGE_EVENT, onVariant);
     return () => window.removeEventListener(VARIANT_IMAGE_EVENT, onVariant);
@@ -40,16 +58,16 @@ export function ProductGallery({ name, images, label }: { name: string; images: 
           <ProductImage name={name} src={current} label={label} priority sizes="(max-width: 1024px) 100vw, 560px" />
         </div>
       </div>
-      {images.length > 1 ? (
+      {thumbs.length > 1 ? (
         <div className="grid grid-cols-4 gap-3">
-          {images.map((src, i) => (
+          {thumbs.map((src, i) => (
             <button
               key={src}
               type="button"
-              onClick={() => setIndex(i)}
+              onClick={() => setCurrent(src)}
               aria-label={`${name} ${i + 1}`}
-              aria-pressed={i === index}
-              className={cn("aspect-square overflow-hidden border bg-photo transition-colors", i === index ? "border-navy" : "border-line hover:border-blue")}
+              aria-pressed={src === current}
+              className={cn("aspect-square overflow-hidden border bg-photo transition-colors", src === current ? "border-navy" : "border-line hover:border-blue")}
             >
               <ProductImage name={name} src={src} sizes="120px" />
             </button>

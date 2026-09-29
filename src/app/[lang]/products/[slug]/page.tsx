@@ -5,7 +5,7 @@ import { locales } from "@/i18n/config";
 import { resolveLang } from "@/i18n/server";
 import { getCategory, getCoa, getProduct, getProducts } from "@/lib/api";
 import { site } from "@/data/site";
-import { isInStock } from "@/lib/utils";
+import { firstAvailableVariant, isInStock } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/Badge";
 import { Icon, type IconName } from "@/components/ui/Icon";
@@ -104,7 +104,13 @@ export default async function ProductPage({ params }: { params: Params }) {
           ]}
         />
         <div className="grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
-          <ProductGallery name={product.name} images={product.images} label={product.variants[0].label} />
+          <ProductGallery
+            name={product.name}
+            images={product.images}
+            variantImages={product.variants.flatMap((v) => (v.image ? [v.image] : []))}
+            initial={firstAvailableVariant(product).image ?? product.images[0]}
+            label={product.variants[0].label}
+          />
 
           <div>
             {category ? (
