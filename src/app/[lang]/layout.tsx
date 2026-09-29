@@ -59,7 +59,9 @@ const mtavruliFont = localFont({
   declarations: [{ prop: "unicode-range", value: "U+10D0-10FF" }],
 });
 
-export const dynamicParams = false;
+// true: pages revalidated from the admin are regenerated on demand (false made them 404
+// after revalidatePath). Unknown languages are still rejected with notFound() below.
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));

@@ -7,3 +7,10 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Claude Code local settings
+.claude/settings.local.json
+# Agent skills installed by the Vercel Neon integration
+.claude/skills/
+skills-lock.json
+.agents/

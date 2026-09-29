@@ -45,8 +45,13 @@ export function firstAvailableVariant(product: Product): Variant {
   return product.variants.find((v) => v.inStock) ?? product.variants[0];
 }
 
+// Written out because some browsers ship without Georgian locale data, which made
+// client-rendered dates differ from the server's (hydration mismatch).
+const GEORGIAN_MONTHS = ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"];
+
 export function formatDate(iso: string, lang: string): string {
   const [y, m, d] = iso.split("-").map(Number);
+  if (lang === "ka") return `${d} ${GEORGIAN_MONTHS[m - 1]}, ${y}`;
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString(lang === "ka" ? "ka-GE" : lang, {
     year: "numeric",
     month: "long",
