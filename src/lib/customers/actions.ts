@@ -4,7 +4,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { locales } from "@/i18n/config";
 import { getContent } from "@/lib/content/store";
-import { isReviewMediaUrl, type ReviewMedia } from "@/lib/reviews";
+import { REVIEWS_TAG, isReviewMediaUrl, type ReviewMedia } from "@/lib/reviews";
+import { revalidatePath, updateTag } from "next/cache";
 import type { OrderItem } from "@/lib/orders";
 import type { OrderStatus } from "@/lib/admin/order-status";
 import type { SiteSettings } from "@/lib/content/types";
@@ -102,10 +103,13 @@ export async function submitReview(input: { productSlug: string; rating: number;
   try {
     const sql = (await db())!;
     await sql`
-      insert into reviews (customer_id, product_slug, rating, body, lang, media)
-      values (${customer.id}, ${productSlug}, ${rating}, ${body}, ${lang}, ${JSON.stringify(media)}::jsonb)
+      insert into reviews (customer_id, product_slug, rating, body, lang, media, status)
+      values (${customer.id}, ${productSlug}, ${rating}, ${body}, ${lang}, ${JSON.stringify(media)}::jsonb, 'approved')
       on conflict (customer_id, product_slug) do update
-        set rating = excluded.rating, body = excluded.body, lang = excluded.lang, media = excluded.media, status = 'pending', updated_at = now()`;
+        set rating = excluded.rating, body = excluded.body, lang = excluded.lang, media = excluded.media, status = 'approved', updated_at = now()`;
+    // Published straight away (the admin can hide or delete it later), so refresh the pages that list reviews.
+    updateTag(REVIEWS_TAG);
+    revalidatePath("/", "layout");
     return { ok: true };
   } catch (e) {
     console.error(e);

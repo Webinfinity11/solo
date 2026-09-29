@@ -294,7 +294,7 @@ const en: Dictionary = {
     placeholder: "Quality, purity, packaging, delivery…",
     rules: "Do not mention dosing or human use — such reviews will not be published.",
     submit: "Submit",
-    sent: "Thank you! Your review will appear after moderation.",
+    sent: "Thank you! Your review has been published.",
     loginPrompt: "Sign in or create an account to leave a review.",
     loginCta: "Sign in / Register",
     signedInAs: "Signed in as",

@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
 import { useI18n } from "@/i18n/provider";
 import type { PublicReview, ReviewMedia } from "@/lib/reviews";
@@ -206,6 +207,7 @@ function ReviewForm({ products, fixed, defaultProduct, loginHref }: { products: 
   const { t, lang } = useI18n();
   const r = t.reviews;
   const { customer, loaded } = useCustomer();
+  const router = useRouter();
   const [product, setProduct] = useState("");
   const [rating, setRating] = useState(5);
   const [body, setBody] = useState("");
@@ -266,6 +268,7 @@ function ReviewForm({ products, fixed, defaultProduct, loginHref }: { products: 
           media.forEach((m) => URL.revokeObjectURL(m.preview));
           setMedia([]);
           setMessage({ ok: true, text: r.sent });
+          router.refresh(); // show the new review in the list right away
         } else setMessage({ ok: false, text: result.error === "login" ? r.loginPrompt : result.error === "tooShort" ? r.tooShort : r.error });
       } catch {
         setMessage({ ok: false, text: r.error });

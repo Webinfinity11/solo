@@ -13,7 +13,7 @@ const STATUS = {
 } as const;
 
 export function ReviewsModeration({ reviews, productNames }: { reviews: AdminReview[]; productNames: Record<string, string> }) {
-  const [filter, setFilter] = useState<AdminReview["status"] | "all">("pending");
+  const [filter, setFilter] = useState<AdminReview["status"] | "all">("all");
   const { save, pending, status } = useSave();
   const visible = reviews.filter((r) => filter === "all" || r.status === filter);
   const count = (s: AdminReview["status"]) => reviews.filter((r) => r.status === s).length;
