@@ -4,7 +4,7 @@ import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { locales, type Locale } from "@/i18n/config";
-import { checkPassword, endSession, isAdmin, isPasswordConfigured, startSession } from "@/lib/admin/auth";
+import { checkCredentials, endSession, isAdmin, isPasswordConfigured, startSession } from "@/lib/admin/auth";
 import { CONTENT_TAG, getContentFresh, saveContent } from "@/lib/content/store";
 import type { SiteContent } from "@/lib/content/types";
 import { db, type Sql } from "@/lib/db";
@@ -17,9 +17,9 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
 
 export async function login(_prev: string | null, form: FormData): Promise<string | null> {
   if (!isPasswordConfigured()) return "ADMIN_PASSWORD არ არის მითითებული სერვერზე.";
-  if (!checkPassword(String(form.get("password") ?? ""))) {
+  if (!checkCredentials(String(form.get("username") ?? ""), String(form.get("password") ?? ""))) {
     await new Promise((r) => setTimeout(r, 800)); // slow down guessing
-    return "პაროლი არასწორია.";
+    return "მომხმარებლის სახელი ან პაროლი არასწორია.";
   }
   await startSession();
   redirect("/admin");

@@ -5,10 +5,13 @@ import Link from "next/link";
 import { useI18n } from "@/i18n/provider";
 import {
   changePassword,
+  deleteMyReview,
   getAccountData,
+  updateMyReview,
   updateProfile,
   type AccountData,
   type AccountOrder,
+  type AccountReview,
 } from "@/lib/customers/actions";
 import type { Customer } from "@/lib/customers/auth";
 import { useCatalog } from "@/components/layout/CatalogProvider";
@@ -106,7 +109,7 @@ export function AccountDashboard({ customer, onCustomer, onLogout }: { customer:
         ) : tab === "orders" ? (
           <Orders data={data} />
         ) : tab === "reviews" ? (
-          <Reviews data={data} />
+          <Reviews data={data} onChange={(reviews) => setData((prev) => (prev ? { ...prev, reviews } : prev))} />
         ) : (
           <Settings
             customer={customer}
@@ -276,53 +279,190 @@ function OrderCard({ order, bank, defaultOpen }: { order: AccountOrder; bank: Ac
   );
 }
 
-function Reviews({ data }: { data: AccountData }) {
-  const { t, lang, href } = useI18n();
+function Reviews({ data, onChange }: { data: AccountData; onChange: (reviews: AccountReview[]) => void }) {
+  const { t, href } = useI18n();
   const d = t.account.dash;
-  const { bySlug } = useCatalog();
   return (
     <Panel title={d.reviews}>
       {data.reviews.length ? (
         <ul className="flex flex-col gap-3">
-          {data.reviews.map((r) => {
-            const product = bySlug.get(r.productSlug);
-            return (
-              <li key={r.id} className="flex gap-4 border border-line p-4">
-                <span className="block size-16 shrink-0 overflow-hidden bg-photo">
-                  <ProductImage name={product?.name ?? r.productSlug} src={product?.images[0]} sizes="64px" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <span className="text-[14px] font-bold">{product?.name ?? r.productSlug}</span>
-                    <span className="text-[#e0a800]" aria-label={`${r.rating}/5`} dir="ltr">
-                      {"★".repeat(r.rating)}
-                      <span className="text-[#d5dde5]">{"★".repeat(5 - r.rating)}</span>
-                    </span>
-                    <span className={cn("px-2 py-0.5 text-[11px] font-bold", REVIEW_STYLE[r.status])}>{d.reviewStatus[r.status]}</span>
-                  </div>
-                  <p className="line-clamp-3 text-[14px] leading-relaxed text-muted">{r.body}</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-4 text-[12px] text-muted">
-                    <span>{formatDate(r.date, lang)}</span>
-                    {r.mediaCount ? (
-                      <span>
-                        {d.mediaAttached}: {r.mediaCount}
-                      </span>
-                    ) : null}
-                    {product ? (
-                      <Link href={`${href(`/products/${r.productSlug}`)}#reviews`} className="font-bold text-navy hover:underline">
-                        {d.editReview}
-                      </Link>
-                    ) : null}
-                  </div>
-                </div>
-              </li>
-            );
-          })}
+          {data.reviews.map((r) => (
+            <li key={r.id}>
+              <ReviewItem
+                review={r}
+                onSaved={(next) => onChange(data.reviews.map((x) => (x.id === next.id ? next : x)))}
+                onDeleted={() => onChange(data.reviews.filter((x) => x.id !== r.id))}
+              />
+            </li>
+          ))}
         </ul>
       ) : (
         <Empty text={d.noReviews} cta={d.writeReview} href={`${href("/coa")}#reviews`} />
       )}
     </Panel>
+  );
+}
+
+/** One of the customer's reviews, editable in place (rating, text, attachments) or deletable. */
+function ReviewItem({ review, onSaved, onDeleted }: { review: AccountReview; onSaved: (r: AccountReview) => void; onDeleted: () => void }) {
+  const { t, lang, href } = useI18n();
+  const d = t.account.dash;
+  const { bySlug } = useCatalog();
+  const product = bySlug.get(review.productSlug);
+  const [editing, setEditing] = useState(false);
+  const [rating, setRating] = useState(review.rating);
+  const [body, setBody] = useState(review.body);
+  const [media, setMedia] = useState(review.media);
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  function cancel() {
+    setEditing(false);
+    setRating(review.rating);
+    setBody(review.body);
+    setMedia(review.media);
+    setMessage(null);
+  }
+
+  function save() {
+    if (body.trim().length < 10) return setMessage({ ok: false, text: t.reviews.tooShort });
+    startTransition(async () => {
+      const result = await updateMyReview({ id: review.id, rating, body, media }).catch(() => ({ ok: false as const, error: "error" as const }));
+      if (result.ok) {
+        onSaved({ ...review, rating, body: body.trim(), media });
+        setEditing(false);
+        setMessage({ ok: true, text: d.reviewSaved });
+      } else setMessage({ ok: false, text: result.error === "tooShort" ? t.reviews.tooShort : t.reviews.error });
+    });
+  }
+
+  function remove() {
+    if (!window.confirm(d.confirmDelete)) return;
+    startTransition(async () => {
+      const result = await deleteMyReview(review.id).catch(() => ({ ok: false as const, error: "error" as const }));
+      if (result.ok) onDeleted();
+      else setMessage({ ok: false, text: t.reviews.error });
+    });
+  }
+
+  return (
+    <div className="flex gap-4 border border-line p-4">
+      <span className="block size-16 shrink-0 overflow-hidden bg-photo">
+        <ProductImage name={product?.name ?? review.productSlug} src={product?.images[0]} sizes="64px" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="text-[14px] font-bold">{product?.name ?? review.productSlug}</span>
+          {editing ? null : (
+            <span className="text-[#e0a800]" aria-label={`${review.rating}/5`} dir="ltr">
+              {"★".repeat(review.rating)}
+              <span className="text-[#d5dde5]">{"★".repeat(5 - review.rating)}</span>
+            </span>
+          )}
+          <span className={cn("px-2 py-0.5 text-[11px] font-bold", REVIEW_STYLE[review.status])}>{d.reviewStatus[review.status]}</span>
+        </div>
+
+        {editing ? (
+          <div className="mt-2 flex flex-col gap-3">
+            <div className="flex gap-1 text-[26px] leading-none" dir="ltr" role="radiogroup" aria-label={t.reviews.rating}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  role="radio"
+                  aria-checked={rating === n}
+                  aria-label={`${n} ${t.reviews.stars}`}
+                  onClick={() => setRating(n)}
+                  className={n <= rating ? "text-[#e0a800]" : "text-[#d5dde5] hover:text-[#e0a800]/60"}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+            <textarea rows={4} maxLength={2000} value={body} onChange={(e) => setBody(e.target.value)} className="field min-h-[100px] py-3" aria-label={t.reviews.text} />
+            {media.length ? (
+              <div className="flex flex-wrap gap-2">
+                {media.map((m) => (
+                  <div key={m.url} className="relative size-16 overflow-hidden rounded-sm bg-ice">
+                    {m.type === "image" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.url} alt="" className="size-full object-cover" />
+                    ) : (
+                      <video src={`${m.url}#t=0.1`} preload="metadata" muted className="size-full object-cover" />
+                    )}
+                    <button
+                      type="button"
+                      aria-label={t.reviews.remove}
+                      onClick={() => setMedia((list) => list.filter((x) => x.url !== m.url))}
+                      className="absolute end-0.5 top-0.5 grid size-5 place-items-center rounded-full bg-white/95 text-navy shadow"
+                    >
+                      <Icon name="close" className="size-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={save} disabled={pending} className="btn btn-navy min-h-[40px] px-5 text-[13px]">
+                {pending ? t.common.sending : d.saveReview}
+              </button>
+              <button type="button" onClick={cancel} disabled={pending} className="btn btn-ghost min-h-[40px] px-5 text-[13px]">
+                {d.cancel}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="whitespace-pre-line text-[14px] leading-relaxed text-muted">{review.body}</p>
+            {review.media.length ? (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {review.media.map((m) => (
+                  <span key={m.url} className="relative block size-12 overflow-hidden rounded-sm bg-ice">
+                    {m.type === "image" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.url} alt="" loading="lazy" className="size-full object-cover" />
+                    ) : (
+                      <>
+                        <video src={`${m.url}#t=0.1`} preload="metadata" muted className="size-full object-cover" />
+                        <span aria-hidden="true" className="absolute inset-0 grid place-items-center bg-navy/30 text-[12px] text-white">
+                          ▶
+                        </span>
+                      </>
+                    )}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
+              <span className="text-[12px] text-muted">{formatDate(review.date, lang)}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditing(true);
+                  setMessage(null);
+                }}
+                className="inline-flex items-center gap-1 font-bold text-navy hover:underline"
+              >
+                ✎ {d.editReview}
+              </button>
+              <button type="button" onClick={remove} disabled={pending} className="inline-flex items-center gap-1 font-bold text-danger hover:underline">
+                <Icon name="trash" className="size-4" /> {d.deleteReview}
+              </button>
+              {product ? (
+                <Link href={`${href(`/products/${review.productSlug}`)}#reviews`} className="text-muted hover:text-navy hover:underline">
+                  {d.viewOnSite} →
+                </Link>
+              ) : null}
+            </div>
+          </>
+        )}
+        {message ? (
+          <p role="status" className={cn("mt-2 text-[13px] font-bold", message.ok ? "text-success" : "text-danger")}>
+            {message.text}
+          </p>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

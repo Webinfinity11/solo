@@ -1,5 +1,6 @@
-// Admin access: one password (ADMIN_PASSWORD) and a signed, expiring session cookie.
-// The password is also the signing key, so changing it signs everyone out.
+// Admin access: a username (ADMIN_USERNAME, default "solo") + password (ADMIN_PASSWORD)
+// and a signed, expiring session cookie.
+// Sessions are signed with SESSION_SECRET plus the password, so changing either signs everyone out.
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -11,8 +12,8 @@ function secret(): string | null {
   return process.env.ADMIN_PASSWORD || null;
 }
 
-function sign(payload: string, key: string): string {
-  return createHmac("sha256", key).update(payload).digest("base64url");
+function sign(payload: string, password: string): string {
+  return createHmac("sha256", `${process.env.SESSION_SECRET ?? ""}:${password}`).update(payload).digest("base64url");
 }
 
 function safeEqual(a: string, b: string): boolean {
@@ -26,9 +27,13 @@ export function isPasswordConfigured(): boolean {
   return Boolean(secret());
 }
 
-export function checkPassword(input: string): boolean {
+export function checkCredentials(username: string, password: string): boolean {
   const key = secret();
-  return Boolean(key) && safeEqual(input, key!);
+  const expectedUser = (process.env.ADMIN_USERNAME || "solo").trim().toLowerCase();
+  // Evaluate both comparisons so timing does not reveal which one failed.
+  const userOk = safeEqual(username.trim().toLowerCase(), expectedUser);
+  const passOk = Boolean(key) && safeEqual(password, key!);
+  return userOk && passOk;
 }
 
 export async function startSession(): Promise<void> {

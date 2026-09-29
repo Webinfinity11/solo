@@ -129,7 +129,7 @@ export type AccountOrder = {
   address: string;
   createdAt: string;
 };
-export type AccountReview = { id: number; productSlug: string; rating: number; body: string; status: "pending" | "approved" | "rejected"; date: string; mediaCount: number };
+export type AccountReview = { id: number; productSlug: string; rating: number; body: string; status: "pending" | "approved" | "rejected"; date: string; media: ReviewMedia[] };
 export type AccountData = { customer: Customer; orders: AccountOrder[]; reviews: AccountReview[]; bank: SiteSettings["bank"] };
 
 /** Everything the account page shows. Orders placed with the same email before signing up are included. */
@@ -165,7 +165,7 @@ export async function getAccountData(): Promise<AccountData | null> {
       body: r.body as string,
       status: r.status as AccountReview["status"],
       date: new Date(r.updated_at as string).toISOString().slice(0, 10),
-      mediaCount: Array.isArray(r.media) ? r.media.length : 0,
+      media: Array.isArray(r.media) ? (r.media as ReviewMedia[]).filter((m) => typeof m?.url === "string" && isReviewMediaUrl(m.url)) : [],
     })),
   };
 }
@@ -208,5 +208,54 @@ export async function changePassword(input: { current: string; next: string }): 
   } catch (e) {
     console.error(e);
     return { ok: false, error: "unavailable" };
+  }
+}
+
+// ---------- the customer's own reviews ----------
+
+/** Edit one of the customer's reviews from the account page (rating, text, and which attachments stay). */
+export async function updateMyReview(input: { id: number; rating: number; body: string; media: ReviewMedia[] }): Promise<ReviewResult> {
+  const customer = await getCurrentCustomer();
+  if (!customer) return { ok: false, error: "login" };
+  const parsed = z
+    .object({
+      id: z.number().int().positive(),
+      rating: z.number().int().min(1).max(5),
+      body: z.string().trim().max(2000),
+      media: z.array(z.object({ url: z.string().refine(isReviewMediaUrl), type: z.enum(["image", "video"]) })).max(4),
+    })
+    .safeParse(input);
+  if (!parsed.success) return { ok: false, error: "error" };
+  const { id, rating, body, media } = parsed.data;
+  if (body.length < 10) return { ok: false, error: "tooShort" };
+  try {
+    const sql = (await db())!;
+    const rows = await sql`
+      update reviews set rating = ${rating}, body = ${body}, media = ${JSON.stringify(media)}::jsonb, updated_at = now()
+      where id = ${id} and customer_id = ${customer.id} returning id`;
+    if (!rows.length) return { ok: false, error: "error" };
+    updateTag(REVIEWS_TAG);
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (e) {
+    console.error(e);
+    return { ok: false, error: "error" };
+  }
+}
+
+export async function deleteMyReview(id: number): Promise<ReviewResult> {
+  const customer = await getCurrentCustomer();
+  if (!customer) return { ok: false, error: "login" };
+  if (!Number.isInteger(id) || id <= 0) return { ok: false, error: "error" };
+  try {
+    const sql = (await db())!;
+    const rows = await sql`delete from reviews where id = ${id} and customer_id = ${customer.id} returning id`;
+    if (!rows.length) return { ok: false, error: "error" };
+    updateTag(REVIEWS_TAG);
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (e) {
+    console.error(e);
+    return { ok: false, error: "error" };
   }
 }
