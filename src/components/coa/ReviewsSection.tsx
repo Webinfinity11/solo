@@ -66,8 +66,6 @@ export function ReviewsSection({
   const [lightbox, setLightbox] = useState<{ media: ReviewMedia; name: string } | null>(null);
   const names = new Map(products.map((p) => [p.slug, p.name]));
   const visible = reviews.filter((x) => !filter || x.productSlug === filter);
-  const average = visible.length ? visible.reduce((sum, x) => sum + x.rating, 0) / visible.length : 0;
-  const distribution = [5, 4, 3, 2, 1].map((stars) => ({ stars, count: visible.filter((x) => x.rating === stars).length }));
 
   return (
     <section id="reviews" aria-labelledby="reviews-title" className={cn("scroll-mt-28", product ? "container-site pb-14" : "bg-mist py-12 sm:py-16")}>
@@ -96,28 +94,6 @@ export function ReviewsSection({
           <div className="min-w-0">
             {visible.length ? (
               <>
-                {/* Summary: average, stars, count and how the ratings are spread. */}
-                <div className="mb-6 grid gap-6 border border-line bg-white p-5 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-10 sm:p-6">
-                  <div className="text-center sm:text-start">
-                    <p className="text-[48px] font-bold leading-none tracking-[-.04em]">{average.toFixed(1)}</p>
-                    <Stars value={average} className="mt-2 text-[20px]" />
-                    <p className="mt-1 text-[13px] text-muted">{r.count(visible.length)}</p>
-                  </div>
-                  <ul className="flex flex-col gap-1.5">
-                    {distribution.map((d) => (
-                      <li key={d.stars} className="flex items-center gap-3 text-[13px]">
-                        <span className="w-8 shrink-0 font-bold" dir="ltr">
-                          {d.stars} ★
-                        </span>
-                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-ice">
-                          <span className="block h-full rounded-full bg-[#e0a800]" style={{ width: `${(d.count / visible.length) * 100}%` }} />
-                        </span>
-                        <span className="w-6 shrink-0 text-end text-muted">{d.count}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
                 <ul className="flex flex-col gap-4">
                   {visible.slice(0, shown).map((x) => (
                     <li key={x.id} className="border border-line bg-white p-5 sm:p-6">
