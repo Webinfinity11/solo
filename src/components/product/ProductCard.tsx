@@ -40,7 +40,7 @@ export function ProductCard({ product, priority, size = "md" }: { product: Produ
       <Link
         href={url}
         aria-label={product.name}
-        className={cn("relative block w-full overflow-hidden bg-white px-2 pb-2 pt-8", size === "lg" ? "aspect-[1.2]" : "aspect-[1.04]")}
+        className={cn("relative block w-full overflow-hidden bg-photo", !product.images[0] && "px-2 pb-2 pt-8", size === "lg" ? "aspect-[1.2]" : "aspect-[1.04]")}
       >
         <span className="absolute start-3 top-3 z-10 bg-ice px-2 py-1 text-[9px] font-bold uppercase leading-tight tracking-[.07em]">
           {product.categorySlug === "lab-supplies" ? t.common.researchUseOnly : t.common.purityBadge}

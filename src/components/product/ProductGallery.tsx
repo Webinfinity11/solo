@@ -26,7 +26,7 @@ export function ProductGallery({ name, images, label }: { name: string; images: 
   return (
     <div className="flex flex-col gap-3">
       <div
-        className="relative aspect-square cursor-zoom-in overflow-hidden border border-line bg-white p-8"
+        className={cn("relative aspect-square cursor-zoom-in overflow-hidden border border-line bg-photo", !current && "p-8")}
         onMouseEnter={() => setZoom(true)}
         onMouseLeave={() => setZoom(false)}
         onMouseMove={(e) => {
@@ -49,7 +49,7 @@ export function ProductGallery({ name, images, label }: { name: string; images: 
               onClick={() => setIndex(i)}
               aria-label={`${name} ${i + 1}`}
               aria-pressed={i === index}
-              className={cn("aspect-square border bg-white p-2 transition-colors", i === index ? "border-navy" : "border-line hover:border-blue")}
+              className={cn("aspect-square overflow-hidden border bg-photo transition-colors", i === index ? "border-navy" : "border-line hover:border-blue")}
             >
               <ProductImage name={name} src={src} sizes="120px" />
             </button>

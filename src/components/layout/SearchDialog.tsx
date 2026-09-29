@@ -86,7 +86,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
               onClick={onClose}
               className="flex min-h-[88px] items-center gap-4 border-b border-line px-1 py-3 text-start transition-colors hover:bg-mist"
             >
-              <span className="block h-[68px] w-[62px] shrink-0">
+              <span className="block h-[68px] w-[62px] shrink-0 overflow-hidden bg-photo">
                 <ProductImage name={p.name} src={p.images[0]} sizes="70px" />
               </span>
               <span className="min-w-0 flex-1">

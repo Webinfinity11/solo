@@ -15,6 +15,8 @@
   --color-blue: var(--blue-accent);
   --color-ice: var(--blue-light);
   --color-mist: #f6fbff;
+  /* Backdrop of the product photos (public/images/products): image areas use it so photos blend in. */
+  --color-photo: #ebf3f9;
   --color-muted: #607486;
   --color-line: #dce7ef;
   --color-eyebrow: #6c8ca8;

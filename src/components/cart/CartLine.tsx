@@ -35,7 +35,7 @@ export function CartLine({ line, compact, onNavigate }: { line: ResolvedLine; co
 
   return (
     <article className="grid grid-cols-[72px_1fr] items-center gap-4 border-b border-line py-5 sm:grid-cols-[88px_1fr]">
-      <Link href={url} onClick={onNavigate} className="block aspect-[.8] w-full bg-white">
+      <Link href={url} onClick={onNavigate} className="block aspect-[.8] w-full bg-photo">
         <ProductImage name={line.product.name} src={line.variant.image ?? line.product.images[0]} label={line.variant.label} sizes="90px" />
       </Link>
       <div className="min-w-0">

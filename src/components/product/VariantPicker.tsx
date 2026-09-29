@@ -22,7 +22,7 @@ export function VariantPicker({ product, open, onClose }: { product: Product; op
       className="w-[520px]"
       header={
         <div className="flex min-w-0 items-center gap-4">
-          <span className="block size-16 shrink-0 border border-line bg-white">
+          <span className="block size-16 shrink-0 overflow-hidden border border-line bg-photo">
             <ProductImage name={product.name} src={product.images[0]} label={product.variants[0].label} sizes="64px" />
           </span>
           <div className="min-w-0">
@@ -50,7 +50,7 @@ export function VariantPicker({ product, open, onClose }: { product: Product; op
                 )}
               >
                 {v.image ? (
-                  <span className="block size-11 shrink-0 bg-white">
+                  <span className="block size-11 shrink-0 overflow-hidden bg-photo">
                     <ProductImage name={product.name} src={v.image} sizes="44px" />
                   </span>
                 ) : null}

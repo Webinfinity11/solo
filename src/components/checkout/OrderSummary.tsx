@@ -13,7 +13,7 @@ export function OrderSummary({ lines, subtotal, shipping }: { lines: ResolvedLin
       <ul className="max-h-[340px] divide-y divide-line overflow-auto">
         {lines.map((l) => (
           <li key={l.variant.id} className="flex items-center gap-3 py-3">
-            <span className="relative block h-16 w-14 shrink-0 bg-white">
+            <span className="relative block h-16 w-14 shrink-0 bg-photo">
               <ProductImage name={l.product.name} src={l.variant.image ?? l.product.images[0]} label={l.variant.label} sizes="60px" />
               <span className="absolute -end-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-navy text-[10px] font-bold text-white">{l.quantity}</span>
             </span>
