@@ -208,7 +208,6 @@ const ar: Dictionary = {
 
   home: {
     hero: {
-      eyebrow: "صُنع في الظلام، وأُثبت في النور",
       titleTop: "مُختبَر ومُعتمَد.",
       titleBottom: "جودة مؤكَّدة في المختبر.",
       subtitle: "توصيل مجاني في اليوم نفسه داخل جورجيا",

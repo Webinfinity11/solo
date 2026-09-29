@@ -40,20 +40,12 @@ export function Hero({ t, href, whatsapp }: { t: Dictionary; href: (p: string) =
 
       <div className="container-site pointer-events-none relative flex items-center xl:h-full">
         <div className="pointer-events-auto relative z-10 w-full py-10 sm:py-14 xl:max-w-[800px] xl:py-0">
-          <p className="mb-4 animate-fade-up text-[11px] uppercase leading-relaxed tracking-[.3em] text-white/60 [font-family:var(--font-display)] sm:mb-5">{mtavruli(h.eyebrow)}</p>
+          <p className="mb-4 animate-fade-up text-[11px] uppercase leading-relaxed tracking-[.3em] text-white/60 [font-family:var(--font-display)] sm:mb-5 sm:text-[12px]">{mtavruli(h.subtitle)}</p>
 
-          <h1 id="hero-title" className="animate-fade-up font-bold tracking-[-.03em] [animation-delay:.1s]">
-            <span className="block text-[30px] leading-[1.12] sm:text-[44px] xl:text-[50px]">{h.titleTop}</span>
-            <span className="mt-2 block bg-[linear-gradient(90deg,var(--blue-accent),#ffffff_85%)] bg-clip-text text-[24px] leading-[1.2] text-transparent sm:mt-3 sm:text-[34px] xl:text-[38px] rtl:bg-[linear-gradient(270deg,var(--blue-accent),#ffffff_85%)]">
-              {h.titleBottom}
-            </span>
+          <h1 id="hero-title" className="animate-fade-up text-[26px] font-bold leading-[1.25] tracking-[-.03em] [animation-delay:.1s] sm:text-[32px] xl:text-[34px]">
+            <span className="block xl:whitespace-nowrap">{h.titleTop}</span>
+            <span className="block xl:whitespace-nowrap">{h.titleBottom}</span>
           </h1>
-
-          <p className="mt-6 flex animate-fade-up items-center gap-3 text-[12px] font-bold uppercase leading-snug tracking-[.18em] text-blue [animation-delay:.2s] [font-family:var(--font-display)] sm:text-[13px]">
-            <span aria-hidden="true" className="h-px w-8 shrink-0 bg-blue/70" />
-            <Icon name="truck" className="size-5 shrink-0" />
-            {mtavruli(h.subtitle)}
-          </p>
 
           <div className="mt-7 grid animate-fade-up grid-cols-2 gap-2.5 [animation-delay:.3s] sm:flex sm:flex-wrap sm:gap-3">
             <Link href={href("/products")} className={`${button} bg-white text-navy hover:bg-ice`}>

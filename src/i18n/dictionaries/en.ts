@@ -190,7 +190,6 @@ const en: Dictionary = {
 
   home: {
     hero: {
-      eyebrow: "Engineered in the dark, proven in the light",
       titleTop: "Tested and certified.",
       titleBottom: "Quality confirmed in the lab.",
       subtitle: "Free same-day delivery in Georgia",
