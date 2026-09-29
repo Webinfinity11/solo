@@ -18,7 +18,7 @@ const links = [
   { href: "/admin/settings", label: "კონტაქტი და ფუტერი" },
 ];
 
-export function AdminNav() {
+export function AdminNav({ badges = {} }: { badges?: Record<string, number> }) {
   const pathname = usePathname();
   const active = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href));
   return (
@@ -39,6 +39,9 @@ export function AdminNav() {
             )}
           >
             {l.label}
+            {badges[l.href] ? (
+              <span className="ms-2 inline-grid min-w-5 place-items-center rounded-full bg-[#e0a800] px-1.5 text-[11px] font-bold leading-5 text-navy">{badges[l.href]}</span>
+            ) : null}
           </Link>
         ))}
       </nav>

@@ -45,3 +45,13 @@ export async function getOrders(): Promise<AdminOrder[]> {
     createdAt: new Date(r.created_at as string).toISOString(),
   }));
 }
+
+/** Counts for the admin menu badges: orders awaiting processing and reviews awaiting moderation. */
+export async function getAdminCounts(): Promise<{ newOrders: number; pendingReviews: number }> {
+  const sql = await db();
+  if (!sql) return { newOrders: 0, pendingReviews: 0 };
+  const rows = (await sql`
+    select (select count(*) from orders where status = 'new')::int as new_orders,
+           (select count(*) from reviews where status = 'pending')::int as pending_reviews`) as { new_orders: number; pending_reviews: number }[];
+  return { newOrders: rows[0]?.new_orders ?? 0, pendingReviews: rows[0]?.pending_reviews ?? 0 };
+}
