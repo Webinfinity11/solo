@@ -54,7 +54,7 @@ export function Header() {
   const isActive = (link: string) => pathname === link || pathname.startsWith(`${link}/`);
   const catalogActive = isActive(href("/products")) || isActive(href("/category"));
 
-  const navLink = "relative flex items-center text-[13px] font-bold after:absolute after:bottom-6 after:left-0 after:right-full after:h-0.5 after:bg-navy after:transition-[right] after:duration-200 hover:after:right-0";
+  const navLink = "relative flex items-center text-[13px] font-bold after:absolute after:inset-x-0 after:bottom-6 after:h-0.5 after:origin-left after:scale-x-0 after:bg-navy after:transition-transform after:duration-200 hover:after:scale-x-100 rtl:after:origin-right";
 
   return (
     <>
@@ -71,14 +71,14 @@ export function Header() {
                 aria-expanded={catalogOpen}
                 aria-haspopup="true"
                 onClick={() => setCatalogOpen((v) => !v)}
-                className={cn(navLink, "gap-1", catalogActive && "after:right-0")}
+                className={cn(navLink, "gap-1", catalogActive && "after:scale-x-100")}
               >
                 {t.nav.catalog}
                 <Icon name="down" className={cn("size-4 transition-transform", catalogOpen && "rotate-180")} />
               </button>
               <div
                 className={cn(
-                  "absolute left-[-24px] top-full w-[320px] border border-line bg-white p-3 shadow-[0_24px_60px_-30px_rgba(26,47,66,.45)] transition",
+                  "absolute start-[-24px] top-full w-[320px] border border-line bg-white p-3 shadow-[0_24px_60px_-30px_rgba(26,47,66,.45)] transition",
                   catalogOpen ? "visible opacity-100" : "invisible opacity-0 group-hover:visible group-hover:opacity-100",
                 )}
               >
@@ -106,7 +106,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 aria-current={isActive(link.href) ? "page" : undefined}
-                className={cn(navLink, isActive(link.href) && "after:right-0")}
+                className={cn(navLink, isActive(link.href) && "after:scale-x-100")}
               >
                 {link.label}
               </Link>
@@ -135,7 +135,7 @@ export function Header() {
                 <Icon name="cart" />
                 <span
                   aria-hidden="true"
-                  className="absolute right-0 top-0.5 grid h-[17px] min-w-[17px] place-items-center rounded-full border-2 border-white bg-navy px-1 text-[9px] font-bold leading-none text-white"
+                  className="absolute end-0 top-0.5 grid h-[17px] min-w-[17px] place-items-center rounded-full border-2 border-white bg-navy px-1 text-[9px] font-bold leading-none text-white"
                 >
                   {count}
                 </span>

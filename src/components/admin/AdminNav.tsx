@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/products", label: "პროდუქცია" },
   { href: "/admin/categories", label: "კატეგორიები" },
   { href: "/admin/coa", label: "COA სერტიფიკატები" },
+  { href: "/admin/reviews", label: "შეფასებები" },
   { href: "/admin/texts", label: "გვერდების ტექსტები" },
   { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/legal", label: "იურიდიული გვერდები" },

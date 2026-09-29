@@ -31,11 +31,11 @@ export function CoaTable({ docs }: { docs: CoaDocument[] }) {
     <div>
       <div className="mb-5 grid gap-3 sm:grid-cols-[1fr_260px]">
         <div className="relative flex items-center">
-          <Icon name="search" className="absolute left-4 size-5 text-muted" />
+          <Icon name="search" className="absolute start-4 size-5 text-muted" />
           <label htmlFor="coa-search" className="sr-only">
             {t.coa.search}
           </label>
-          <input id="coa-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t.coa.search} className="field h-12 pl-12" />
+          <input id="coa-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t.coa.search} className="field h-12 ps-12" />
         </div>
         <label htmlFor="coa-product" className="sr-only">
           {t.coa.filterProduct}
@@ -61,7 +61,7 @@ export function CoaTable({ docs }: { docs: CoaDocument[] }) {
         </div>
       ) : (
         <div className="overflow-x-auto border border-line">
-          <table className="w-full min-w-[680px] border-collapse text-left text-[14px]">
+          <table className="w-full min-w-[680px] border-collapse text-start text-[14px]">
             <thead className="bg-navy text-white">
               <tr>
                 {[t.coa.table.product, t.coa.table.lot, t.coa.table.date, t.coa.table.purity, t.coa.table.method, t.coa.table.file].map((h) => (

@@ -36,7 +36,7 @@ export default async function WholesalePage({ params }: { params: Promise<{ lang
           <div>
             <h2 className="mb-4 text-[24px] font-bold tracking-[-.03em]">{w.tiersTitle}</h2>
             <div className="overflow-hidden border border-line bg-white">
-              <table className="w-full border-collapse text-left text-[14px]">
+              <table className="w-full border-collapse text-start text-[14px]">
                 <thead className="bg-navy text-white">
                   <tr>
                     <th scope="col" className="px-4 py-3 text-[12px] uppercase tracking-[.08em]">{w.tiersHead.tier}</th>

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { resolveLang } from "@/i18n/server";
-import { getCoa } from "@/lib/api";
+import { getCoa, getProducts } from "@/lib/api";
+import { getApprovedReviews } from "@/lib/reviews";
+import { ReviewsSection } from "@/components/coa/ReviewsSection";
 import { PageHero } from "@/components/ui/PageHero";
 import { CoaTable } from "@/components/coa/CoaTable";
 import { Icon } from "@/components/ui/Icon";
@@ -13,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 }
 
 export default async function CoaPage({ params }: { params: Promise<{ lang: string }> }) {
-  const { t, href } = await resolveLang(params);
-  const docs = await getCoa();
+  const { lang, t, href } = await resolveLang(params);
+  const [docs, products, reviews] = await Promise.all([getCoa(), getProducts(lang), getApprovedReviews()]);
 
   return (
     <>
@@ -25,6 +27,7 @@ export default async function CoaPage({ params }: { params: Promise<{ lang: stri
         </Suspense>
         <p className="mt-3 text-[12px] text-muted">{t.common.placeholderNote}</p>
       </section>
+      <ReviewsSection reviews={reviews.filter((r) => products.some((p) => p.slug === r.productSlug))} products={products.map((p) => ({ slug: p.slug, name: p.name }))} />
       <section aria-labelledby="how-title" className="bg-navy py-14 text-white">
         <div className="container-site">
           <p className="eyebrow mb-2 text-blue">COA</p>

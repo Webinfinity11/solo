@@ -30,7 +30,7 @@ export default async function FaqPage({ params }: { params: Promise<{ lang: stri
           <ul className="sticky top-[110px] flex flex-col gap-1 border-l border-line">
             {Object.entries(groups).map(([id, label]) => (
               <li key={id}>
-                <a href={`#${id}`} className="-ml-px block border-l-2 border-transparent py-1.5 pl-4 text-[14px] text-muted transition-colors hover:border-navy hover:text-navy">
+                <a href={`#${id}`} className="-ms-px block border-s-2 border-transparent py-1.5 ps-4 text-[14px] text-muted transition-colors hover:border-navy hover:text-navy">
                   {label}
                 </a>
               </li>

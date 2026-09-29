@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { locales } from "@/i18n/config";
 import { getContentFresh } from "@/lib/content/store";
 import type { StoredProduct } from "@/lib/content/types";
 import { ProductEditor } from "@/components/admin/ProductEditor";
@@ -25,7 +26,7 @@ export default async function ProductEditPage({ params }: { params: Promise<{ id
     featured: false,
     status: "active",
     createdAt: new Date().toISOString().slice(0, 10),
-    text: { ka: { shortDescription: "", description: "" }, en: { shortDescription: "", description: "" }, ru: { shortDescription: "", description: "" } },
+    text: Object.fromEntries(locales.map((l) => [l, { shortDescription: "", description: "" }])) as StoredProduct["text"],
   };
 
   return (

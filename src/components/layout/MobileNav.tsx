@@ -40,7 +40,7 @@ export function MobileNav({ open, onClose, onSearch }: { open: boolean; onClose:
       }
     >
       <div className="flex-1 overflow-auto px-6 py-3">
-        <button type="button" onClick={onSearch} className="field mb-2 mt-2 flex items-center gap-3 text-left text-muted">
+        <button type="button" onClick={onSearch} className="field mb-2 mt-2 flex items-center gap-3 text-start text-muted">
           <Icon name="search" className="size-5" />
           {t.search.placeholder}
         </button>

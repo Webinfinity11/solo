@@ -46,7 +46,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         </div>
       </section>
       <section className="container-site py-14">
-        <div className="flex flex-col items-start justify-between gap-6 border-l-[3px] border-blue bg-ice p-6 sm:p-8 md:flex-row md:items-center">
+        <div className="flex flex-col items-start justify-between gap-6 border-s-[3px] border-blue bg-ice p-6 sm:p-8 md:flex-row md:items-center">
           <div>
             <h2 className="mb-2 text-[24px] font-bold tracking-[-.03em]">{a.qualityTitle}</h2>
             <p className="text-[15px] text-muted">{a.qualityText}</p>

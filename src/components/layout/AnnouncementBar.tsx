@@ -16,9 +16,9 @@ export function AnnouncementBar({ t }: { t: Dictionary }) {
   const group = (hidden: boolean) => (
     <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
       {t.ticker.map((item) => (
-        <li key={item} className="flex items-center gap-5 pr-5 sm:gap-7 sm:pr-7">
+        <li key={item} className="flex items-center gap-5 pe-5 sm:gap-7 sm:pe-7">
           <HexMark />
-          <span>{mtavruli(item)}</span>
+          <span dir="auto">{mtavruli(item)}</span>
         </li>
       ))}
     </ul>
@@ -26,7 +26,8 @@ export function AnnouncementBar({ t }: { t: Dictionary }) {
 
   return (
     <div className="group relative flex h-9 items-center overflow-hidden bg-[#0f1d2a] text-white" role="region" aria-label="SOLO Research">
-      <div className="flex w-max animate-marquee whitespace-nowrap text-[11px] font-bold uppercase tracking-[.14em] [font-family:var(--font-display)] group-hover:[animation-play-state:paused]">
+      {/* The loop math assumes left-to-right flow; items keep their own direction. */}
+      <div dir="ltr" className="flex w-max animate-marquee whitespace-nowrap text-[11px] font-bold uppercase tracking-[.14em] [font-family:var(--font-display)] group-hover:[animation-play-state:paused]">
         {/* Four copies so one half is wider than any screen; the track shifts by exactly one half. */}
         {group(false)}
         {group(true)}

@@ -27,6 +27,7 @@ export const defaultContent: SiteContent = {
   settings: {
     email: site.email,
     phone: "",
+    whatsapp: "",
     hours: site.hours,
     social: site.social,
   },

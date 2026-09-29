@@ -66,7 +66,7 @@ export function TextsEditor({ sections, section, rows }: { sections: { key: stri
                   {row.path.slice(section.length + 1) || section}
                   {row.list ? <span className="ml-2 font-sans text-muted">· სია: ერთი ხაზი = ერთი ელემენტი</span> : null}
                 </p>
-                <div className="grid gap-3 xl:grid-cols-3">
+                <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
                   {locales.map((l) => {
                     const changed = !same(values[i][l], row.defaults[l]);
                     return (
@@ -82,6 +82,7 @@ export function TextsEditor({ sections, section, rows }: { sections: { key: stri
                         <textarea
                           className={cn("adm-input min-h-0", changed && "border-blue bg-[#f3f9ff]")}
                           rows={rowsCount}
+                          dir={localeMeta[l].dir}
                           value={toText(values[i][l])}
                           onChange={(e) => set(i, l, e.target.value)}
                         />

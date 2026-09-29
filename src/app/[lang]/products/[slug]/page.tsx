@@ -125,7 +125,7 @@ export default async function ProductPage({ params }: { params: Params }) {
 
             <dl className="mt-8 grid grid-cols-2 border-t border-line">
               {facts.map((f) => (
-                <div key={f.label} className="border-b border-line py-3.5 pr-3 odd:border-r odd:pr-4 even:pl-4">
+                <div key={f.label} className="border-b border-line py-3.5 pe-3 odd:border-r odd:pe-4 even:ps-4">
                   <dt className="mb-0.5 text-[11px] font-bold uppercase tracking-[.1em] text-eyebrow">{f.label}</dt>
                   <dd className="text-[14px] font-bold">{f.value}</dd>
                 </div>
@@ -166,11 +166,11 @@ export default async function ProductPage({ params }: { params: Params }) {
               id: "specs",
               label: t.product.tabs.specifications,
               content: (
-                <table className="w-full max-w-3xl border-collapse text-left text-[14px]">
+                <table className="w-full max-w-3xl border-collapse text-start text-[14px]">
                   <tbody>
                     {specRows.map(([label, value]) => (
                       <tr key={label} className="border-b border-line">
-                        <th scope="row" className="w-[42%] py-3 pr-4 align-top font-bold sm:w-[34%]">
+                        <th scope="row" className="w-[42%] py-3 pe-4 align-top font-bold sm:w-[34%]">
                           {label}
                         </th>
                         <td className="break-all py-3 font-mono text-[13px] text-muted">{value}</td>
@@ -209,7 +209,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             },
           ]}
         />
-        <p className="mt-2 flex gap-3 border-l-[3px] border-blue bg-ice px-4 py-3.5 text-[13px] leading-relaxed">
+        <p className="mt-2 flex gap-3 border-s-[3px] border-blue bg-ice px-4 py-3.5 text-[13px] leading-relaxed">
           <Icon name="info" className="size-5 text-navy" />
           {t.product.disclaimerShort}
         </p>

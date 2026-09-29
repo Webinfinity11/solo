@@ -63,7 +63,7 @@ export function CartPageView() {
             {t.cart.promo}
           </label>
           <div className="flex">
-            <input id="promo" value={promo} onChange={(e) => setPromo(e.target.value)} className="field min-h-11 border-r-0 bg-white uppercase" />
+            <input id="promo" value={promo} onChange={(e) => setPromo(e.target.value)} className="field min-h-11 border-e-0 bg-white uppercase" />
             <button type="submit" disabled={!promo.trim()} className="shrink-0 bg-navy px-4 text-[13px] font-bold text-white disabled:opacity-50">
               {t.cart.promoApply}
             </button>

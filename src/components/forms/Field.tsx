@@ -21,7 +21,7 @@ export function Field({ id, label, error, required, children, className }: { id:
 
 export function FormSuccess({ children }: { children: ReactNode }) {
   return (
-    <p role="status" className="flex items-start gap-3 border-l-[3px] border-success bg-[#eaf5ef] px-4 py-3.5 text-[14px] leading-relaxed text-success">
+    <p role="status" className="flex items-start gap-3 border-s-[3px] border-success bg-[#eaf5ef] px-4 py-3.5 text-[14px] leading-relaxed text-success">
       {children}
     </p>
   );

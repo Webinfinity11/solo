@@ -220,7 +220,7 @@ export function CatalogView({
               id="sort"
               value={filters.sort}
               onChange={(e) => update({ sort: e.target.value as Sort })}
-              className="field min-h-10 w-auto py-2 pr-8 text-[14px]"
+              className="field min-h-10 w-auto py-2 pe-8 text-[14px]"
             >
               {SORTS.map((s) => (
                 <option key={s} value={s}>

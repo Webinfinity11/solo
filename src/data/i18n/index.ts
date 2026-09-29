@@ -3,5 +3,6 @@ import type { Locale } from "@/i18n/config";
 import * as ka from "./ka/content";
 import * as en from "./en/content";
 import * as ru from "./ru/content";
+import * as ar from "./ar/content";
 
-export const content: Record<Locale, typeof ka> = { ka, en, ru };
+export const content: Record<Locale, typeof ka> = { ka, en, ru, ar };

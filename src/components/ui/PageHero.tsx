@@ -21,8 +21,8 @@ export function PageHero({
     <section className="relative isolate overflow-hidden bg-[linear-gradient(120deg,var(--blue-light),#f6fbff_51%,var(--blue-light))] py-10 sm:py-14">
       <HexPattern
         hexes={[
-          { className: "right-[-4%] top-[-30px] h-[230px] w-[200px]", opacity: 0.35 },
-          { className: "right-[14%] bottom-[-40px] h-[99px] w-[87px] max-sm:hidden", opacity: 0.4 },
+          { className: "end-[-4%] top-[-30px] h-[230px] w-[200px]", opacity: 0.35 },
+          { className: "end-[14%] bottom-[-40px] h-[99px] w-[87px] max-sm:hidden", opacity: 0.4 },
         ]}
       />
       <div className="container-site relative">

@@ -35,7 +35,7 @@ export function ProductPurchase({ product }: { product: Product }) {
             {variant.compareAtPrice ? <p className="text-[17px] text-muted line-through">{formatPrice(variant.compareAtPrice)}</p> : null}
           </>
         ) : null}
-        <p className={cn("flex items-center gap-1.5 text-[13px] font-bold", site.shopEnabled && "ml-auto", variant.inStock ? "text-success" : "text-oos")}>
+        <p className={cn("flex items-center gap-1.5 text-[13px] font-bold", site.shopEnabled && "ms-auto", variant.inStock ? "text-success" : "text-oos")}>
           <span className={cn("size-2 rounded-full", variant.inStock ? "bg-success" : "bg-oos")} />
           {variant.inStock ? t.product.inStock : t.product.outOfStock}
         </p>

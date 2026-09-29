@@ -34,7 +34,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
     <Modal open={open} onClose={onClose} eyebrow={t.search.eyebrow} title={t.search.title} closeLabel={t.common.close} className="w-[850px]">
       <div className="border-b border-line px-5 pb-4 pt-5 sm:px-7">
         <div className="relative flex items-center">
-          <Icon name="search" className="absolute left-4 size-5 text-muted" />
+          <Icon name="search" className="absolute start-4 size-5 text-muted" />
           <label htmlFor="site-search" className="sr-only">
             {t.search.placeholder}
           </label>
@@ -45,7 +45,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.search.placeholder}
             autoComplete="off"
-            className="field h-12 pl-12"
+            className="field h-12 ps-12"
           />
         </div>
         <div role="group" aria-label={t.catalog.category} className="mt-4 flex flex-wrap gap-2">
@@ -84,7 +84,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
               key={p.id}
               href={href(`/products/${p.slug}`)}
               onClick={onClose}
-              className="flex min-h-[88px] items-center gap-4 border-b border-line px-1 py-3 text-left transition-colors hover:bg-mist"
+              className="flex min-h-[88px] items-center gap-4 border-b border-line px-1 py-3 text-start transition-colors hover:bg-mist"
             >
               <span className="block h-[68px] w-[62px] shrink-0">
                 <ProductImage name={p.name} src={p.images[0]} sizes="70px" />
@@ -96,7 +96,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
                   {site.shopEnabled ? ` · ${t.common.fromPrice(formatPrice(minPrice(p)))}` : null}
                 </small>
               </span>
-              <Icon name="arrow" className="mr-2 size-[18px]" />
+              <Icon name="arrow" className="me-2 size-[18px]" />
             </Link>
           ))
         )}

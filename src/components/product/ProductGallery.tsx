@@ -22,8 +22,8 @@ export function ProductGallery({ name, images, label }: { name: string; images: 
           setOrigin(`${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`);
         }}
       >
-        <span aria-hidden="true" className="hex -right-10 -top-12 h-[178px] w-[158px] opacity-25" />
-        <span aria-hidden="true" className="hex -bottom-8 -left-8 h-[99px] w-[87px] opacity-20" />
+        <span aria-hidden="true" className="hex -end-10 -top-12 h-[178px] w-[158px] opacity-25" />
+        <span aria-hidden="true" className="hex -bottom-8 -start-8 h-[99px] w-[87px] opacity-20" />
         <div className="relative h-full w-full transition-transform duration-300 ease-brand" style={{ transform: zoom ? "scale(1.8)" : "none", transformOrigin: origin }}>
           <ProductImage name={name} src={current} label={label} priority sizes="(max-width: 1024px) 100vw, 560px" />
         </div>

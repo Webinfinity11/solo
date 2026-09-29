@@ -3,10 +3,12 @@
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { locales } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
 import { checkPassword, endSession, isAdmin, isPasswordConfigured, startSession } from "@/lib/admin/auth";
 import { CONTENT_TAG, getContentFresh, saveContent } from "@/lib/content/store";
 import type { SiteContent } from "@/lib/content/types";
+import { db, type Sql } from "@/lib/db";
+import { REVIEWS_TAG } from "@/lib/reviews";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -30,7 +32,7 @@ export async function logout(): Promise<void> {
 // ---------- schemas ----------
 
 const slug = z.string().trim().min(1, "slug ცარიელია").regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "slug: მხოლოდ a-z, 0-9 და ტირე");
-const localized = <T extends z.ZodTypeAny>(schema: T) => z.object({ ka: schema, en: schema, ru: schema });
+const localized = <T extends z.ZodTypeAny>(schema: T) => z.object(Object.fromEntries(locales.map((l) => [l, schema])) as Record<Locale, T>);
 const optionalText = z.string().trim().optional().transform((v) => v || undefined);
 
 const variantSchema = z.object({
@@ -78,6 +80,7 @@ const categorySchema = z.object({
 const settingsSchema = z.object({
   email: z.string().trim().email("ელ-ფოსტა არასწორია"),
   phone: z.string().trim(),
+  whatsapp: z.string().trim().regex(/^\+?[\d\s()-]*$/, "WhatsApp: მხოლოდ ნომერი, მაგ. +995 555 12 34 56"),
   hours: localized(z.string().trim()),
   social: z.array(z.object({ label: z.string().trim().min(1), href: z.string().trim().min(1) })),
 });
@@ -218,4 +221,28 @@ export async function saveTexts(section: string, input: unknown): Promise<Action
     }
     await saveContent("texts", next);
   });
+}
+
+// ---------- reviews ----------
+
+export async function setReviewStatus(id: number, status: "approved" | "rejected" | "pending"): Promise<ActionResult> {
+  return moderate(async (sql) => {
+    await sql`update reviews set status = ${status} where id = ${id}`;
+  });
+}
+
+export async function deleteReview(id: number): Promise<ActionResult> {
+  return moderate(async (sql) => {
+    await sql`delete from reviews where id = ${id}`;
+  });
+}
+
+async function moderate(run: (sql: Sql) => Promise<void>): Promise<ActionResult> {
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა — შედით თავიდან." };
+  const sql = await db();
+  if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
+  await run(sql);
+  updateTag(REVIEWS_TAG);
+  revalidatePath("/[lang]/coa", "page");
+  return { ok: true };
 }

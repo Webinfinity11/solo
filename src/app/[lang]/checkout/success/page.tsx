@@ -16,7 +16,7 @@ export default async function CheckoutSuccessPage({ params }: { params: Promise<
   const { t, href } = await resolveLang(params);
   return (
     <section className="relative isolate overflow-hidden bg-[linear-gradient(120deg,var(--blue-light),#f6fbff_51%,var(--blue-light))] py-24 text-center">
-      <HexPattern hexes={[{ className: "left-[-3%] top-10 h-[178px] w-[158px]", opacity: 0.5 }, { className: "right-[-5%] top-8 h-[318px] w-[277px]", opacity: 0.35 }]} />
+      <HexPattern hexes={[{ className: "start-[-3%] top-10 h-[178px] w-[158px]", opacity: 0.5 }, { className: "end-[-5%] top-8 h-[318px] w-[277px]", opacity: 0.35 }]} />
       <div className="container-site max-w-[640px]">
         <span className="hex-shape mx-auto mb-6 grid h-[80px] w-[70px] place-items-center bg-navy text-blue">
           <Icon name="check" className="size-9" strokeWidth={2.2} />

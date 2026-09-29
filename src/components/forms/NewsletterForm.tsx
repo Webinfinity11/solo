@@ -36,7 +36,7 @@ export function NewsletterForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
           aria-invalid={error ? "true" : undefined}
           {...register("email")}
           className={cn(
-            "w-0 min-w-0 flex-1 border border-r-0 px-3.5 py-2.5 text-[14px] focus:outline-none",
+            "w-0 min-w-0 flex-1 border border-e-0 px-3.5 py-2.5 text-[14px] focus:outline-none",
             dark ? "border-blue/55 bg-transparent text-white placeholder:text-ice/70 focus:border-blue" : "border-line bg-white text-navy placeholder:text-muted focus:border-navy",
           )}
         />

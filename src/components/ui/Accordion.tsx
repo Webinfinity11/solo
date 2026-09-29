@@ -12,7 +12,7 @@ export function Accordion({ items, className }: { items: { question: string; ans
             {item.question}
             <Icon name="plus" className="size-[17px] transition-transform group-open:rotate-45" />
           </summary>
-          <div className="max-w-[690px] px-4 pb-5 pr-7 text-[14px] leading-[1.75] text-muted sm:px-5 sm:pr-12">{item.answer}</div>
+          <div className="max-w-[690px] px-4 pb-5 pe-7 text-[14px] leading-[1.75] text-muted sm:px-5 sm:pe-12">{item.answer}</div>
         </details>
       ))}
     </div>

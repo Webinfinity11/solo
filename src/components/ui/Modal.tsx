@@ -65,7 +65,7 @@ export function Modal({
       className={cn(
         "m-auto max-h-[calc(100dvh-48px)] max-w-[calc(100vw-32px)] overflow-auto rounded border border-line bg-white p-0 text-navy shadow-[0_24px_100px_rgba(0,18,32,.3)] open:animate-dialog-in",
         variant === "drawer" &&
-          "mr-0 h-dvh max-h-dvh w-[440px] max-w-full rounded-none border-y-0 border-r-0 open:flex open:flex-col open:animate-drawer-in",
+          "me-0 h-dvh max-h-dvh w-[440px] max-w-full rounded-none border-y-0 border-e-0 open:flex open:flex-col open:animate-drawer-in",
         variant === "center" && "w-[680px]",
         className,
       )}

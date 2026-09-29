@@ -36,8 +36,8 @@ export function AgeGate() {
   return (
     <div role="dialog" aria-modal="true" aria-labelledby="age-title" className="fixed inset-0 z-[100] grid place-items-center overflow-auto bg-navy/80 p-4 backdrop-blur-md">
       <div className="relative w-full max-w-[520px] overflow-hidden border border-line bg-white text-center shadow-[0_24px_100px_rgba(0,18,32,.4)] animate-dialog-in">
-        <span aria-hidden="true" className="hex -right-10 -top-12 h-[150px] w-[130px] opacity-40" />
-        <span aria-hidden="true" className="hex -bottom-10 -left-8 h-[99px] w-[87px] opacity-30" />
+        <span aria-hidden="true" className="hex -end-10 -top-12 h-[150px] w-[130px] opacity-40" />
+        <span aria-hidden="true" className="hex -bottom-10 -start-8 h-[99px] w-[87px] opacity-30" />
         <div className="relative px-6 py-9 sm:px-10">
           <Logo className="mx-auto mb-7" />
           {exited ? (
@@ -48,7 +48,7 @@ export function AgeGate() {
                 {t.ageGate.title}
               </h2>
               <p className="mb-6 text-[14px] leading-[1.75] text-muted">{t.ageGate.text}</p>
-              <label className="mb-6 flex cursor-pointer items-start gap-3 bg-ice p-4 text-left text-[13px] leading-relaxed">
+              <label className="mb-6 flex cursor-pointer items-start gap-3 bg-ice p-4 text-start text-[13px] leading-relaxed">
                 <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 size-[18px] shrink-0 accent-navy" />
                 <span>
                   {t.ageGate.agree} (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Locale } from "@/i18n/config";
+import { localeMeta, locales, type Locale } from "@/i18n/config";
 import type { StoredCategory } from "@/lib/content/types";
 import { saveCategories } from "@/app/admin/actions";
 import { Checkbox, LangTabs, PageTitle, SaveBar, Section, TextArea, TextInput, move, newId, useSave } from "./ui";
@@ -19,7 +19,7 @@ export function CategoriesEditor({ initial, counts }: { initial: StoredCategory[
 
   function add() {
     const empty = { name: "", description: "" };
-    change([...list, { id: newId("c"), slug: "", order: list.length + 1, icon: "supplies", showInFooter: true, text: { ka: empty, en: empty, ru: empty } }]);
+    change([...list, { id: newId("c"), slug: "", order: list.length + 1, icon: "supplies", showInFooter: true, text: Object.fromEntries(locales.map((l) => [l, empty])) as StoredCategory["text"] }]);
   }
 
   return (
@@ -65,6 +65,7 @@ export function CategoriesEditor({ initial, counts }: { initial: StoredCategory[
               <TextArea
                 label={`აღწერა (${lang.toUpperCase()})`}
                 rows={2}
+                dir={localeMeta[lang].dir}
                 className="md:col-span-2"
                 value={c.text[lang].description}
                 onChange={(description) => patch(i, { text: { ...c.text, [lang]: { ...c.text[lang], description } } })}

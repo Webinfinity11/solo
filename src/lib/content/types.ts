@@ -36,6 +36,8 @@ export type StoredCategory = {
 export type SiteSettings = {
   email: string;
   phone: string;
+  /** WhatsApp number in international format, e.g. +995 555 12 34 56. */
+  whatsapp: string;
   hours: Localized<string>;
   social: { label: string; href: string }[];
 };

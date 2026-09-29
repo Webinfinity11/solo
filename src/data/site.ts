@@ -9,8 +9,8 @@ export const site = {
   currencySymbol: "$",
   freeShippingThreshold: 200,
   email: "info@soloresearch.ge",
-  hours: { ka: "ორშ–პარ · 10:00–19:00", en: "Mon–Fri · 10:00–19:00", ru: "Пн–Пт · 10:00–19:00" },
-  defaultCountry: { ka: "საქართველო", en: "Georgia", ru: "Грузия" },
+  hours: { ka: "ორშ–პარ · 10:00–19:00", en: "Mon–Fri · 10:00–19:00", ru: "Пн–Пт · 10:00–19:00", ar: "الاثنين–الجمعة · 10:00–19:00" },
+  defaultCountry: { ka: "საქართველო", en: "Georgia", ru: "Грузия", ar: "جورجيا" },
   social: [
     { label: "Instagram", href: "#" },
     { label: "Facebook", href: "#" },

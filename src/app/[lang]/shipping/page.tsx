@@ -28,7 +28,7 @@ export default async function ShippingPage({ params }: { params: Promise<{ lang:
           </h2>
           <ul className="space-y-3">
             {s.processing.map((line) => (
-              <li key={line} className="flex gap-3 border-l-[3px] border-blue bg-ice px-4 py-3 text-[15px] leading-relaxed">
+              <li key={line} className="flex gap-3 border-s-[3px] border-blue bg-ice px-4 py-3 text-[15px] leading-relaxed">
                 {line}
               </li>
             ))}
@@ -39,7 +39,7 @@ export default async function ShippingPage({ params }: { params: Promise<{ lang:
             <Icon name="box" className="size-6" /> {s.ratesTitle}
           </h2>
           <div className="overflow-x-auto border border-line">
-            <table className="w-full min-w-[440px] border-collapse text-left text-[14px]">
+            <table className="w-full min-w-[440px] border-collapse text-start text-[14px]">
               <thead className="bg-navy text-white">
                 <tr>
                   <th scope="col" className="px-4 py-3 text-[12px] uppercase tracking-[.08em]">{s.ratesHead.region}</th>

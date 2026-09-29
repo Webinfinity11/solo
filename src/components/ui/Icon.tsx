@@ -41,6 +41,9 @@ const paths = {
 
 export type IconName = keyof typeof paths;
 
+// Icons that point "forward" mirror in right-to-left languages.
+const directional: ReadonlySet<IconName> = new Set(["arrow", "right"]);
+
 export function Icon({ name, className, strokeWidth = 1.7 }: { name: IconName; className?: string; strokeWidth?: number }) {
   return (
     <svg
@@ -51,7 +54,7 @@ export function Icon({ name, className, strokeWidth = 1.7 }: { name: IconName; c
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn("size-[22px] shrink-0", className)}
+      className={cn("size-[22px] shrink-0", directional.has(name) && "rtl:-scale-x-100", className)}
     >
       {paths[name]}
     </svg>

@@ -31,7 +31,7 @@ export function TrustPromises({ t, href }: { t: Dictionary; href: (p: string) =>
                   <div className="absolute inset-0 overflow-hidden">
                     <Image src={visuals[i].image} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
-                  <span className="absolute -bottom-6 left-5 grid size-[60px] place-items-center rounded-full bg-navy">
+                  <span className="absolute -bottom-6 start-5 grid size-[60px] place-items-center rounded-full bg-navy">
                     <Icon name={visuals[i].icon} className="size-7 text-ice" />
                   </span>
                 </div>

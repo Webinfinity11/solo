@@ -16,7 +16,7 @@ function useLocaleHref() {
   return (lang: (typeof locales)[number]) => localePath(lang, path) + (search ? `?${search}` : "");
 }
 
-// Header dropdown: current language code, list of the three languages.
+// Header dropdown: current language code, list of the languages.
 export function LanguageSwitcher() {
   const { lang } = useI18n();
   const hrefFor = useLocaleHref();
@@ -53,7 +53,7 @@ export function LanguageSwitcher() {
       </button>
       <ul
         className={cn(
-          "absolute right-0 top-full z-40 mt-1 w-[160px] border border-line bg-white p-1.5 shadow-[0_24px_60px_-30px_rgba(26,47,66,.45)] transition",
+          "absolute end-0 top-full z-40 mt-1 w-[160px] border border-line bg-white p-1.5 shadow-[0_24px_60px_-30px_rgba(26,47,66,.45)] transition",
           open ? "visible opacity-100" : "invisible opacity-0",
         )}
       >

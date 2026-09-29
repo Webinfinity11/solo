@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Locale } from "@/i18n/config";
+import { localeMeta, type Locale } from "@/i18n/config";
 import type { ProductBadge, Variant } from "@/lib/types";
 import type { StoredProduct } from "@/lib/content/types";
 import { deleteProduct, saveProduct } from "@/app/admin/actions";
@@ -178,10 +178,11 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
 
           <Section title="აღწერა" actions={<LangTabs value={lang} onChange={setLang} />}>
             <div className="flex flex-col gap-4">
-              <TextArea label="მოკლე აღწერა" rows={2} value={p.text[lang].shortDescription} onChange={(v) => setText("shortDescription", v)} />
+              <TextArea label="მოკლე აღწერა" rows={2} dir={localeMeta[lang].dir} value={p.text[lang].shortDescription} onChange={(v) => setText("shortDescription", v)} />
               <TextArea
                 label="სრული აღწერა"
                 rows={8}
+                dir={localeMeta[lang].dir}
                 value={p.text[lang].description}
                 onChange={(v) => setText("description", v)}
                 hint="აბზაცები გამოყავით ცარიელი ხაზით."

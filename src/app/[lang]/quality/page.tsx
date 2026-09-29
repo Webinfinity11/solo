@@ -26,7 +26,7 @@ export default async function QualityPage({ params }: { params: Promise<{ lang: 
             <p className="max-w-[480px] text-[16px] leading-relaxed text-white/85">{t.quality.description}</p>
           </div>
           <div className="relative mx-auto aspect-[373/355] w-full max-w-[420px]">
-            <span aria-hidden="true" className="hex -left-8 -top-6 h-[140px] w-[122px] opacity-25" />
+            <span aria-hidden="true" className="hex -start-8 -top-6 h-[140px] w-[122px] opacity-25" />
             <Image src="/images/site/hero-vial.webp" alt="" fill sizes="420px" className="object-cover [mask-image:radial-gradient(circle,#000_55%,transparent_75%)]" />
           </div>
         </div>
@@ -36,7 +36,7 @@ export default async function QualityPage({ params }: { params: Promise<{ lang: 
         <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {t.quality.sections.map((s, i) => (
             <li key={s.title} className="relative border border-line bg-white p-6 transition hover:border-blue">
-              <span className="absolute right-5 top-5 text-[40px] font-bold leading-none tracking-[-.05em] text-ice">0{i + 1}</span>
+              <span className="absolute end-5 top-5 text-[40px] font-bold leading-none tracking-[-.05em] text-ice">0{i + 1}</span>
               <span className="hex-shape mb-5 grid h-[58px] w-[50px] place-items-center bg-navy text-ice">
                 <Icon name={icons[i]} className="size-6" />
               </span>
@@ -48,7 +48,7 @@ export default async function QualityPage({ params }: { params: Promise<{ lang: 
       </section>
 
       <section className="relative isolate overflow-hidden bg-ice py-14 text-center">
-        <HexPattern hexes={[{ className: "left-[-3%] top-4 h-[178px] w-[158px]", opacity: 0.5 }, { className: "right-[-4%] bottom-[-60px] h-[230px] w-[200px]", opacity: 0.4 }]} />
+        <HexPattern hexes={[{ className: "start-[-3%] top-4 h-[178px] w-[158px]", opacity: 0.5 }, { className: "end-[-4%] bottom-[-60px] h-[230px] w-[200px]", opacity: 0.4 }]} />
         <div className="container-site">
           <h2 className="mb-6 text-[26px] font-bold tracking-[-.03em] sm:text-[30px]">{t.coa.title}</h2>
           <Link href={href("/coa")} className="btn btn-navy">

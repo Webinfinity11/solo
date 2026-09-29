@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { Noto_Sans, Noto_Sans_Georgian, Oswald } from "next/font/google";
+import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Georgian, Oswald } from "next/font/google";
 import localFont from "next/font/local";
 import "../globals.css";
 import { isLocale, localeMeta, locales, type Locale } from "@/i18n/config";
@@ -28,6 +28,9 @@ const georgian = Noto_Sans_Georgian({
 
 // Latin + Cyrillic (English/Russian); comes first in the font stack, Georgian glyphs fall through to Noto Sans Georgian.
 const notoSans = Noto_Sans({ subsets: ["cyrillic", "latin"], weight: ["400", "700"], variable: "--font-cyrillic", display: "swap" });
+
+// Arabic (right-to-left locale).
+const arabic = Noto_Sans_Arabic({ subsets: ["arabic"], weight: ["400", "700"], variable: "--font-arabic", display: "swap" });
 
 // Condensed face matching the logo lettering; used on vector product labels.
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-label", display: "swap" });
@@ -80,14 +83,18 @@ export default async function LangLayout({ children, params }: { children: React
   const t = applyOverrides(getDictionary(locale), overrides);
 
   return (
-    <html lang={localeMeta[locale].htmlLang} className={`${georgian.variable} ${notoSans.variable} ${oswald.variable} ${contractica.variable}`}>
+    <html
+      lang={localeMeta[locale].htmlLang}
+      dir={localeMeta[locale].dir}
+      className={`${georgian.variable} ${notoSans.variable} ${arabic.variable} ${oswald.variable} ${contractica.variable}`}
+    >
       <body className="font-sans">
         <noscript>
           <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
         </noscript>
         <I18nProvider lang={locale} overrides={overrides}>
           <CatalogProvider products={products} categories={categories}>
-            <a href="#main" className="fixed -top-20 left-5 z-[110] bg-navy px-5 py-3 text-white focus:top-3">
+            <a href="#main" className="fixed -top-20 start-5 z-[110] bg-navy px-5 py-3 text-white focus:top-3">
               {t.nav.skipToContent}
             </a>
             <AnnouncementBar t={t} />

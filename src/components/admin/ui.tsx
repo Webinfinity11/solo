@@ -55,12 +55,12 @@ export function NumberInput({ label, value, onChange, className, step = "any" }:
   );
 }
 
-export function TextArea({ label, value, onChange, rows = 4, className, hint }: { label?: string; value: string; onChange: (v: string) => void; rows?: number; className?: string; hint?: string }) {
+export function TextArea({ label, value, onChange, rows = 4, className, hint, dir }: { label?: string; value: string; onChange: (v: string) => void; rows?: number; className?: string; hint?: string; dir?: "ltr" | "rtl" }) {
   const id = useId();
   return (
     <div className={cn("min-w-0", className)}>
       {label ? <Label htmlFor={id}>{label}</Label> : null}
-      <textarea id={id} rows={rows} className="adm-input" value={value} onChange={(e) => onChange(e.target.value)} />
+      <textarea id={id} rows={rows} dir={dir} className="adm-input" value={value} onChange={(e) => onChange(e.target.value)} />
       {hint ? <p className="mt-1 text-[12px] text-muted">{hint}</p> : null}
     </div>
   );

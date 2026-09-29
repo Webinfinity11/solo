@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { resolveLang } from "@/i18n/server";
-import { getFaq, getFeaturedProducts, getProducts } from "@/lib/api";
+import { getFaq, getFeaturedProducts, getProducts, getSettings } from "@/lib/api";
 import { Hero } from "@/components/home/Hero";
 import { TrustPromises } from "@/components/home/TrustPromises";
 import { ProductGrid } from "@/components/product/ProductCard";
@@ -27,7 +27,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
-      <Hero t={t} href={href} />
+      <Hero t={t} href={href} whatsapp={(await getSettings()).whatsapp} />
 
       <section aria-labelledby="featured-title" className="bg-mist py-14 sm:py-16">
         <div className="container-site">

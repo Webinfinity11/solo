@@ -1,15 +1,16 @@
 // Locale setup. Georgian is the default and is served without a URL prefix
-// (/products); English and Russian get a prefix (/en/products, /ru/products).
+// (/products); the others get a prefix (/en/products, /ru/products, /ar/products).
 // A new locale needs: its code here, a dictionary in ./dictionaries and
 // translated data in src/data/i18n/<locale>.
-export const locales = ["ka", "en", "ru"] as const;
+export const locales = ["ka", "en", "ru", "ar"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "ka";
 
-export const localeMeta: Record<Locale, { label: string; short: string; htmlLang: string; ogLocale: string }> = {
-  ka: { label: "ქართული", short: "KA", htmlLang: "ka", ogLocale: "ka_GE" },
-  en: { label: "English", short: "EN", htmlLang: "en", ogLocale: "en_US" },
-  ru: { label: "Русский", short: "RU", htmlLang: "ru", ogLocale: "ru_RU" },
+export const localeMeta: Record<Locale, { label: string; short: string; htmlLang: string; ogLocale: string; dir: "ltr" | "rtl" }> = {
+  ka: { label: "ქართული", short: "KA", htmlLang: "ka", ogLocale: "ka_GE", dir: "ltr" },
+  en: { label: "English", short: "EN", htmlLang: "en", ogLocale: "en_US", dir: "ltr" },
+  ru: { label: "Русский", short: "RU", htmlLang: "ru", ogLocale: "ru_RU", dir: "ltr" },
+  ar: { label: "العربية", short: "AR", htmlLang: "ar", ogLocale: "ar_AR", dir: "rtl" },
 };
 
 export function isLocale(value: string): value is Locale {

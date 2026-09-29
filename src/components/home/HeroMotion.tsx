@@ -39,6 +39,9 @@ export function HeroMotion({ className }: { className?: string }) {
     if (!wrap || !canvas || !ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Right-to-left pages mirror the canvas with CSS (vial on the left, away from the copy);
+    // the vial itself is drawn flipped back so its label still reads correctly.
+    const mirror = getComputedStyle(wrap).direction === "rtl";
     let width = 1;
     let height = 1;
     let ratio = 1;
@@ -152,6 +155,7 @@ export function HeroMotion({ className }: { className?: string }) {
       ctx!.save();
       ctx!.translate(VIAL.cx + dx, VIAL.cy + dy);
       ctx!.rotate(angle);
+      if (mirror) ctx!.scale(-1, 1);
       const s = 1.012 + Math.sin(phase) * 0.004;
       ctx!.scale(s, s);
       ctx!.transform(1, 0.0015 * Math.sin(phase), 0.006 * Math.sin(phase), 1, 0, 0);
@@ -214,7 +218,7 @@ export function HeroMotion({ className }: { className?: string }) {
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
       const r = hero.getBoundingClientRect();
-      aim.x = (e.clientX - r.left) / r.width - 0.5;
+      aim.x = ((e.clientX - r.left) / r.width - 0.5) * (mirror ? -1 : 1);
       aim.y = (e.clientY - r.top) / r.height - 0.5;
     };
     const onLeave = () => {
@@ -260,13 +264,13 @@ export function HeroMotion({ className }: { className?: string }) {
 
   return (
     <div ref={wrapRef} aria-hidden="true" className={cn("relative h-full w-full overflow-hidden bg-[#030c17]", className)}>
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full rtl:-scale-x-100" />
       {/* Static poster until the layers are decoded (and for no-JS). */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/hero/poster.webp"
         alt=""
-        className={cn("absolute inset-0 h-full w-full object-cover object-[68%_46%] transition-opacity duration-300", ready && "opacity-0")}
+        className={cn("absolute inset-0 h-full w-full object-cover object-[68%_46%] transition-opacity rtl:object-[32%_46%] duration-300", ready && "opacity-0")}
       />
     </div>
   );
