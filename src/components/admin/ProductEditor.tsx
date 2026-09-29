@@ -147,7 +147,7 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
             {p.variants.length === 0 ? <p className="text-[14px] text-muted">დაამატეთ მინიმუმ ერთი ვარიაცია (მაგ. 10mg).</p> : null}
             <div className="flex flex-col gap-3">
               {p.variants.map((v, i) => (
-                <div key={v.id} className="grid grid-cols-2 items-end gap-3 border border-line bg-mist p-3 sm:grid-cols-[90px_80px_100px_100px_1fr_auto]">
+                <div key={v.id} className="grid grid-cols-2 items-end gap-3 border border-line bg-mist p-3 sm:grid-cols-[90px_80px_100px_100px_1fr_110px_auto]">
                   <NumberInput label="რაოდენობა" value={v.amount} onChange={(amount) => setVariant(i, { amount: amount ?? 0 })} />
                   <Select
                     label="ერთეული"
@@ -161,6 +161,12 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
                   <NumberInput label="ფასი ($)" value={v.price} onChange={(price) => setVariant(i, { price: price ?? 0 })} />
                   <NumberInput label="ძველი ფასი" value={v.compareAtPrice} onChange={(compareAtPrice) => setVariant(i, { compareAtPrice })} />
                   <TextInput label="SKU" value={v.sku} onChange={(sku) => setVariant(i, { sku })} />
+                  <Select
+                    label="ფოტო"
+                    value={v.image && p.images.includes(v.image) ? v.image : ""}
+                    onChange={(image) => setVariant(i, { image: image || undefined })}
+                    options={[{ value: "", label: "—" }, ...p.images.map((src, n) => ({ value: src, label: `ფოტო ${n + 1}` }))]}
+                  />
                   <div className="col-span-2 flex items-center gap-2 pb-1.5 sm:col-span-1">
                     <Checkbox label="მარაგშია" checked={v.inStock} onChange={(inStock) => setVariant(i, { inStock })} />
                     <button type="button" className="adm-btn px-2" title="ზემოთ" onClick={() => update({ variants: move(p.variants, i, -1) })}>

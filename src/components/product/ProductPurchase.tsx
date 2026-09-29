@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-store";
+import { VARIANT_IMAGE_EVENT } from "./ProductGallery";
 import { useI18n } from "@/i18n/provider";
 import { cn, firstAvailableVariant, formatPrice } from "@/lib/utils";
 import { Icon } from "@/components/ui/Icon";
@@ -17,6 +18,11 @@ export function ProductPurchase({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
+
+  // Tell the gallery to show the photo of the chosen size (see ProductGallery).
+  useEffect(() => {
+    if (variant.image) window.dispatchEvent(new CustomEvent(VARIANT_IMAGE_EVENT, { detail: variant.image }));
+  }, [variant.image]);
 
   function handleAdd() {
     add(product.slug, variant.id, quantity);
@@ -43,7 +49,7 @@ export function ProductPurchase({ product }: { product: Product }) {
 
       <fieldset className="mb-6">
         <legend className="mb-2.5 text-[13px] font-bold uppercase tracking-[.1em]">
-          {t.product.size}: <span className="text-muted">{variant.label}</span>
+          {t.product.size}: <span className="normal-case text-muted">{variant.label}</span>
         </legend>
         <div className="flex flex-wrap gap-2">
           {product.variants.map((v) => (

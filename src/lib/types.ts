@@ -20,6 +20,8 @@ export type Variant = {
   compareAtPrice?: number;
   sku: string;
   inStock: boolean;
+  /** Photo of this size's vial; also listed in the product's images. */
+  image?: string;
 };
 
 export type ProductSpecs = {

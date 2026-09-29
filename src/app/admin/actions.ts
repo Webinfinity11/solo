@@ -45,6 +45,7 @@ const variantSchema = z.object({
   compareAtPrice: z.number().nonnegative().optional(),
   sku: z.string().trim().min(1, "SKU ცარიელია"),
   inStock: z.boolean(),
+  image: optionalText,
 });
 
 const productSchema = z.object({
@@ -149,7 +150,9 @@ function parse<T>(schema: z.ZodType<T>, value: unknown): T {
 
 export async function saveProduct(input: unknown): Promise<ActionResult> {
   return mutate(async (content) => {
-    const data = parse(productSchema, input);
+    const parsed = parse(productSchema, input);
+    // A variant may only point at one of the product's own photos.
+    const data = { ...parsed, variants: parsed.variants.map((v) => (v.image && !parsed.images.includes(v.image) ? { ...v, image: undefined } : v)) };
     if (content.products.some((p) => p.slug === data.slug && p.id !== data.id)) return `slug „${data.slug}“ უკვე გამოყენებულია`;
     const skus = data.variants.map((v) => v.sku);
     if (new Set(skus).size !== skus.length) return "ვარიაციების SKU-ები უნდა განსხვავდებოდეს";

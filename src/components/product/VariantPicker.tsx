@@ -49,6 +49,11 @@ export function VariantPicker({ product, open, onClose }: { product: Product; op
                   v.inStock ? "hover:border-navy hover:bg-mist" : "opacity-50",
                 )}
               >
+                {v.image ? (
+                  <span className="block size-11 shrink-0 bg-white">
+                    <ProductImage name={product.name} src={v.image} sizes="44px" />
+                  </span>
+                ) : null}
                 <span className="flex-1 text-[16px] font-bold">{v.label}</span>
                 {v.inStock ? (
                   <span className="text-[15px]">

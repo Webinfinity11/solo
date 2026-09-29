@@ -1,6 +1,7 @@
 // Language-neutral product records. Descriptions and localized spec labels live in
 // data/i18n/<locale>/products.ts.
-// images: real high-resolution photos (≥600px); until then cards render a vector vial.
+// Photos: public/images/products/<slug>-<size>.webp, one per size (see PHOTOS).
+// A product without photos renders the vector vial.
 // PRICES ARE TEST VALUES (10 GEL each). CAS / formula / weight / sequence are reference values
 // that must be checked against the supplier's documentation before launch.
 import type { ProductBadge, Variant } from "@/lib/types";
@@ -45,7 +46,7 @@ function variants(slug: string, list: [label: string, price: number, inStock?: b
 }
 
 
-export const products: ProductRecord[] = [
+const records: ProductRecord[] = [
   {
     id: "p1",
     slug: "retatrutide",
@@ -321,3 +322,25 @@ export const products: ProductRecord[] = [
     createdAt: "2026-01-10",
   },
 ];
+
+// Sizes that have a photo, as "<slug>-<label>".
+const PHOTOS = new Set([
+  "retatrutide-10mg", "retatrutide-20mg", "retatrutide-40mg",
+  "tirzepatide-10mg", "tirzepatide-20mg", "tirzepatide-40mg",
+  "semaglutide-10mg", "semaglutide-20mg", "semaglutide-40mg",
+  "tesamorelin-10mg", "tesamorelin-20mg",
+  "mots-c-10mg", "mots-c-20mg",
+  "nad-plus-500mg", "nad-plus-1000mg",
+  "bac-water-3ml", "bac-water-5ml", "bac-water-10ml",
+  "aod-9604-5mg", "bpc-157-10mg", "cjc-1295-no-dac-10mg", "ipamorelin-10mg",
+  "melanotan-1-10mg", "melanotan-2-10mg", "ghk-cu-100mg", "selank-10mg", "tb-500-10mg",
+]);
+
+export const products: ProductRecord[] = records.map((p) => {
+  const variants = p.variants.map((v) => {
+    const key = `${p.slug}-${v.label}`;
+    return PHOTOS.has(key) ? { ...v, image: `/images/products/${key}.webp` } : v;
+  });
+  const images = variants.flatMap((v) => (v.image ? [v.image] : []));
+  return { ...p, variants, images: images.length ? images : p.images };
+});

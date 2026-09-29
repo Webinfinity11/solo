@@ -1,15 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ProductImage } from "@/components/brand/ProductImage";
 
 // Main image with hover zoom (follows the cursor) and thumbnails when there are several photos.
+/** Window event carrying the image URL of the size picked in ProductPurchase. */
+export const VARIANT_IMAGE_EVENT = "solo:variant-image";
+
 export function ProductGallery({ name, images, label }: { name: string; images: string[]; label?: string }) {
   const [index, setIndex] = useState(0);
   const [origin, setOrigin] = useState("50% 50%");
   const [zoom, setZoom] = useState(false);
   const current = images[index];
+
+  useEffect(() => {
+    const onVariant = (e: Event) => {
+      const i = images.indexOf((e as CustomEvent<string>).detail);
+      if (i >= 0) setIndex(i);
+    };
+    window.addEventListener(VARIANT_IMAGE_EVENT, onVariant);
+    return () => window.removeEventListener(VARIANT_IMAGE_EVENT, onVariant);
+  }, [images]);
 
   return (
     <div className="flex flex-col gap-3">
