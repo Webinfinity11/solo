@@ -9,7 +9,8 @@ import { CatalogView } from "@/components/catalog/CatalogView";
 
 type Params = Promise<{ lang: string; slug: string }>;
 
-export const dynamicParams = false;
+// Items added in the admin after the build are rendered on first visit.
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const all = await Promise.all(locales.map(async (lang) => (await getCategories(lang)).map((c) => ({ lang, slug: c.slug }))));

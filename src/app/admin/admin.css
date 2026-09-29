@@ -1,0 +1,52 @@
+/* Admin panel: compact controls on top of the site tokens from globals.css. */
+@layer components {
+  .adm-label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-muted);
+  }
+  .adm-input {
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid var(--color-line);
+    background: var(--white);
+    padding: 7px 10px;
+    font-size: 14px;
+    color: var(--navy);
+    transition: border-color 0.15s;
+  }
+  .adm-input:hover { border-color: #c3d4e2; }
+  .adm-input:focus { border-color: var(--navy); outline: none; }
+  textarea.adm-input { min-height: 80px; resize: vertical; line-height: 1.55; }
+  .adm-card {
+    border: 1px solid var(--color-line);
+    background: var(--white);
+    padding: 20px;
+  }
+  .adm-btn {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--color-line);
+    background: var(--white);
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .adm-btn:not(:disabled):hover { border-color: var(--navy); }
+  .adm-btn:disabled { opacity: 0.5; }
+  .adm-btn-primary { border-color: var(--navy); background: var(--navy); color: var(--white); }
+  .adm-btn-primary:not(:disabled):hover { background: var(--color-navy-2); }
+  .adm-btn-danger { color: var(--color-danger); }
+  .adm-btn-danger:not(:disabled):hover { border-color: var(--color-danger); }
+  .adm-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .adm-table th { border-bottom: 1px solid var(--color-line); padding: 8px 10px; text-align: left; font-size: 12px; color: var(--color-muted); }
+  .adm-table td { border-bottom: 1px solid var(--color-line); padding: 10px; vertical-align: middle; }
+}

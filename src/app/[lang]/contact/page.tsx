@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { resolveLang } from "@/i18n/server";
-import { site } from "@/data/site";
+import { getSettings } from "@/lib/api";
 import { PageHero } from "@/components/ui/PageHero";
 import { Icon } from "@/components/ui/Icon";
 import { ContactForm } from "@/components/forms/ContactForm";
@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function ContactPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang, t, href } = await resolveLang(params);
   const c = t.contact;
+  const site = await getSettings();
 
   return (
     <>
@@ -30,6 +31,14 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
               {site.email}
             </a>
           </div>
+          {site.phone ? (
+            <div className="border border-line p-6">
+              <p className="mb-1 text-[12px] font-bold uppercase tracking-[.1em] text-eyebrow">{c.phoneLabel}</p>
+              <a href={`tel:${site.phone.replace(/ /g, "")}`} className="text-[17px] font-bold hover:text-blue">
+                {site.phone}
+              </a>
+            </div>
+          ) : null}
           <div className="border border-line p-6">
             <p className="mb-1 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[.1em] text-eyebrow">
               <Icon name="clock" className="size-4" /> {c.hoursLabel}

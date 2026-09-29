@@ -2,20 +2,19 @@ import Link from "next/link";
 import type { Dictionary } from "@/i18n";
 import { localePath, type Locale } from "@/i18n/config";
 import type { CategoryWithCount } from "@/lib/api";
+import type { SiteSettings } from "@/lib/content/types";
 import { site } from "@/data/site";
 import { Logo } from "@/components/brand/Logo";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 
-const FOOTER_HIDDEN_CATEGORIES = ["melanocortins", "lab-supplies"];
-
-export function Footer({ lang, t, categories }: { lang: Locale; t: Dictionary; categories: CategoryWithCount[] }) {
+export function Footer({ lang, t, categories, settings }: { lang: Locale; t: Dictionary; categories: CategoryWithCount[]; settings: SiteSettings }) {
   const href = (path: string) => localePath(lang, path);
   const columns = [
     {
       title: t.footer.catalog,
       // Short list so the column stays compact; the full list lives in the header dropdown.
       links: categories
-        .filter((c) => !FOOTER_HIDDEN_CATEGORIES.includes(c.slug))
+        .filter((c) => c.showInFooter)
         .map((c) => ({ href: href(`/category/${c.slug}`), label: c.name })),
     },
     {
@@ -70,11 +69,19 @@ export function Footer({ lang, t, categories }: { lang: Locale; t: Dictionary; c
             <p className="mb-4 text-[12px] leading-[1.7] text-white/65">{t.footer.newsletterText}</p>
             <NewsletterForm />
             <p className="mt-5 text-[12px] text-white/65">
-              <a href={`mailto:${site.email}`} className="hover:text-blue">
-                {site.email}
+              <a href={`mailto:${settings.email}`} className="hover:text-blue">
+                {settings.email}
               </a>
+              {settings.phone ? (
+                <>
+                  <br />
+                  <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="hover:text-blue">
+                    {settings.phone}
+                  </a>
+                </>
+              ) : null}
               <br />
-              {site.hours[lang]}
+              {settings.hours[lang]}
             </p>
           </div>
         </div>

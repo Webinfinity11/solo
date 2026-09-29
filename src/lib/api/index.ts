@@ -1,17 +1,17 @@
 // Data access layer. Pages and components only talk to these functions.
-// Today they read local files; later swap the bodies for admin-API calls.
+// Content comes from the admin-managed store (lib/content), which falls back to
+// the files in src/data for anything not saved yet.
 import type { Locale } from "@/i18n/config";
 import type { Category, CoaDocument, FaqItem, LegalDocument, Product } from "@/lib/types";
-import { categories as categoryRecords } from "@/data/categories";
-import { products as productRecords, type ProductRecord } from "@/data/products";
-import { coaDocuments } from "@/data/coa";
-import { content } from "@/data/i18n";
+import type { SiteSettings, StoredProduct } from "@/lib/content/types";
+import { getContent } from "@/lib/content/store";
+import { content as staticContent } from "@/data/i18n";
 
-export type CategoryWithCount = Category & { productCount: number; icon: string };
+export type CategoryWithCount = Category & { productCount: number; icon: string; showInFooter: boolean };
 
-function localizeProduct(record: ProductRecord, lang: Locale): Product {
-  const text = content[lang].productText[record.slug];
-  const kind = content[lang].kindText[record.kind];
+function localizeProduct(record: StoredProduct, lang: Locale): Product {
+  const text = record.text[lang];
+  const kind = staticContent[lang].kindText[record.kind];
   return {
     id: record.id,
     slug: record.slug,
@@ -29,12 +29,17 @@ function localizeProduct(record: ProductRecord, lang: Locale): Product {
   };
 }
 
+async function activeProducts(): Promise<StoredProduct[]> {
+  // A product without variants cannot be shown (cards and pages read variants[0]).
+  return (await getContent()).products.filter((p) => p.status === "active" && p.variants.length > 0);
+}
+
 export async function getProducts(lang: Locale): Promise<Product[]> {
-  return productRecords.filter((p) => p.status === "active").map((p) => localizeProduct(p, lang));
+  return (await activeProducts()).map((p) => localizeProduct(p, lang));
 }
 
 export async function getProduct(lang: Locale, slug: string): Promise<Product | undefined> {
-  const record = productRecords.find((p) => p.slug === slug && p.status === "active");
+  const record = (await activeProducts()).find((p) => p.slug === slug);
   return record && localizeProduct(record, lang);
 }
 
@@ -47,17 +52,18 @@ export async function getFeaturedProducts(lang: Locale): Promise<Product[]> {
 }
 
 export async function getCategories(lang: Locale): Promise<CategoryWithCount[]> {
-  const text = content[lang].categoryText;
-  return [...categoryRecords]
+  const [{ categories }, products] = await Promise.all([getContent(), activeProducts()]);
+  return [...categories]
     .sort((a, b) => a.order - b.order)
     .map((c) => ({
       id: c.id,
       slug: c.slug,
       order: c.order,
       icon: c.icon,
-      name: text[c.slug]?.name ?? c.slug,
-      description: text[c.slug]?.description,
-      productCount: productRecords.filter((p) => p.categorySlug === c.slug && p.status === "active").length,
+      showInFooter: c.showInFooter,
+      name: c.text[lang]?.name || c.slug,
+      description: c.text[lang]?.description,
+      productCount: products.filter((p) => p.categorySlug === c.slug).length,
     }));
 }
 
@@ -66,18 +72,23 @@ export async function getCategory(lang: Locale, slug: string): Promise<CategoryW
 }
 
 export async function getCoa(productSlug?: string): Promise<CoaDocument[]> {
-  const list = productSlug ? coaDocuments.filter((d) => d.productSlug === productSlug) : coaDocuments;
+  const { coa } = await getContent();
+  const list = productSlug ? coa.filter((d) => d.productSlug === productSlug) : coa;
   return [...list].sort((a, b) => b.testDate.localeCompare(a.testDate));
 }
 
 export async function getFaq(lang: Locale): Promise<{ groups: Record<string, string>; items: (FaqItem & { home?: boolean })[] }> {
-  return { groups: content[lang].faqGroups, items: content[lang].faq };
+  return (await getContent()).faq[lang];
 }
 
 export async function getLegalDocuments(lang: Locale): Promise<LegalDocument[]> {
-  return content[lang].legalDocuments;
+  return (await getContent()).legal[lang];
 }
 
 export async function getLegalDocument(lang: Locale, slug: string): Promise<LegalDocument | undefined> {
-  return content[lang].legalDocuments.find((d) => d.slug === slug);
+  return (await getLegalDocuments(lang)).find((d) => d.slug === slug);
+}
+
+export async function getSettings(): Promise<SiteSettings> {
+  return (await getContent()).settings;
 }

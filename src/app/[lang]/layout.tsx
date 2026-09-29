@@ -5,8 +5,10 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { isLocale, localeMeta, locales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n";
+import { applyOverrides } from "@/i18n/overrides";
+import { getContent } from "@/lib/content/store";
 import { I18nProvider } from "@/i18n/provider";
-import { getCategories, getProducts } from "@/lib/api";
+import { getCategories, getProducts, getSettings } from "@/lib/api";
 import { site } from "@/data/site";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Header } from "@/components/layout/Header";
@@ -53,7 +55,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
-  const t = getDictionary(lang);
+  const t = applyOverrides(getDictionary(lang), (await getContent()).texts[lang]);
   return {
     metadataBase: new URL(site.url),
     title: { default: t.meta.siteTitle, template: "%s | SOLO Research" },
@@ -73,8 +75,9 @@ export default async function LangLayout({ children, params }: { children: React
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const locale: Locale = lang;
-  const t = getDictionary(locale);
-  const [products, categories] = await Promise.all([getProducts(locale), getCategories(locale)]);
+  const [products, categories, settings, content] = await Promise.all([getProducts(locale), getCategories(locale), getSettings(), getContent()]);
+  const overrides = content.texts[locale];
+  const t = applyOverrides(getDictionary(locale), overrides);
 
   return (
     <html lang={localeMeta[locale].htmlLang} className={`${georgian.variable} ${notoSans.variable} ${oswald.variable} ${contractica.variable}`}>
@@ -82,7 +85,7 @@ export default async function LangLayout({ children, params }: { children: React
         <noscript>
           <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
         </noscript>
-        <I18nProvider lang={locale}>
+        <I18nProvider lang={locale} overrides={overrides}>
           <CatalogProvider products={products} categories={categories}>
             <a href="#main" className="fixed -top-20 left-5 z-[110] bg-navy px-5 py-3 text-white focus:top-3">
               {t.nav.skipToContent}
@@ -90,7 +93,7 @@ export default async function LangLayout({ children, params }: { children: React
             <AnnouncementBar t={t} />
             <Header />
             <main id="main">{children}</main>
-            <Footer lang={locale} t={t} categories={categories} />
+            <Footer lang={locale} t={t} categories={categories} settings={settings} />
             {site.shopEnabled ? <CartDrawer /> : null}
             <AgeGate />
             <StoreHydrator />

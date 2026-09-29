@@ -406,6 +406,7 @@ const en: Dictionary = {
     submit: "Send",
     success: "Thank you! Your message has been received. (Demo mode — no data was sent.)",
     emailLabel: "Email",
+    phoneLabel: "Phone",
     hoursLabel: "Business hours",
     socialLabel: "Social media",
   },

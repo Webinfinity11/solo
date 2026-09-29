@@ -415,6 +415,7 @@ const ru: Dictionary = {
     submit: "Отправить",
     success: "Спасибо! Сообщение получено. (Демо-режим — данные не отправлены.)",
     emailLabel: "Email",
+    phoneLabel: "Телефон",
     hoursLabel: "Часы работы",
     socialLabel: "Социальные сети",
   },
