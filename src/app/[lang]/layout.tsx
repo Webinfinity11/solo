@@ -49,6 +49,16 @@ const contractica = localFont({
   ],
 });
 
+/** BPG Nino Mtavruli: capital-style Georgian drawn on the ordinary Mkhedruli code points.
+ *  Limited to the Georgian range, so Latin in the same labels keeps the display font. */
+const mtavruliFont = localFont({
+  variable: "--font-mtavruli",
+  display: "swap",
+  adjustFontFallback: false,
+  src: [{ path: "../../fonts/BPGNinoMtavruli-Normal.otf", weight: "400", style: "normal" }],
+  declarations: [{ prop: "unicode-range", value: "U+10D0-10FF" }],
+});
+
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -86,7 +96,7 @@ export default async function LangLayout({ children, params }: { children: React
     <html
       lang={localeMeta[locale].htmlLang}
       dir={localeMeta[locale].dir}
-      className={`${georgian.variable} ${notoSans.variable} ${arabic.variable} ${oswald.variable} ${contractica.variable}`}
+      className={`${georgian.variable} ${notoSans.variable} ${arabic.variable} ${oswald.variable} ${contractica.variable} ${mtavruliFont.variable}`}
     >
       <body className="font-sans">
         <noscript>

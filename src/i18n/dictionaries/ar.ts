@@ -210,8 +210,8 @@ const ar: Dictionary = {
 
   home: {
     hero: {
-      titleTop: "مُختبَر ومُعتمَد.",
-      titleBottom: "جودة مؤكَّدة في المختبر.",
+      titleTop: "مُختبَر ومُعتمَد",
+      titleBottom: "جودة مؤكَّدة في المختبر",
       subtitle: "توصيل مجاني في اليوم نفسه داخل جورجيا",
       shop: "الكتالوج",
       labTests: "عرض الاختبارات المخبرية",

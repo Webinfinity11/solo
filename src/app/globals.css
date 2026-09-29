@@ -268,3 +268,10 @@
 [dir="rtl"] body * {
   letter-spacing: normal !important;
 }
+
+/* Capital-style labels: Georgian letters in BPG Nino Mtavruli, everything else in the
+   display font. Unlayered so it also wins over [font-family:...] utilities. */
+.uppercase,
+.eyebrow {
+  font-family: var(--font-mtavruli, "BPG Nino Mtavruli"), var(--font-display);
+}

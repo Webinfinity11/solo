@@ -42,9 +42,9 @@ export function Hero({ t, href, whatsapp }: { t: Dictionary; href: (p: string) =
         <div className="pointer-events-auto relative z-10 w-full py-10 sm:py-14 xl:max-w-[800px] xl:py-0">
           <p className="mb-4 animate-fade-up text-[11px] uppercase leading-relaxed tracking-[.3em] text-white/60 [font-family:var(--font-display)] sm:mb-5 sm:text-[12px]">{mtavruli(h.subtitle)}</p>
 
-          <h1 id="hero-title" className="animate-fade-up text-[26px] font-bold leading-[1.25] tracking-[-.03em] [animation-delay:.1s] sm:text-[32px] xl:text-[34px]">
+          <h1 id="hero-title" className="animate-fade-up text-[28px] font-bold leading-[1.2] tracking-[-.03em] [animation-delay:.1s] sm:text-[34px] xl:text-[38px]">
             <span className="block xl:whitespace-nowrap">{h.titleTop}</span>
-            <span className="block xl:whitespace-nowrap">{h.titleBottom}</span>
+            <span className="mt-2 block xl:whitespace-nowrap">{h.titleBottom}</span>
           </h1>
 
           <div className="mt-7 grid animate-fade-up grid-cols-2 gap-2.5 [animation-delay:.3s] sm:flex sm:flex-wrap sm:gap-3">

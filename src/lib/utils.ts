@@ -8,11 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Uppercase for small caps-style labels. CSS text-transform leaves Georgian untouched,
- * but toUpperCase() maps Mkhedruli to Mtavruli (Unicode 11), Latin/Cyrillic as usual.
+ * Uppercase for small caps-style labels. Georgian stays in Mkhedruli code points:
+ * the labels use BPG Nino Mtavruli (see .uppercase/.eyebrow in globals.css), which draws
+ * those letters as capitals. Latin and Cyrillic are uppercased as usual.
  */
 export function mtavruli(value: string): string {
-  return value.toUpperCase();
+  return value.replace(/[^Ⴀ-ჿᲐ-Ჿ]+/g, (part) => part.toUpperCase());
 }
 
 export function formatPrice(value: number): string {

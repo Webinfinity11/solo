@@ -192,8 +192,8 @@ const en: Dictionary = {
 
   home: {
     hero: {
-      titleTop: "Tested and certified.",
-      titleBottom: "Quality confirmed in the lab.",
+      titleTop: "Tested and certified",
+      titleBottom: "Quality confirmed in the lab",
       subtitle: "Free same-day delivery in Georgia",
       shop: "Catalog",
       labTests: "View lab tests",
