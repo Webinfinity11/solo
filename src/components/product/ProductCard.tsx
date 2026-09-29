@@ -5,18 +5,21 @@ import { useState } from "react";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-store";
 import { useI18n } from "@/i18n/provider";
-import { cn, firstAvailableVariant, isInStock } from "@/lib/utils";
+import { cn, firstAvailableVariant, isInStock, priceRange } from "@/lib/utils";
 import { ProductImage } from "@/components/brand/ProductImage";
 import { Icon } from "@/components/ui/Icon";
 import { useCatalog } from "@/components/layout/CatalogProvider";
 import { Reveal } from "@/components/ui/Reveal";
 import { site } from "@/data/site";
+import { VariantPicker } from "./VariantPicker";
 
 export function ProductCard({ product, priority, size = "md" }: { product: Product; priority?: boolean; size?: "md" | "lg" }) {
   const { t, href } = useI18n();
   const { categories } = useCatalog();
   const add = useCart((s) => s.add);
   const [justAdded, setJustAdded] = useState(false);
+  const [picking, setPicking] = useState(false);
+  const hasOptions = product.variants.length > 1;
 
   const url = href(`/products/${product.slug}`);
   const category = categories.find((c) => c.slug === product.categorySlug);
@@ -25,7 +28,8 @@ export function ProductCard({ product, priority, size = "md" }: { product: Produ
   const isBest = product.badges?.includes("bestseller");
 
   function handleAdd() {
-    // Adds the first in-stock size; other sizes are chosen on the product page.
+    // Several sizes: let the visitor pick one in the popup; a single size goes straight to the cart.
+    if (hasOptions) return setPicking(true);
     add(product.slug, firstAvailableVariant(product).id);
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 1300);
@@ -66,6 +70,7 @@ export function ProductCard({ product, priority, size = "md" }: { product: Produ
             {product.name}
           </Link>
         </h3>
+        {site.shopEnabled ? <p className="mt-1.5 text-[15px] font-bold sm:text-[16px]">{priceRange(product)}</p> : null}
         <div className="mb-4 mt-1.5 flex flex-wrap gap-x-2.5 gap-y-1">
           {product.variants.map((v) => (
             <span
@@ -85,8 +90,8 @@ export function ProductCard({ product, priority, size = "md" }: { product: Produ
               justAdded && "bg-blue",
             )}
           >
-            <Icon name={justAdded ? "check" : "cart"} className="size-[15px]" />
-            <span>{justAdded ? t.product.added : t.product.addToCart}</span>
+            <Icon name={justAdded ? "check" : hasOptions ? "filter" : "cart"} className="size-[15px]" />
+            <span>{justAdded ? t.product.added : hasOptions ? t.product.selectOptions : t.product.addToCart}</span>
           </button>
         ) : (
           <Link
@@ -98,6 +103,7 @@ export function ProductCard({ product, priority, size = "md" }: { product: Produ
           </Link>
         )}
       </div>
+      {hasOptions && site.shopEnabled ? <VariantPicker product={product} open={picking} onClose={() => setPicking(false)} /> : null}
     </article>
   );
 }

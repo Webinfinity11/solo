@@ -40,6 +40,8 @@ export type SiteSettings = {
   whatsapp: string;
   hours: Localized<string>;
   social: { label: string; href: string }[];
+  /** Shown to customers who pick bank transfer at checkout. */
+  bank: { recipient: string; bankName: string; iban: string };
 };
 
 export type FaqDocument = { groups: Record<string, string>; items: (FaqItem & { home?: boolean })[] };

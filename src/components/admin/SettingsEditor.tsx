@@ -37,6 +37,15 @@ export function SettingsEditor({ initial }: { initial: SiteSettings }) {
           </div>
         </Section>
 
+        <Section title="საბანკო რეკვიზიტები">
+          <p className="mb-4 text-[13px] text-muted">ჩანს შეკვეთის დადასტურების გვერდზე, როცა მყიდველი საბანკო გადარიცხვას ირჩევს.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput label="მიმღები" value={s.bank.recipient} onChange={(recipient) => update({ bank: { ...s.bank, recipient } })} />
+            <TextInput label="ბანკი" value={s.bank.bankName} onChange={(bankName) => update({ bank: { ...s.bank, bankName } })} />
+            <TextInput label="IBAN" className="sm:col-span-2" value={s.bank.iban} onChange={(iban) => update({ bank: { ...s.bank, iban } })} placeholder="GE00TB0000000000000000" />
+          </div>
+        </Section>
+
         <Section title="სამუშაო საათები">
           <div className="grid gap-4 sm:grid-cols-3">
             {locales.map((l) => (

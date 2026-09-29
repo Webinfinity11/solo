@@ -9,6 +9,7 @@ import { CONTENT_TAG, getContentFresh, saveContent } from "@/lib/content/store";
 import type { SiteContent } from "@/lib/content/types";
 import { db, type Sql } from "@/lib/db";
 import { REVIEWS_TAG } from "@/lib/reviews";
+import { ORDER_STATUSES, type OrderStatus } from "@/lib/admin/order-status";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -83,6 +84,7 @@ const settingsSchema = z.object({
   whatsapp: z.string().trim().regex(/^\+?[\d\s()-]*$/, "WhatsApp: მხოლოდ ნომერი, მაგ. +995 555 12 34 56"),
   hours: localized(z.string().trim()),
   social: z.array(z.object({ label: z.string().trim().min(1), href: z.string().trim().min(1) })),
+  bank: z.object({ recipient: z.string().trim(), bankName: z.string().trim(), iban: z.string().trim().toUpperCase() }),
 });
 
 const coaSchema = z.object({
@@ -244,5 +246,16 @@ async function moderate(run: (sql: Sql) => Promise<void>): Promise<ActionResult>
   await run(sql);
   updateTag(REVIEWS_TAG);
   revalidatePath("/[lang]/coa", "page");
+  return { ok: true };
+}
+
+// ---------- orders ----------
+
+export async function setOrderStatus(id: number, status: OrderStatus): Promise<ActionResult> {
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა — შედით თავიდან." };
+  if (!ORDER_STATUSES.includes(status)) return { ok: false, error: "უცნობი სტატუსი" };
+  const sql = await db();
+  if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
+  await sql`update orders set status = ${status} where id = ${id}`;
   return { ok: true };
 }

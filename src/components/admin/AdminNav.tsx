@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/admin", label: "მთავარი" },
+  { href: "/admin/orders", label: "შეკვეთები" },
   { href: "/admin/products", label: "პროდუქცია" },
   { href: "/admin/categories", label: "კატეგორიები" },
   { href: "/admin/coa", label: "COA სერტიფიკატები" },

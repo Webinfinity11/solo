@@ -30,6 +30,7 @@ export const defaultContent: SiteContent = {
     whatsapp: "",
     hours: site.hours,
     social: site.social,
+    bank: { recipient: "", bankName: "", iban: "" },
   },
   coa: coaDocuments,
   faq: perLocale((lang) => ({ groups: content[lang].faqGroups, items: content[lang].faq })),

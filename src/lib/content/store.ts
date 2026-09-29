@@ -37,7 +37,11 @@ function withDefaults(stored: Partial<SiteContent>): SiteContent {
   return {
     ...defaultContent,
     ...stored,
-    settings: { ...defaultContent.settings, ...stored.settings, hours: localized(stored.settings?.hours, defaultContent.settings.hours) },
+    settings: {
+      ...defaultContent.settings,
+      ...stored.settings,
+      bank: { ...defaultContent.settings.bank, ...stored.settings?.bank },
+      hours: localized(stored.settings?.hours, defaultContent.settings.hours) },
     faq: localized(stored.faq, defaultContent.faq),
     legal: localized(stored.legal, defaultContent.legal),
     texts: localized(stored.texts, defaultContent.texts),

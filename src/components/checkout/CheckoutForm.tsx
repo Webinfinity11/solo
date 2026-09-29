@@ -8,7 +8,7 @@ import { z } from "zod";
 import { useState, type ReactNode } from "react";
 import { useCart, useCartHydrated } from "@/lib/cart-store";
 import { useI18n } from "@/i18n/provider";
-import { site } from "@/data/site";
+import { placeOrder } from "@/lib/orders";
 import { cn, formatPrice } from "@/lib/utils";
 import { Icon } from "@/components/ui/Icon";
 import { Field } from "@/components/forms/Field";
@@ -33,38 +33,39 @@ export function CheckoutForm() {
   const clear = useCart((s) => s.clear);
   const hydrated = useCartHydrated();
   const [placed, setPlaced] = useState(false);
+  const [error, setError] = useState(false);
   const { lines, subtotal } = useCartLines();
   const c = t.checkout;
   const f = c.fields;
 
   const schema = z.object({
-    email: z.string().trim().min(1, t.common.required).email(t.common.invalidEmail),
-    phone: z.string().trim().min(6, t.common.required),
     firstName: z.string().trim().min(1, t.common.required),
     lastName: z.string().trim().min(1, t.common.required),
-    country: z.string().trim().min(2, t.common.required),
+    phone: z.string().trim().min(6, t.common.required),
+    email: z.string().trim().min(1, t.common.required).email(t.common.invalidEmail),
     city: z.string().trim().min(2, t.common.required),
     address: z.string().trim().min(4, t.common.required),
-    zip: z.string().trim().optional(),
-    method: z.string(),
+    note: z.string().trim().max(1000).optional(),
+    payment: z.enum(["bank", "cod"]),
     confirm: z.literal(true, { message: t.common.required }),
   });
   type Values = z.infer<typeof schema>;
   const { register, handleSubmit, watch, formState } = useForm<Values>({
     resolver: zodResolver(schema),
-    defaultValues: { country: site.defaultCountry[lang], method: c.methods[0].id },
+    defaultValues: { payment: "bank" },
   });
   const e = formState.errors;
   const invalid = (k: keyof Values) => (e[k] ? { "aria-invalid": true as const, "aria-describedby": `co-${k}-error` } : {});
+  const payment = watch("payment");
 
-  const method = c.methods.find((m) => m.id === watch("method")) ?? c.methods[0];
-  const freeShipping = method.id === "standard" && subtotal >= site.freeShippingThreshold;
-  const shipping = freeShipping ? 0 : method.price;
-
-  const onSubmit = handleSubmit(async () => {
-    // Placeholder: create the order through the backend + payment gateway.
+  const onSubmit = handleSubmit(async (values) => {
+    setError(false);
+    const { confirm: _confirm, ...order } = values;
+    const result = await placeOrder({ ...order, lang, items: lines.map((l) => ({ variantId: l.variant.id, quantity: l.quantity })) }).catch(() => ({ ok: false as const }));
+    if (!result.ok) return setError(true);
     setPlaced(true);
-    router.push(href("/checkout/success"));
+    const query = new URLSearchParams({ order: result.number, pay: result.payment, total: String(result.total) });
+    router.push(`${href("/checkout/success")}?${query}`);
     clear();
   });
 
@@ -82,66 +83,58 @@ export function CheckoutForm() {
     );
   }
 
+  const input = (name: "firstName" | "lastName" | "phone" | "email" | "city" | "address", props: React.InputHTMLAttributes<HTMLInputElement>, className?: string) => (
+    <Field id={`co-${name}`} label={f[name]} error={e[name]?.message} required className={className}>
+      <input id={`co-${name}`} className="field" {...props} {...register(name)} {...invalid(name)} />
+    </Field>
+  );
+
+  const submitting = formState.isSubmitting;
+  const errorBox = error ? (
+    <p role="alert" className="border-s-[3px] border-danger bg-[#fbecea] px-4 py-3 text-[14px] text-danger">
+      {c.error}
+    </p>
+  ) : null;
+
   return (
     <form onSubmit={onSubmit} noValidate className="grid items-start gap-10 lg:grid-cols-[1fr_400px]">
       <div className="flex flex-col gap-8">
         <Step n={1} title={c.contact}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field id="co-email" label={f.email} error={e.email?.message} required>
-              <input id="co-email" type="email" autoComplete="email" className="field" {...register("email")} {...invalid("email")} />
-            </Field>
-            <Field id="co-phone" label={f.phone} error={e.phone?.message} required>
-              <input id="co-phone" type="tel" autoComplete="tel" className="field" {...register("phone")} {...invalid("phone")} />
-            </Field>
+            {input("firstName", { autoComplete: "given-name" })}
+            {input("lastName", { autoComplete: "family-name" })}
+            {input("phone", { type: "tel", autoComplete: "tel" })}
+            {input("email", { type: "email", autoComplete: "email" })}
           </div>
         </Step>
 
         <Step n={2} title={c.address}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field id="co-firstName" label={f.firstName} error={e.firstName?.message} required>
-              <input id="co-firstName" autoComplete="given-name" className="field" {...register("firstName")} {...invalid("firstName")} />
-            </Field>
-            <Field id="co-lastName" label={f.lastName} error={e.lastName?.message} required>
-              <input id="co-lastName" autoComplete="family-name" className="field" {...register("lastName")} {...invalid("lastName")} />
-            </Field>
-            <Field id="co-country" label={f.country} error={e.country?.message} required>
-              <input id="co-country" autoComplete="country-name" className="field" {...register("country")} {...invalid("country")} />
-            </Field>
-            <Field id="co-city" label={f.city} error={e.city?.message} required>
-              <input id="co-city" autoComplete="address-level2" className="field" {...register("city")} {...invalid("city")} />
-            </Field>
-            <Field id="co-address" label={f.address} error={e.address?.message} required className="sm:col-span-2">
-              <input id="co-address" autoComplete="street-address" className="field" {...register("address")} {...invalid("address")} />
-            </Field>
-            <Field id="co-zip" label={f.zip}>
-              <input id="co-zip" autoComplete="postal-code" className="field" {...register("zip")} />
+            {input("city", { autoComplete: "address-level2" })}
+            {input("address", { autoComplete: "street-address" })}
+            <Field id="co-note" label={f.note} className="sm:col-span-2">
+              <textarea id="co-note" rows={2} className="field min-h-[70px] py-3" {...register("note")} />
             </Field>
           </div>
+          <p className="mt-4 flex items-center gap-2 text-[14px] font-bold text-success">
+            <Icon name="truck" className="size-5" /> {c.deliveryText}
+          </p>
         </Step>
 
-        <Step n={3} title={c.method}>
+        <Step n={3} title={c.payment}>
           <div className="flex flex-col gap-2.5">
-            {c.methods.map((m) => {
-              const free = m.id === "standard" && subtotal >= site.freeShippingThreshold;
-              const checked = method.id === m.id;
-              return (
-                <label key={m.id} className={cn("flex cursor-pointer items-center gap-4 border p-4 transition-colors", checked ? "border-navy bg-mist" : "border-line hover:border-blue")}>
-                  <input type="radio" value={m.id} className="size-[18px] accent-navy" {...register("method")} />
-                  <span className="flex-1">
-                    <strong className="block text-[15px]">{m.label}</strong>
-                    <small className="text-[13px] text-muted">{m.time}</small>
-                  </span>
-                  <span className="text-[15px] font-bold">{free ? c.free : formatPrice(m.price)}</span>
-                </label>
-              );
-            })}
-          </div>
-        </Step>
-
-        <Step n={4} title={c.payment}>
-          <div className="flex items-center gap-3 border border-dashed border-line bg-mist p-5 text-[14px] text-muted">
-            <Icon name="lock" className="size-5 text-navy" />
-            {c.paymentPending}
+            {c.payments.map((m) => (
+              <label
+                key={m.id}
+                className={cn("flex cursor-pointer items-start gap-4 border p-4 transition-colors", payment === m.id ? "border-navy bg-mist" : "border-line hover:border-blue")}
+              >
+                <input type="radio" value={m.id} className="mt-0.5 size-[18px] accent-navy" {...register("payment")} />
+                <span className="flex-1">
+                  <strong className="block text-[15px]">{m.label}</strong>
+                  <small className="text-[13px] leading-relaxed text-muted">{m.text}</small>
+                </span>
+              </label>
+            ))}
           </div>
         </Step>
 
@@ -156,17 +149,23 @@ export function CheckoutForm() {
             </p>
           ) : null}
         </div>
-        <button type="submit" disabled={formState.isSubmitting} className="btn btn-navy w-full text-[15px] lg:hidden">
-          {c.place} · {formatPrice(subtotal + shipping)}
-        </button>
+        <div className="flex flex-col gap-3 lg:hidden">
+          {errorBox}
+          <button type="submit" disabled={submitting} className="btn btn-navy w-full text-[15px]">
+            {submitting ? t.common.sending : `${c.place} · ${formatPrice(subtotal)}`}
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 lg:sticky lg:top-[110px]">
-        <OrderSummary lines={lines} subtotal={subtotal} shipping={shipping} />
-        <button type="submit" disabled={formState.isSubmitting} className="btn btn-navy hidden w-full text-[15px] lg:flex">
-          <Icon name="lock" className="size-[18px]" />
-          {c.place}
-        </button>
+        <OrderSummary lines={lines} subtotal={subtotal} shipping={0} />
+        <div className="hidden flex-col gap-3 lg:flex">
+          {errorBox}
+          <button type="submit" disabled={submitting} className="btn btn-navy w-full text-[15px]">
+            <Icon name="lock" className="size-[18px]" />
+            {submitting ? t.common.sending : c.place}
+          </button>
+        </div>
       </div>
     </form>
   );

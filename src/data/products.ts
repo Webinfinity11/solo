@@ -1,7 +1,7 @@
 // Language-neutral product records. Descriptions and localized spec labels live in
 // data/i18n/<locale>/products.ts.
 // images: real high-resolution photos (≥600px); until then cards render a vector vial.
-// PRICES ARE PLACEHOLDERS. CAS / formula / weight / sequence are reference values
+// PRICES ARE TEST VALUES (10 GEL each). CAS / formula / weight / sequence are reference values
 // that must be checked against the supplier's documentation before launch.
 import type { ProductBadge, Variant } from "@/lib/types";
 
@@ -53,7 +53,7 @@ export const products: ProductRecord[] = [
     categorySlug: "glp-1-metabolic",
     kind: "lyophilized",
     images: [],
-    variants: variants("retatrutide", [["10mg", 120], ["20mg", 210], ["40mg", 380, false]]),
+    variants: variants("retatrutide", [["10mg", 10], ["20mg", 10], ["40mg", 10, false]]),
     specs: { purity: "≥99%", cas: "2381089-83-2", formula: "C221H342N46O68", molecularWeight: "4731.3 g/mol" },
     badges: ["bestseller", "new"],
     featured: true,
@@ -67,7 +67,7 @@ export const products: ProductRecord[] = [
     categorySlug: "glp-1-metabolic",
     kind: "lyophilized",
     images: [],
-    variants: variants("tirzepatide", [["10mg", 95], ["20mg", 170], ["40mg", 310]]),
+    variants: variants("tirzepatide", [["10mg", 10], ["20mg", 10], ["40mg", 10]]),
     specs: { purity: "≥99%", cas: "2023788-19-2", formula: "C225H348N48O68", molecularWeight: "4813.5 g/mol" },
     badges: ["bestseller"],
     featured: true,
@@ -81,7 +81,7 @@ export const products: ProductRecord[] = [
     categorySlug: "glp-1-metabolic",
     kind: "lyophilized",
     images: [],
-    variants: variants("semaglutide", [["10mg", 85], ["20mg", 150], ["40mg", 270]]),
+    variants: variants("semaglutide", [["10mg", 10], ["20mg", 10], ["40mg", 10]]),
     specs: { purity: "≥99%", cas: "910463-68-2", formula: "C187H291N45O59", molecularWeight: "4113.6 g/mol" },
     badges: ["bestseller"],
     featured: true,
@@ -95,7 +95,7 @@ export const products: ProductRecord[] = [
     categorySlug: "glp-1-metabolic",
     kind: "lyophilized",
     images: [],
-    variants: variants("aod-9604", [["5mg", 60]]),
+    variants: variants("aod-9604", [["5mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "221231-10-3",
@@ -113,7 +113,7 @@ export const products: ProductRecord[] = [
     categorySlug: "growth-hormone",
     kind: "lyophilized",
     images: [],
-    variants: variants("tesamorelin", [["10mg", 90], ["20mg", 165]]),
+    variants: variants("tesamorelin", [["10mg", 10], ["20mg", 10]]),
     specs: { purity: "≥99%", cas: "218949-48-5", formula: "C221H366N72O67S", molecularWeight: "5135.9 g/mol" },
     status: "active",
     createdAt: "2026-04-01",
@@ -125,7 +125,7 @@ export const products: ProductRecord[] = [
     categorySlug: "growth-hormone",
     kind: "lyophilized",
     images: [],
-    variants: variants("ipamorelin", [["10mg", 55]]),
+    variants: variants("ipamorelin", [["10mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "170851-70-4",
@@ -144,7 +144,7 @@ export const products: ProductRecord[] = [
     categorySlug: "growth-hormone",
     kind: "lyophilized",
     images: [],
-    variants: variants("cjc-1295-no-dac", [["10mg", 60]]),
+    variants: variants("cjc-1295-no-dac", [["10mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "863288-34-0",
@@ -162,7 +162,7 @@ export const products: ProductRecord[] = [
     categorySlug: "recovery-repair",
     kind: "lyophilized",
     images: [],
-    variants: variants("bpc-157", [["10mg", 50]]),
+    variants: variants("bpc-157", [["10mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "137525-51-0",
@@ -182,7 +182,7 @@ export const products: ProductRecord[] = [
     categorySlug: "recovery-repair",
     kind: "lyophilized",
     images: [],
-    variants: variants("tb-500", [["10mg", 65]]),
+    variants: variants("tb-500", [["10mg", 10]]),
     specs: { purity: "≥99%", cas: "77591-33-4", formula: "C212H350N56O78S", molecularWeight: "4963.5 g/mol" },
     badges: ["new"],
     status: "active",
@@ -195,7 +195,7 @@ export const products: ProductRecord[] = [
     categorySlug: "recovery-repair",
     kind: "lyophilized",
     images: [],
-    variants: variants("ghk-cu", [["100mg", 45]]),
+    variants: variants("ghk-cu", [["100mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "49557-75-7",
@@ -213,7 +213,7 @@ export const products: ProductRecord[] = [
     categorySlug: "longevity-cellular",
     kind: "lyophilized",
     images: [],
-    variants: variants("nad-plus", [["500mg", 70], ["1000mg", 120]]),
+    variants: variants("nad-plus", [["500mg", 10], ["1000mg", 10]]),
     specs: { purity: "≥99%", cas: "53-84-9", formula: "C21H27N7O14P2", molecularWeight: "663.4 g/mol" },
     status: "active",
     createdAt: "2026-06-28",
@@ -225,7 +225,7 @@ export const products: ProductRecord[] = [
     categorySlug: "longevity-cellular",
     kind: "lyophilized",
     images: [],
-    variants: variants("mots-c", [["10mg", 70], ["20mg", 125]]),
+    variants: variants("mots-c", [["10mg", 10], ["20mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "1627580-64-6",
@@ -243,7 +243,7 @@ export const products: ProductRecord[] = [
     categorySlug: "longevity-cellular",
     kind: "lyophilized",
     images: [],
-    variants: variants("glutathione", [["600mg", 40], ["1500mg", 75]]),
+    variants: variants("glutathione", [["600mg", 10], ["1500mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "70-18-8",
@@ -261,7 +261,7 @@ export const products: ProductRecord[] = [
     categorySlug: "cognitive",
     kind: "lyophilized",
     images: [],
-    variants: variants("selank", [["10mg", 50]]),
+    variants: variants("selank", [["10mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "129954-34-3",
@@ -279,7 +279,7 @@ export const products: ProductRecord[] = [
     categorySlug: "melanocortins",
     kind: "lyophilized",
     images: [],
-    variants: variants("melanotan-1", [["10mg", 45]]),
+    variants: variants("melanotan-1", [["10mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "75921-69-6",
@@ -297,7 +297,7 @@ export const products: ProductRecord[] = [
     categorySlug: "melanocortins",
     kind: "lyophilized",
     images: [],
-    variants: variants("melanotan-2", [["10mg", 45]]),
+    variants: variants("melanotan-2", [["10mg", 10]]),
     specs: {
       purity: "≥99%",
       cas: "121062-08-6",
@@ -315,7 +315,7 @@ export const products: ProductRecord[] = [
     categorySlug: "lab-supplies",
     kind: "solution",
     images: [],
-    variants: variants("bac-water", [["3ml", 8], ["5ml", 10], ["10ml", 14]]),
+    variants: variants("bac-water", [["3ml", 10], ["5ml", 10], ["10ml", 10]]),
     specs: { purity: "USP" },
     status: "active",
     createdAt: "2026-01-10",

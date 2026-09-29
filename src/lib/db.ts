@@ -38,6 +38,26 @@ async function createSchema(sql: Sql) {
       updated_at timestamptz not null default now(),
       unique (customer_id, product_slug)
     )`;
+  await sql`
+    create table if not exists orders (
+      id serial primary key,
+      number text not null unique,
+      status text not null default 'new',
+      payment text not null,
+      first_name text not null,
+      last_name text not null,
+      phone text not null,
+      email text not null,
+      city text not null,
+      address text not null,
+      note text not null default '',
+      items jsonb not null,
+      total numeric(10, 2) not null,
+      currency text not null,
+      lang text not null,
+      customer_id integer references customers(id) on delete set null,
+      created_at timestamptz not null default now()
+    )`;
 }
 
 /** Connected client with the schema in place, or null when DATABASE_URL is not set. */

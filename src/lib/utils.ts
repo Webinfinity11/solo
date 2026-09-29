@@ -17,7 +17,8 @@ export function mtavruli(value: string): string {
 
 export function formatPrice(value: number): string {
   const rounded = Number.isInteger(value) ? String(value) : value.toFixed(2);
-  return `${site.currencySymbol}${rounded}`;
+  // Lari is written after the amount: 10 ₾.
+  return `${rounded} ${site.currencySymbol}`;
 }
 
 export function slugify(value: string): string {
@@ -26,6 +27,13 @@ export function slugify(value: string): string {
 
 export function minPrice(product: Product): number {
   return Math.min(...product.variants.map((v) => v.price));
+}
+
+/** "10 ₾" or "10 ₾ – 25 ₾" across the product's sizes. */
+export function priceRange(product: Product): string {
+  const prices = product.variants.map((v) => v.price);
+  const [lo, hi] = [Math.min(...prices), Math.max(...prices)];
+  return lo === hi ? formatPrice(lo) : `${formatPrice(lo)} – ${formatPrice(hi)}`;
 }
 
 export function isInStock(product: Product): boolean {
