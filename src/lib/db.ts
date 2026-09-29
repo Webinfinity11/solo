@@ -38,6 +38,8 @@ async function createSchema(sql: Sql) {
       updated_at timestamptz not null default now(),
       unique (customer_id, product_slug)
     )`;
+  // Photos/videos attached to a review: [{ url, type: "image" | "video" }].
+  await sql`alter table reviews add column if not exists media jsonb not null default '[]'::jsonb`;
   await sql`
     create table if not exists orders (
       id serial primary key,

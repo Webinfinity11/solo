@@ -45,6 +45,25 @@ export function ReviewsModeration({ reviews, productNames }: { reviews: AdminRev
               </span>
             </div>
             <p className="whitespace-pre-line text-[14px] leading-relaxed">{r.body}</p>
+            {r.media.length ? (
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {r.media.map((m) => (
+                  <li key={m.url}>
+                    <a href={m.url} target="_blank" rel="noopener noreferrer" className="relative block size-24 overflow-hidden border border-line bg-mist" title="გახსნა ახალ ფანჯარაში">
+                      {m.type === "image" ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={m.url} alt="" className="size-full object-cover" />
+                      ) : (
+                        <>
+                          <video src={`${m.url}#t=0.1`} preload="metadata" muted className="size-full object-cover" />
+                          <span className="absolute inset-0 grid place-items-center bg-navy/35 text-[20px] text-white">▶</span>
+                        </>
+                      )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             <div className="mt-3 flex flex-wrap gap-2">
               {r.status !== "approved" ? (
                 <button type="button" disabled={pending} className="adm-btn adm-btn-primary" onClick={() => save(() => setReviewStatus(r.id, "approved"))}>

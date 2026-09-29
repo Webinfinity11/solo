@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { locales } from "@/i18n/config";
 import { getContent } from "@/lib/content/store";
+import { isReviewMediaUrl, type ReviewMedia } from "@/lib/reviews";
 import {
   accountsAvailable,
   currentCustomer,
@@ -78,23 +79,29 @@ export async function logoutCustomer(): Promise<void> {
 }
 
 /** Creates the customer's review of a product, or replaces their earlier one (back to moderation). */
-export async function submitReview(input: { productSlug: string; rating: number; body: string; lang: string }): Promise<ReviewResult> {
+export async function submitReview(input: { productSlug: string; rating: number; body: string; lang: string; media?: ReviewMedia[] }): Promise<ReviewResult> {
   const customer = await getCurrentCustomer();
   if (!customer) return { ok: false, error: "login" };
   const parsed = z
-    .object({ productSlug: z.string().min(1), rating: z.number().int().min(1).max(5), body: z.string().trim().max(2000), lang: z.enum(locales) })
+    .object({
+      productSlug: z.string().min(1),
+      rating: z.number().int().min(1).max(5),
+      body: z.string().trim().max(2000),
+      lang: z.enum(locales),
+      media: z.array(z.object({ url: z.string().refine(isReviewMediaUrl), type: z.enum(["image", "video"]) })).max(4).default([]),
+    })
     .safeParse(input);
   if (!parsed.success) return { ok: false, error: "error" };
-  const { productSlug, rating, body, lang } = parsed.data;
+  const { productSlug, rating, body, lang, media } = parsed.data;
   if (body.length < 10) return { ok: false, error: "tooShort" };
   if (!(await getContent()).products.some((p) => p.slug === productSlug && p.status === "active")) return { ok: false, error: "error" };
   try {
     const sql = (await db())!;
     await sql`
-      insert into reviews (customer_id, product_slug, rating, body, lang)
-      values (${customer.id}, ${productSlug}, ${rating}, ${body}, ${lang})
+      insert into reviews (customer_id, product_slug, rating, body, lang, media)
+      values (${customer.id}, ${productSlug}, ${rating}, ${body}, ${lang}, ${JSON.stringify(media)}::jsonb)
       on conflict (customer_id, product_slug) do update
-        set rating = excluded.rating, body = excluded.body, lang = excluded.lang, status = 'pending', updated_at = now()`;
+        set rating = excluded.rating, body = excluded.body, lang = excluded.lang, media = excluded.media, status = 'pending', updated_at = now()`;
     return { ok: true };
   } catch (e) {
     console.error(e);

@@ -15,6 +15,8 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { CoaList } from "@/components/coa/CoaList";
+import { ReviewsSection } from "@/components/coa/ReviewsSection";
+import { getApprovedReviews } from "@/lib/reviews";
 
 type Params = Promise<{ lang: string; slug: string }>;
 
@@ -44,7 +46,9 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { slug } = await params;
   const product = await getProduct(lang, slug);
   if (!product) notFound();
-  const [category, coa, all] = await Promise.all([getCategory(lang, product.categorySlug), getCoa(product.slug), getProducts(lang)]);
+  const [category, coa, all, allReviews] = await Promise.all([getCategory(lang, product.categorySlug), getCoa(product.slug), getProducts(lang), getApprovedReviews()]);
+  const reviews = allReviews.filter((r) => r.productSlug === product.slug);
+  const rating = reviews.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
   const related = all.filter((p) => p.categorySlug === product.categorySlug && p.slug !== product.slug).slice(0, 4);
   const fill = related.length < 4 ? all.filter((p) => p.featured && p.slug !== product.slug && !related.includes(p)).slice(0, 4 - related.length) : [];
   const unit = product.variants[0].unit;
@@ -79,6 +83,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     brand: { "@type": "Brand", name: "SOLO Research" },
     image: product.images.map((src) => `${site.url}${src}`),
     category: category?.name,
+    aggregateRating: reviews.length ? { "@type": "AggregateRating", ratingValue: rating.toFixed(1), reviewCount: reviews.length } : undefined,
     // Prices are published only while the shop is enabled.
     offers: !site.shopEnabled ? undefined : product.variants.map((v) => ({
       "@type": "Offer",
@@ -119,6 +124,16 @@ export default async function ProductPage({ params }: { params: Params }) {
               </Link>
             ) : null}
             <h1 className="mb-3 text-[34px] font-bold leading-[1.1] tracking-[-.035em] sm:text-[42px]">{product.name}</h1>
+            {reviews.length ? (
+              <a href="#reviews" className="mb-3 inline-flex items-center gap-2 text-[14px] hover:underline">
+                <span className="text-[#e0a800]" aria-hidden="true" dir="ltr">
+                  {"★".repeat(Math.round(rating))}
+                  <span className="text-[#d5dde5]">{"★".repeat(5 - Math.round(rating))}</span>
+                </span>
+                <strong>{rating.toFixed(1)}</strong>
+                <span className="text-muted">· {t.reviews.count(reviews.length)}</span>
+              </a>
+            ) : null}
             <p className="mb-5 text-[16px] leading-relaxed text-muted">{product.shortDescription}</p>
             <div className="mb-7 flex flex-wrap gap-2">
               <Badge tone="navy">{t.common.researchUseOnly}</Badge>
@@ -220,6 +235,8 @@ export default async function ProductPage({ params }: { params: Params }) {
           {t.product.disclaimerShort}
         </p>
       </section>
+
+      <ReviewsSection reviews={reviews} products={[{ slug: product.slug, name: product.name }]} product={{ slug: product.slug, name: product.name }} />
 
       {related.length + fill.length ? (
         <section aria-labelledby="related-title" className="container-site pb-14">

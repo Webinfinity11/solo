@@ -301,6 +301,16 @@ const en: Dictionary = {
     tooShort: "The review is too short (at least 10 characters).",
     error: "Could not submit. Please try again.",
     stars: "stars out of 5",
+    productTitle: "Customer reviews",
+    count: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
+    beFirst: "No reviews yet — be the first to review this product.",
+    addMedia: "Photo or video",
+    mediaHint: "Up to 4 files · photos up to 10 MB, videos up to 50 MB",
+    uploading: "Uploading…",
+    uploadError: "The file could not be uploaded. Check its format and size.",
+    remove: "Remove",
+    viewMedia: "View media",
+    allReviews: "All reviews",
   },
 
   quality: {

@@ -248,7 +248,8 @@ async function moderate(run: (sql: Sql) => Promise<void>): Promise<ActionResult>
   if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
   await run(sql);
   updateTag(REVIEWS_TAG);
-  revalidatePath("/[lang]/coa", "page");
+  // Reviews appear on the lab results page and on product pages.
+  revalidatePath("/", "layout");
   return { ok: true };
 }
 
