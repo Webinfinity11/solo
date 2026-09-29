@@ -238,3 +238,111 @@ export function move<T>(list: T[], index: number, delta: -1 | 1): T[] {
   [copy[index], copy[target]] = [copy[target], copy[index]];
   return copy;
 }
+
+/** Downscale large photos in the browser before upload (keeps the storefront fast). */
+async function shrinkImage(file: File, maxSide = 2000): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    if (scale === 1 && file.size < 1.5 * 1024 * 1024) return file;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.88));
+    return blob && blob.size < file.size ? blob : file;
+  } catch {
+    return file;
+  }
+}
+
+/**
+ * One photo: click to upload (or replace), × to remove. Used for the main product photo,
+ * each size's photo and the extra gallery photos.
+ */
+export function PhotoSlot({
+  value,
+  onChange,
+  folder = "products",
+  size = "md",
+  label,
+}: {
+  value?: string;
+  onChange: (url: string | undefined) => void;
+  folder?: string;
+  size?: "sm" | "md" | "lg";
+  label?: string;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+  const box = size === "sm" ? "size-14" : size === "lg" ? "aspect-square w-full" : "aspect-square w-full";
+
+  async function handle(file: File | undefined) {
+    if (!file) return;
+    setBusy(true);
+    setError(false);
+    try {
+      const data = await shrinkImage(file);
+      const base = file.name.toLowerCase().replace(/\.[^.]+$/, "").replace(/[^a-z0-9]+/g, "-") || "photo";
+      const ext = data === file ? (file.name.split(".").pop()?.toLowerCase() ?? "jpg") : "webp";
+      const blob = await upload(`${folder}/${base}.${ext}`, data, { access: "public", handleUploadUrl: "/api/admin/upload", contentType: data.type || file.type });
+      onChange(blob.url);
+    } catch {
+      setError(true);
+    } finally {
+      setBusy(false);
+      if (input.current) input.current.value = "";
+    }
+  }
+
+  return (
+    <div className={cn("relative shrink-0", size === "sm" ? "" : "w-full")}>
+      <button
+        type="button"
+        onClick={() => input.current?.click()}
+        disabled={busy}
+        title={value ? "ფოტოს შეცვლა" : "ფოტოს ატვირთვა"}
+        className={cn(
+          "group relative grid place-items-center overflow-hidden rounded-sm border transition-colors",
+          box,
+          value ? "border-line bg-photo hover:border-navy" : "border-2 border-dashed border-line bg-mist hover:border-navy hover:bg-ice",
+          error && "border-danger",
+        )}
+      >
+        {value ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={value} alt="" className="size-full object-cover" />
+            <span className="absolute inset-0 grid place-items-center bg-navy/55 text-[12px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100">
+              {size === "sm" ? "↻" : "შეცვლა"}
+            </span>
+          </>
+        ) : (
+          <span className="flex flex-col items-center gap-1 text-center text-navy/70">
+            <span className={size === "sm" ? "text-[20px] leading-none" : "text-[28px] leading-none"}>+</span>
+            {size === "sm" ? null : <span className="px-2 text-[12px] font-bold">{label ?? "ფოტოს ატვირთვა"}</span>}
+          </span>
+        )}
+        {busy ? (
+          <span className="absolute inset-0 grid place-items-center bg-white/80">
+            <span className="size-5 animate-spin rounded-full border-2 border-navy/20 border-t-navy" />
+          </span>
+        ) : null}
+      </button>
+      {value && !busy ? (
+        <button
+          type="button"
+          aria-label="ფოტოს წაშლა"
+          title="წაშლა"
+          onClick={() => onChange(undefined)}
+          className={cn("absolute grid place-items-center rounded-full bg-white text-danger shadow ring-1 ring-line hover:bg-danger hover:text-white", size === "sm" ? "-end-1.5 -top-1.5 size-5 text-[11px]" : "end-2 top-2 size-7 text-[14px]")}
+        >
+          ✕
+        </button>
+      ) : null}
+      <input ref={input} type="file" accept="image/*" hidden onChange={(e) => handle(e.target.files?.[0])} />
+    </div>
+  );
+}

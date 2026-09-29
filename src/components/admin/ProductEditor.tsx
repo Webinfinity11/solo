@@ -18,7 +18,7 @@ import {
   Select,
   TextArea,
   TextInput,
-  UploadButton,
+  PhotoSlot,
   move,
   newId,
   useSave,
@@ -56,6 +56,20 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
         return next;
       }),
     });
+
+  // Photos: the first image is the main one (catalog card); every size can carry its own
+  // photo (shown when that size is picked); extras are optional gallery photos.
+  const variantPhotos = (variants: Variant[]) => variants.flatMap((v) => (v.image ? [v.image] : []));
+  const main = p.images[0];
+  const extras = p.images.slice(1).filter((src) => !variantPhotos(p.variants).includes(src));
+  const compose = (m: string | undefined, variants: Variant[], extra: string[]) => [...new Set([m, ...variantPhotos(variants), ...extra].filter((x): x is string => Boolean(x)))];
+  const setMain = (url: string | undefined) => update({ images: compose(url, p.variants, extras) });
+  const setExtras = (next: string[]) => update({ images: compose(main, p.variants, next) });
+  function setVariantPhoto(i: number, image: string | undefined) {
+    const variants = p.variants.map((v, j) => (j === i ? { ...v, image } : v));
+    // With no main photo yet, the first size photo becomes the main one.
+    update({ variants, images: compose(main ?? image, variants, extras) });
+  }
 
   function addVariant() {
     const last = p.variants.at(-1);
@@ -147,7 +161,11 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
             {p.variants.length === 0 ? <p className="text-[14px] text-muted">დაამატეთ მინიმუმ ერთი ვარიაცია (მაგ. 10mg).</p> : null}
             <div className="flex flex-col gap-3">
               {p.variants.map((v, i) => (
-                <div key={v.id} className="grid grid-cols-2 items-end gap-3 border border-line bg-mist p-3 sm:grid-cols-[90px_80px_100px_100px_1fr_110px_auto]">
+                <div key={v.id} className="grid grid-cols-2 items-end gap-3 border border-line bg-mist p-3 sm:grid-cols-[56px_90px_80px_100px_100px_1fr_auto]">
+                  <div className="col-span-2 sm:col-span-1">
+                    <p className="adm-label">ფოტო</p>
+                    <PhotoSlot size="sm" value={v.image} onChange={(image) => setVariantPhoto(i, image)} />
+                  </div>
                   <NumberInput label="რაოდენობა" value={v.amount} onChange={(amount) => setVariant(i, { amount: amount ?? 0 })} />
                   <Select
                     label="ერთეული"
@@ -158,28 +176,24 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
                       { value: "ml", label: "ml" },
                     ]}
                   />
-                  <NumberInput label="ფასი ($)" value={v.price} onChange={(price) => setVariant(i, { price: price ?? 0 })} />
+                  <NumberInput label="ფასი (₾)" value={v.price} onChange={(price) => setVariant(i, { price: price ?? 0 })} />
                   <NumberInput label="ძველი ფასი" value={v.compareAtPrice} onChange={(compareAtPrice) => setVariant(i, { compareAtPrice })} />
                   <TextInput label="SKU" value={v.sku} onChange={(sku) => setVariant(i, { sku })} />
-                  <Select
-                    label="ფოტო"
-                    value={v.image && p.images.includes(v.image) ? v.image : ""}
-                    onChange={(image) => setVariant(i, { image: image || undefined })}
-                    options={[{ value: "", label: "—" }, ...p.images.map((src, n) => ({ value: src, label: `ფოტო ${n + 1}` }))]}
-                  />
                   <div className="col-span-2 flex items-center gap-2 pb-1.5 sm:col-span-1">
                     <Checkbox label="მარაგშია" checked={v.inStock} onChange={(inStock) => setVariant(i, { inStock })} />
                     <button type="button" className="adm-btn px-2" title="ზემოთ" onClick={() => update({ variants: move(p.variants, i, -1) })}>
                       ↑
                     </button>
-                    <button type="button" className="adm-btn adm-btn-danger px-2" title="წაშლა" onClick={() => update({ variants: p.variants.filter((_, j) => j !== i) })}>
+                    <button type="button" className="adm-btn adm-btn-danger px-2" title="წაშლა" onClick={() => {
+                        const variants = p.variants.filter((_, j) => j !== i);
+                        update({ variants, images: compose(main === v.image ? undefined : main, variants, extras) });
+                      }}>
                       ✕
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-[12px] text-muted">ფასები საიტზე ახლა დამალულია (კატალოგის რეჟიმი), მაგრამ შენახვა მაინც შეიძლება.</p>
           </Section>
 
           <Section title="აღწერა" actions={<LangTabs value={lang} onChange={setLang} />}>
@@ -237,29 +251,19 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
             </div>
           </Section>
 
-          <Section title="ფოტოები" actions={<UploadButton label="+ ატვირთვა" accept="image/*" multiple folder="products" onUploaded={(urls) => update({ images: [...p.images, ...urls] })} />}>
-            {p.images.length === 0 ? <p className="text-[13px] text-muted">ფოტოს გარეშე საიტი აჩვენებს ფლაკონის ილუსტრაციას. სასურველია ≥600px, თეთრ ან გამჭვირვალე ფონზე.</p> : null}
-            <ul className="grid grid-cols-2 gap-3">
-              {p.images.map((src, i) => (
-                <li key={src} className="border border-line">
-                  <div className="aspect-square bg-ice">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" className="size-full object-contain" />
-                  </div>
-                  <div className="flex items-center justify-between gap-1 p-1.5">
-                    <span className="text-[11px] font-bold text-muted">{i === 0 ? "მთავარი" : ""}</span>
-                    <span className="flex gap-1">
-                      <button type="button" className="adm-btn min-h-0 px-2 py-1" title="წინ" onClick={() => update({ images: move(p.images, i, -1) })}>
-                        ←
-                      </button>
-                      <button type="button" className="adm-btn adm-btn-danger min-h-0 px-2 py-1" title="წაშლა" onClick={() => update({ images: p.images.filter((_, j) => j !== i) })}>
-                        ✕
-                      </button>
-                    </span>
-                  </div>
-                </li>
+          <Section title="მთავარი ფოტო">
+            <PhotoSlot size="lg" value={main} onChange={setMain} label="მთავარი ფოტოს ატვირთვა" />
+            <p className="mt-2 text-[12px] text-muted">ჩანს კატალოგის ბარათზე. ზომების ფოტოები იტვირთება „ვარიაციებში“, თითოეულის გვერდით.</p>
+          </Section>
+
+          <Section title="დამატებითი ფოტოები">
+            <div className="grid grid-cols-3 gap-2">
+              {extras.map((src, i) => (
+                <PhotoSlot key={src} value={src} onChange={(url) => setExtras(url ? extras.map((x, j) => (j === i ? url : x)) : extras.filter((_, j) => j !== i))} />
               ))}
-            </ul>
+              <PhotoSlot key={extras.length} onChange={(url) => url && setExtras([...extras, url])} label="დამატება" />
+            </div>
+            <p className="mt-2 text-[12px] text-muted">არასავალდებულო — მაგ. შეფუთვა ან დეტალი. პროდუქტის გვერდზე მინიატიურებად ჩანს.</p>
           </Section>
         </div>
       </div>
