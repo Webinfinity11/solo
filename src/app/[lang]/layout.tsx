@@ -35,18 +35,12 @@ const arabic = Noto_Sans_Arabic({ subsets: ["arabic"], weight: ["400", "700"], v
 // Condensed face matching the logo lettering; used on vector product labels.
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-label", display: "swap" });
 
-/** TBC Contractica (Georgian + Mtavruli + Latin) - headings and small uppercase labels only. */
-const contractica = localFont({
-  variable: "--font-tbc",
+/** FiraGO Bold (Georgian, Latin, Cyrillic, Arabic) - headings and small uppercase labels. Body text stays Noto Sans. */
+const firago = localFont({
+  variable: "--font-heading",
   display: "swap",
-  // No Arial-based fallback face: it would render Cyrillic headings before Noto Sans.
   adjustFontFallback: false,
-  src: [
-    { path: "../../fonts/TBCContractica-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../../fonts/TBCContractica-Medium.ttf", weight: "500", style: "normal" },
-    { path: "../../fonts/TBCContractica-Bold.ttf", weight: "700", style: "normal" },
-    { path: "../../fonts/TBCContractica-Black.ttf", weight: "900", style: "normal" },
-  ],
+  src: [{ path: "../../fonts/FiraGO-Bold.woff2", weight: "700", style: "normal" }],
 });
 
 /** BPG Nino Mtavruli: capital-style Georgian drawn on the ordinary Mkhedruli code points.
@@ -98,7 +92,7 @@ export default async function LangLayout({ children, params }: { children: React
     <html
       lang={localeMeta[locale].htmlLang}
       dir={localeMeta[locale].dir}
-      className={`${georgian.variable} ${notoSans.variable} ${arabic.variable} ${oswald.variable} ${contractica.variable} ${mtavruliFont.variable}`}
+      className={`${georgian.variable} ${notoSans.variable} ${arabic.variable} ${oswald.variable} ${firago.variable} ${mtavruliFont.variable}`}
     >
       <body className="font-sans">
         <noscript>
