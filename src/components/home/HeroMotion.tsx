@@ -133,7 +133,10 @@ export function HeroMotion({ className }: { className?: string }) {
       ctx!.translate(WORLD_W / 2, WORLD_H / 2);
       ctx!.scale(1.03, 1.03);
       ctx!.translate(-WORLD_W / 2, -WORLD_H / 2);
+      // Lift the hexagons/molecules a little; the vial is drawn later without the filter.
+      ctx!.filter = "brightness(1.22) contrast(1.14) saturate(1.12)";
       ctx!.drawImage(background, 0, 0, WORLD_W, WORLD_H);
+      ctx!.filter = "none";
       ctx!.restore();
       dust(t, false);
 

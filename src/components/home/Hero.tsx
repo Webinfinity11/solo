@@ -30,10 +30,10 @@ export function Hero({ t, href, whatsapp }: { t: Dictionary; href: (p: string) =
         <HeroMotion />
         {/* Overlay. Mobile/tablet: the copy sits over the vial, so the whole scene is dimmed.
             Desktop: lighter overall dim + a deep shade behind the copy (mirrored for right-to-left). */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#020b16]/65 xl:bg-[#020b16]/35" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#020b16]/55 xl:bg-[#020b16]/15" />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(2,11,22,.95)_0%,rgba(2,11,22,.82)_34%,rgba(2,11,22,.4)_56%,rgba(2,11,22,.05)_76%)] xl:block rtl:bg-[linear-gradient(270deg,rgba(2,11,22,.95)_0%,rgba(2,11,22,.82)_34%,rgba(2,11,22,.4)_56%,rgba(2,11,22,.05)_76%)]"
+          className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(2,11,22,.92)_0%,rgba(2,11,22,.75)_32%,rgba(2,11,22,.28)_52%,rgba(2,11,22,0)_70%)] xl:block rtl:bg-[linear-gradient(270deg,rgba(2,11,22,.92)_0%,rgba(2,11,22,.75)_32%,rgba(2,11,22,.28)_52%,rgba(2,11,22,0)_70%)]"
         />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020b16]/70 to-transparent" />
       </div>
