@@ -16,6 +16,11 @@ const STATUS: Record<OrderStatus, { label: string; className: string }> = {
 };
 const PAYMENT = { bank: "საბანკო გადარიცხვა", cod: "კურიერთან" };
 
+/** "29.09.2026 14:43" in Tbilisi time; en-GB is available in every runtime, unlike ka-GE. */
+function tbilisiTime(iso: string): string {
+  return new Date(iso).toLocaleString("en-GB", { timeZone: "Asia/Tbilisi", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }).replace(",", "");
+}
+
 export function OrdersList({ orders }: { orders: AdminOrder[] }) {
   const [filter, setFilter] = useState<OrderStatus | "all">("all");
   const [openId, setOpenId] = useState<number | null>(null);
@@ -45,7 +50,7 @@ export function OrdersList({ orders }: { orders: AdminOrder[] }) {
                 <span className="text-[14px]">
                   {o.firstName} {o.lastName}
                 </span>
-                <span className="text-[13px] text-muted">{new Date(o.createdAt).toLocaleString("ka-GE", { dateStyle: "short", timeStyle: "short" })}</span>
+                <span className="text-[13px] text-muted">{tbilisiTime(o.createdAt)}</span>
                 <span className="ms-auto text-[15px] font-bold">{formatPrice(o.total)}</span>
               </button>
               {open ? (

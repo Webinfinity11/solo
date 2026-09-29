@@ -2,6 +2,7 @@
 // "reviews" tag; moderating a review in the admin expires it.
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
+import { CONTENT_TAG } from "@/lib/content/store";
 
 export const REVIEWS_TAG = "reviews";
 
@@ -32,7 +33,8 @@ async function readApproved(): Promise<PublicReview[]> {
   }));
 }
 
-export const getApprovedReviews = unstable_cache(readApproved, ["approved-reviews"], { tags: [REVIEWS_TAG] });
+// Also tagged "content", so any admin save refreshes the reviews shown on the site.
+export const getApprovedReviews = unstable_cache(readApproved, ["approved-reviews"], { tags: [REVIEWS_TAG, CONTENT_TAG] });
 
 export type AdminReview = PublicReview & { status: "pending" | "approved" | "rejected"; name: string; email: string; lang: string };
 
