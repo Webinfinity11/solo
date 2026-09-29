@@ -47,7 +47,7 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((v) => !v)}
         className="flex h-10 items-center gap-1 rounded-sm px-2 text-[13px] font-bold transition-colors hover:bg-ice"
       >
-        <Icon name="globe" className="size-[18px]" />
+        <Icon name="globe" className="hidden size-[18px] sm:block" />
         {localeMeta[lang].short}
         <Icon name="down" className={cn("size-3.5 transition-transform", open && "rotate-180")} />
       </button>

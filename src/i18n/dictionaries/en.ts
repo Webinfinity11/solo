@@ -3,7 +3,7 @@ import type { Dictionary } from "./ka";
 // English UI copy. Must satisfy the same `Dictionary` shape as the Georgian source.
 const en: Dictionary = {
   meta: {
-    siteTitle: "SOLO Research — Research Peptides",
+    siteTitle: "SOLO Research - Research Peptides",
     siteDescription:
       "High-purity research peptides for laboratory research. Every lot ships with a Certificate of Analysis (COA).",
   },
@@ -24,7 +24,7 @@ const en: Dictionary = {
     invalidEmail: "Enter a valid email address",
     tooShort: "Text is too short",
     sending: "Sending…",
-    placeholderNote: "Placeholder copy — final text will be added before launch.",
+    placeholderNote: "Placeholder copy - final text will be added before launch.",
     updated: "Updated",
     fromPrice: (price: string) => `From ${price}`,
     products: (n: number) => `${n} ${n === 1 ? "product" : "products"}`,
@@ -37,7 +37,7 @@ const en: Dictionary = {
     agree: "I agree to the Terms & Conditions and the Research Use Only (RUO) Agreement",
     enter: "I agree",
     exit: "Exit",
-    exitMessage: "Sorry — access to this site is restricted to researchers aged 18 and over.",
+    exitMessage: "Sorry - access to this site is restricted to researchers aged 18 and over.",
   },
 
   // Scrolling ticker above the header.
@@ -200,7 +200,7 @@ const en: Dictionary = {
       whatsapp: "Message us on WhatsApp",
       benefits: [
         { label: "Delivery", value: "24", unit: "hours" },
-        { label: "Purity", value: "99%", unit: "+" },
+        { label: "Purity", value: "99%", unit: "" },
       ],
     },
     featured: { eyebrow: "Bestsellers", title: "Most requested" },
@@ -217,7 +217,7 @@ const en: Dictionary = {
         },
         {
           title: "COA with every lot",
-          text: "Certificates of Analysis are public — search by lot number or product name.",
+          text: "Certificates of Analysis are public - search by lot number or product name.",
           link: "View certificates",
         },
         {
@@ -238,11 +238,11 @@ const en: Dictionary = {
     placeholder: "Your email",
     label: "Email address",
     submit: "Subscribe",
-    success: "Thank you! You're subscribed (demo mode — no email was sent).",
+    success: "Thank you! You're subscribed (demo mode - no email was sent).",
   },
 
   footer: {
-    tagline: "Research-grade peptides — independently tested and discreetly shipped.",
+    tagline: "Research-grade peptides - independently tested and discreetly shipped.",
     catalog: "Catalog",
     company: "Company",
     support: "Support",
@@ -274,7 +274,7 @@ const en: Dictionary = {
     howTitle: "How to read a COA",
     how: [
       { title: "Lot number", text: "Match the number on the certificate to the label on your vial." },
-      { title: "Purity (HPLC)", text: "The main peak area relative to the total on the chromatogram — our standard is ≥99%." },
+      { title: "Purity (HPLC)", text: "The main peak area relative to the total on the chromatogram - our standard is ≥99%." },
       { title: "Identity (MS)", text: "The measured molecular weight should match the theoretical value within tolerance." },
       { title: "Laboratory & date", text: "The testing laboratory and the date of analysis are stated." },
     ],
@@ -292,7 +292,7 @@ const en: Dictionary = {
     rating: "Rating",
     text: "Your review",
     placeholder: "Quality, purity, packaging, delivery…",
-    rules: "Do not mention dosing or human use — such reviews will not be published.",
+    rules: "Do not mention dosing or human use - such reviews will not be published.",
     submit: "Submit",
     sent: "Thank you! Your review has been published.",
     loginPrompt: "Sign in or create an account to leave a review.",
@@ -303,9 +303,9 @@ const en: Dictionary = {
     stars: "stars out of 5",
     productTitle: "Customer reviews",
     count: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
-    beFirst: "No reviews yet — be the first to review this product.",
+    beFirst: "No reviews yet - be the first to review this product.",
     addMedia: "Add photos or a video",
-    tooLarge: "The file is too large — videos must be under 15 MB.",
+    tooLarge: "The file is too large - videos must be under 15 MB.",
     mediaHint: "Up to 4 files · photos up to 10 MB, videos up to 50 MB",
     uploading: "Uploading…",
     uploadError: "The file could not be uploaded. Check its format and size.",
@@ -322,7 +322,7 @@ const en: Dictionary = {
     sections: [
       {
         title: "Manufacturing & synthesis",
-        text: "We work with manufacturers that use solid-phase peptide synthesis (SPPS) and control every stage — from raw materials to lyophilization.",
+        text: "We work with manufacturers that use solid-phase peptide synthesis (SPPS) and control every stage - from raw materials to lyophilization.",
       },
       {
         title: "Testing methods",
@@ -402,19 +402,19 @@ const en: Dictionary = {
     },
     volumeOptions: ["Under $1,000", "$1,000 – $5,000", "$5,000 – $15,000", "Over $15,000"],
     submit: "Request pricing",
-    success: "Thank you! Your request has been received. (Demo mode — no data was sent.)",
+    success: "Thank you! Your request has been received. (Demo mode - no data was sent.)",
   },
 
   about: {
     eyebrow: "About",
     title: "Science today. A better tomorrow.",
     story: [
-      "SOLO Research was founded with a single goal: to supply researchers with compounds whose quality they can verify through documentation — not just take on trust.",
+      "SOLO Research was founded with a single goal: to supply researchers with compounds whose quality they can verify through documentation - not just take on trust.",
       "Every lot undergoes independent testing, every certificate is published openly, and every order is shipped so the compound reaches the lab in unaltered condition.",
     ],
     valuesTitle: "Our values",
     values: [
-      { title: "Precision", text: "Numbers you can verify — from purity to molecular weight." },
+      { title: "Precision", text: "Numbers you can verify - from purity to molecular weight." },
       { title: "Transparency", text: "Every COA is public. No cherry-picked results." },
       { title: "Discovery", text: "We build a catalog that serves scientific research." },
     ],
@@ -426,17 +426,17 @@ const en: Dictionary = {
   faq: {
     eyebrow: "Support",
     title: "Frequently asked questions",
-    description: "Can't find an answer? Write to us — we reply within one business day.",
+    description: "Can't find an answer? Write to us - we reply within one business day.",
     contactCta: "Contact us",
   },
 
   contact: {
     eyebrow: "Contact",
     title: "Let's talk research.",
-    description: "Questions about an order, a COA or wholesale partnerships — get in touch.",
+    description: "Questions about an order, a COA or wholesale partnerships - get in touch.",
     fields: { name: "Name", email: "Email", subject: "Subject", message: "Message" },
     submit: "Send",
-    success: "Thank you! Your message has been received. (Demo mode — no data was sent.)",
+    success: "Thank you! Your message has been received. (Demo mode - no data was sent.)",
     emailLabel: "Email",
     phoneLabel: "Phone",
     hoursLabel: "Business hours",
@@ -540,7 +540,7 @@ const en: Dictionary = {
     confirm: "I confirm that I am 18+ and that these products are for research use only",
     summary: "Order summary",
     place: "Place order",
-    empty: "Your cart is empty — nothing to check out.",
+    empty: "Your cart is empty - nothing to check out.",
     error: "The order could not be sent. Please try again or contact us.",
     successTitle: "Thank you! Your order has been received.",
     orderNumber: "Order number",

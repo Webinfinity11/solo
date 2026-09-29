@@ -58,9 +58,9 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-line bg-white/97 backdrop-blur-lg">
-        <div className="container-site flex h-[76px] items-center justify-between gap-6 lg:h-[88px]">
+        <div className="container-site flex h-[76px] items-center justify-between gap-2 sm:gap-6 lg:h-[88px]">
           <Link href={href("/")} aria-label="SOLO Research" className="shrink-0">
-            <Logo priority />
+            <Logo priority className="w-[124px] sm:w-[170px]" />
           </Link>
 
           <nav aria-label={t.nav.menu} className="hidden self-stretch lg:flex lg:items-stretch lg:gap-6 xl:gap-8">
@@ -113,11 +113,9 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-0.5 sm:gap-2">
-            <div className="hidden sm:block">
-              <Suspense>
-                <LanguageSwitcher />
-              </Suspense>
-            </div>
+            <Suspense>
+              <LanguageSwitcher />
+            </Suspense>
             <button type="button" onClick={() => setSearchOpen(true)} aria-label={t.nav.search} className="grid h-10 w-10 place-items-center rounded-sm transition-colors hover:bg-ice">
               <Icon name="search" />
             </button>

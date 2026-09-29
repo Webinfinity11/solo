@@ -57,7 +57,7 @@ export function WholesaleForm() {
       <Field id="ws-volume" label={f.volume} error={e.volume?.message} required>
         <select id="ws-volume" className="field" defaultValue="" {...register("volume")} {...invalid("volume")}>
           <option value="" disabled>
-            —
+            -
           </option>
           {t.wholesale.volumeOptions.map((o) => (
             <option key={o} value={o}>

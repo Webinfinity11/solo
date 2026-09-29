@@ -124,7 +124,7 @@ const textsSchema = z.record(z.string(), z.union([z.string(), z.array(z.string()
 // ---------- helpers ----------
 
 async function mutate(run: (content: SiteContent) => Promise<string | void>): Promise<ActionResult> {
-  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა — შედით თავიდან." };
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
   try {
     const error = await run(await getContentFresh());
     if (error) return { ok: false, error };
@@ -180,7 +180,7 @@ export async function saveCategories(input: unknown): Promise<ActionResult> {
     const slugs = data.map((c) => c.slug);
     if (new Set(slugs).size !== slugs.length) return "კატეგორიების slug-ები უნდა განსხვავდებოდეს";
     const orphan = content.products.find((p) => !slugs.includes(p.categorySlug));
-    if (orphan) return `კატეგორიას იყენებს პროდუქტი „${orphan.name}“ — ჯერ პროდუქტი გადაიტანეთ სხვა კატეგორიაში`;
+    if (orphan) return `კატეგორიას იყენებს პროდუქტი „${orphan.name}“ - ჯერ პროდუქტი გადაიტანეთ სხვა კატეგორიაში`;
     await saveContent("categories", data);
   });
 }
@@ -243,7 +243,7 @@ export async function deleteReview(id: number): Promise<ActionResult> {
 }
 
 async function moderate(run: (sql: Sql) => Promise<void>): Promise<ActionResult> {
-  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა — შედით თავიდან." };
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
   const sql = await db();
   if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
   await run(sql);
@@ -256,7 +256,7 @@ async function moderate(run: (sql: Sql) => Promise<void>): Promise<ActionResult>
 // ---------- orders ----------
 
 export async function setOrderStatus(id: number, status: OrderStatus): Promise<ActionResult> {
-  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა — შედით თავიდან." };
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
   if (!ORDER_STATUSES.includes(status)) return { ok: false, error: "უცნობი სტატუსი" };
   const sql = await db();
   if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };

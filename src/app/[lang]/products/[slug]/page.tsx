@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!product) return {};
   return {
     title: product.name,
-    description: `${product.name} — ${product.shortDescription}`,
+    description: `${product.name} - ${product.shortDescription}`,
     alternates: alternates(`/products/${slug}`),
     openGraph: { images: product.images[0] ? [{ url: product.images[0] }] : undefined },
   };

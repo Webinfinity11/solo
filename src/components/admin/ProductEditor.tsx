@@ -229,7 +229,7 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
                 value={p.status}
                 onChange={(status) => update({ status })}
                 options={[
-                  { value: "active", label: "აქტიური — ჩანს საიტზე" },
+                  { value: "active", label: "აქტიური - ჩანს საიტზე" },
                   { value: "hidden", label: "დამალული" },
                 ]}
               />
@@ -263,7 +263,7 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
               ))}
               <PhotoSlot key={extras.length} onChange={(url) => url && setExtras([...extras, url])} label="დამატება" />
             </div>
-            <p className="mt-2 text-[12px] text-muted">არასავალდებულო — მაგ. შეფუთვა ან დეტალი. პროდუქტის გვერდზე მინიატიურებად ჩანს.</p>
+            <p className="mt-2 text-[12px] text-muted">არასავალდებულო - მაგ. შეფუთვა ან დეტალი. პროდუქტის გვერდზე მინიატიურებად ჩანს.</p>
           </Section>
         </div>
       </div>

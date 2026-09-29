@@ -1,4 +1,4 @@
-// English product copy: scientific context only — no usage or dosing guidance.
+// English product copy: scientific context only - no usage or dosing guidance.
 import type { ProductKind } from "@/data/products";
 
 export const kindText: Record<ProductKind, { form: string; storage: string; appearance: string }> = {
@@ -66,7 +66,7 @@ export const productText: Record<string, { shortDescription: string; description
       "GHK-Cu is a complex of the naturally occurring tripeptide glycyl-histidyl-lysine with a copper(II) ion. It is studied in research on the extracellular matrix and gene expression.\n\nSupplied as a lyophilized powder.",
   },
   "nad-plus": {
-    shortDescription: "Nicotinamide adenine dinucleotide — a key redox coenzyme.",
+    shortDescription: "Nicotinamide adenine dinucleotide - a key redox coenzyme.",
     description:
       "NAD+ is a coenzyme involved in cellular respiration, sirtuin activity and DNA repair processes. It is used in research on cellular metabolism.\n\nSupplied as a lyophilized powder.",
   },
@@ -76,7 +76,7 @@ export const productText: Record<string, { shortDescription: string; description
       "MOTS-C is a 16-amino-acid peptide encoded within the mitochondrial 12S rRNA region. It is studied in research on mitochondrial–nuclear signaling.\n\nSupplied as a lyophilized powder.",
   },
   glutathione: {
-    shortDescription: "Tripeptide γ-Glu-Cys-Gly — a cellular antioxidant.",
+    shortDescription: "Tripeptide γ-Glu-Cys-Gly - a cellular antioxidant.",
     description:
       "Glutathione is an endogenous tripeptide and one of the principal regulators of cellular redox balance. It is used in research on oxidative stress.\n\nSupplied as a lyophilized powder.",
   },

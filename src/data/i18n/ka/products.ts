@@ -1,4 +1,4 @@
-// Georgian product copy: scientific context only — no usage or dosing guidance.
+// Georgian product copy: scientific context only - no usage or dosing guidance.
 import type { ProductKind } from "@/data/products";
 
 export const kindText: Record<ProductKind, { form: string; storage: string; appearance: string }> = {
@@ -66,7 +66,7 @@ export const productText: Record<string, { shortDescription: string; description
       "GHK-Cu არის ბუნებრივი ტრიპეპტიდის (გლიცილ-ჰისტიდილ-ლიზინი) კომპლექსი სპილენძის (II) იონთან. შეისწავლება უჯრედგარე მატრიქსისა და გენის ექსპრესიის კვლევაში.\n\nმიეწოდება ლიოფილიზებული ფხვნილის სახით.",
   },
   "nad-plus": {
-    shortDescription: "ნიკოტინამიდადენინდინუკლეოტიდი — ძირითადი რედოქს კოფერმენტი.",
+    shortDescription: "ნიკოტინამიდადენინდინუკლეოტიდი - ძირითადი რედოქს კოფერმენტი.",
     description:
       "NAD+ არის კოფერმენტი, რომელიც მონაწილეობს უჯრედულ სუნთქვაში, სირტუინების აქტივობასა და DNA-ის რეპარაციის პროცესებში. გამოიყენება უჯრედული მეტაბოლიზმის კვლევაში.\n\nმიეწოდება ლიოფილიზებული ფხვნილის სახით.",
   },
@@ -76,7 +76,7 @@ export const productText: Record<string, { shortDescription: string; description
       "MOTS-C არის 16-ამინომჟავიანი პეპტიდი, რომელიც კოდირებულია მიტოქონდრიული 12S rRNA-ის რეგიონში. შეისწავლება მიტოქონდრიულ-ბირთვული სიგნალიზაციის კვლევაში.\n\nმიეწოდება ლიოფილიზებული ფხვნილის სახით.",
   },
   glutathione: {
-    shortDescription: "ტრიპეპტიდი γ-Glu-Cys-Gly — უჯრედული ანტიოქსიდანტი.",
+    shortDescription: "ტრიპეპტიდი γ-Glu-Cys-Gly - უჯრედული ანტიოქსიდანტი.",
     description:
       "გლუტათიონი არის ენდოგენური ტრიპეპტიდი, უჯრედის რედოქს-ბალანსის ერთ-ერთი მთავარი რეგულატორი. გამოიყენება ოქსიდაციური სტრესის კვლევაში.\n\nმიეწოდება ლიოფილიზებული ფხვნილის სახით.",
   },

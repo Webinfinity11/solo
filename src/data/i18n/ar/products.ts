@@ -1,4 +1,4 @@
-// Arabic product copy: scientific context only — no usage or dosing guidance.
+// Arabic product copy: scientific context only - no usage or dosing guidance.
 import type { ProductKind } from "@/data/products";
 
 export const kindText: Record<ProductKind, { form: string; storage: string; appearance: string }> = {
@@ -66,7 +66,7 @@ export const productText: Record<string, { shortDescription: string; description
       "GHK-Cu معقّد من الببتيد الثلاثي الطبيعي غليسيل-هيستيديل-ليسين مع أيون النحاس(II). ويُدرس في أبحاث المادة خارج الخلوية والتعبير الجيني.\n\nيُورَّد على هيئة مسحوق مجفّف بالتجميد.",
   },
   "nad-plus": {
-    shortDescription: "ثنائي نوكليوتيد الأدنين والنيكوتيناميد — إنزيم مساعد رئيسي في تفاعلات الأكسدة والاختزال.",
+    shortDescription: "ثنائي نوكليوتيد الأدنين والنيكوتيناميد - إنزيم مساعد رئيسي في تفاعلات الأكسدة والاختزال.",
     description:
       "NAD+ إنزيم مساعد يشارك في التنفس الخلوي ونشاط السيرتوينات وعمليات إصلاح الحمض النووي (DNA). ويُستخدم في أبحاث الأيض الخلوي.\n\nيُورَّد على هيئة مسحوق مجفّف بالتجميد.",
   },
@@ -76,7 +76,7 @@ export const productText: Record<string, { shortDescription: string; description
       "MOTS-C ببتيد مكوّن من 16 حمضًا أمينيًا، مُشفَّر ضمن منطقة 12S rRNA في الميتوكوندريا. ويُدرس في أبحاث الإشارات بين الميتوكوندريا والنواة.\n\nيُورَّد على هيئة مسحوق مجفّف بالتجميد.",
   },
   glutathione: {
-    shortDescription: "الببتيد الثلاثي γ-Glu-Cys-Gly — مضاد أكسدة خلوي.",
+    shortDescription: "الببتيد الثلاثي γ-Glu-Cys-Gly - مضاد أكسدة خلوي.",
     description:
       "Glutathione ببتيد ثلاثي داخلي المنشأ، وأحد المنظّمات الرئيسية لتوازن الأكسدة والاختزال في الخلية. ويُستخدم في أبحاث الإجهاد التأكسدي.\n\nيُورَّد على هيئة مسحوق مجفّف بالتجميد.",
   },

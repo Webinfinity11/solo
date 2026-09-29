@@ -1,4 +1,4 @@
-// PLACEHOLDER legal copy — must be replaced with texts reviewed by a lawyer before launch.
+// PLACEHOLDER legal copy - must be replaced with texts reviewed by a lawyer before launch.
 import type { LegalDocument } from "@/lib/types";
 
 const updated = "2026-09-28";
@@ -34,7 +34,7 @@ export const legalDocuments: LegalDocument[] = [
     updated,
     sections: [
       { id: "processing", title: "Processing", paragraphs: ["Orders placed on business days before 14:00 ship the same day."] },
-      { id: "delivery", title: "Delivery times", paragraphs: ["Tbilisi — 1 business day; regions of Georgia — 1–3 days; international — 5–10 days.", placeholder] },
+      { id: "delivery", title: "Delivery times", paragraphs: ["Tbilisi - 1 business day; regions of Georgia - 1–3 days; international - 5–10 days.", placeholder] },
       { id: "damage", title: "Damaged parcels", paragraphs: ["If your parcel is damaged, contact us within 48 hours and include photos."] },
       { id: "international", title: "International orders", paragraphs: ["The buyer is responsible for complying with local import regulations and for any customs duties."] },
     ],

@@ -27,7 +27,7 @@ function setIn(node: unknown, keys: string[], value: string | string[]): unknown
   if (keys.length === 0) {
     if (typeof node === "string" && typeof value === "string") return value;
     if (isStringList(node) && isStringList(value)) return value;
-    return node; // shape changed in code since the override was saved — ignore it
+    return node; // shape changed in code since the override was saved - ignore it
   }
   const [key, ...rest] = keys;
   if (Array.isArray(node)) {

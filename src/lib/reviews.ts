@@ -23,7 +23,7 @@ function toMedia(value: unknown): ReviewMedia[] {
   return Array.isArray(value) ? value.filter((m): m is ReviewMedia => typeof m?.url === "string" && isReviewMediaUrl(m.url) && (m.type === "image" || m.type === "video")) : [];
 }
 
-/** "Giorgi Beridze" -> "Giorgi B." — reviews never show full names or emails. */
+/** "Giorgi Beridze" -> "Giorgi B." - reviews never show full names or emails. */
 function shortName(name: string): string {
   const [first, ...rest] = name.trim().split(/\s+/);
   const last = rest.at(-1);

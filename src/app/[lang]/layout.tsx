@@ -35,7 +35,7 @@ const arabic = Noto_Sans_Arabic({ subsets: ["arabic"], weight: ["400", "700"], v
 // Condensed face matching the logo lettering; used on vector product labels.
 const oswald = Oswald({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-label", display: "swap" });
 
-/** TBC Contractica (Georgian + Mtavruli + Latin) — headings and small uppercase labels only. */
+/** TBC Contractica (Georgian + Mtavruli + Latin) - headings and small uppercase labels only. */
 const contractica = localFont({
   variable: "--font-tbc",
   display: "swap",

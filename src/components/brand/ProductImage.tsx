@@ -28,7 +28,7 @@ export function ProductImage({
     return (
       <Image
         src={src}
-        alt={`${name} — SOLO Research`}
+        alt={`${name} - SOLO Research`}
         width={600}
         height={600}
         sizes={sizes}
@@ -44,7 +44,7 @@ export function ProductImage({
   const solution = label?.endsWith("ml");
 
   return (
-    <svg viewBox="0 0 300 440" role="img" aria-label={`${name} — SOLO Research`} className={cn("h-full w-full", className)}>
+    <svg viewBox="0 0 300 440" role="img" aria-label={`${name} - SOLO Research`} className={cn("h-full w-full", className)}>
       <defs>
         <linearGradient id={`${id}-cap`} x1="0" x2="1">
           <stop offset="0" stopColor="#0b1722" />

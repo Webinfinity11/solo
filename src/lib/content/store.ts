@@ -61,7 +61,7 @@ const emptyCategoryText = (slug: string) => Object.fromEntries(locales.map((l) =
 
 export async function saveContent<K extends ContentKey>(key: K, value: SiteContent[K]): Promise<void> {
   const sql = await db();
-  if (!sql) throw new Error("DATABASE_URL is not set — the database is not connected yet.");
+  if (!sql) throw new Error("DATABASE_URL is not set - the database is not connected yet.");
   await sql`
     insert into site_content (key, value, updated_at) values (${key}, ${JSON.stringify(value)}::jsonb, now())
     on conflict (key) do update set value = excluded.value, updated_at = now()`;

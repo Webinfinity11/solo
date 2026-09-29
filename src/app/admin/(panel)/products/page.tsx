@@ -51,7 +51,7 @@ export default async function ProductsPage() {
                   {p.featured ? <span className="ml-2 text-[11px] font-bold text-eyebrow">★ მთავარზე</span> : null}
                 </td>
                 <td className="text-muted">{categoryName(p.categorySlug)}</td>
-                <td className="text-muted">{p.variants.map((v) => v.label).join(", ") || "—"}</td>
+                <td className="text-muted">{p.variants.map((v) => v.label).join(", ") || "-"}</td>
                 <td>
                   <span className={p.status === "active" ? "font-bold text-success" : "text-muted"}>{p.status === "active" ? "აქტიური" : "დამალული"}</span>
                 </td>

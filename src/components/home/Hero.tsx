@@ -21,7 +21,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 export function Hero({ t, href, whatsapp }: { t: Dictionary; href: (p: string) => string; whatsapp: string }) {
   const h = t.home.hero;
   const wa = whatsappHref(whatsapp);
-  const button = "btn min-h-[50px] gap-2 whitespace-nowrap px-4 text-[13px] sm:min-h-[52px] sm:px-6 sm:text-[14px]";
+  const button = "btn min-h-[50px] gap-2 whitespace-nowrap px-2.5 text-[12px] sm:min-h-[52px] sm:px-6 sm:text-[14px]";
 
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-[#020b16] text-white xl:h-[660px]">
@@ -67,16 +67,12 @@ export function Hero({ t, href, whatsapp }: { t: Dictionary; href: (p: string) =
             {h.benefits.map((b, i) => (
               <div key={b.label} className={i ? "border-s border-white/15 ps-6 sm:ps-8" : "pe-6 sm:pe-8"}>
                 <dt className="text-[11px] uppercase tracking-[.16em] text-white/65 [font-family:var(--font-display)] sm:text-[12px]">{mtavruli(b.label)}</dt>
-                {/* Big figure, small unit: "24 საათში", "99%+". */}
+                {/* Big figure, optional small unit: "24 საათში", "99%". */}
                 <dd className="mt-2 flex items-baseline gap-1.5 leading-none">
                   <span dir="ltr" className="text-[30px] font-bold tracking-[-.03em] sm:text-[36px]">
                     {b.value}
                   </span>
-                  {b.unit === "+" ? (
-                    <span className="-ms-1 text-[22px] font-bold text-blue sm:text-[26px]">+</span>
-                  ) : (
-                    <span className="text-[14px] font-normal text-white/70 sm:text-[15px]">{b.unit}</span>
-                  )}
+                  {b.unit ? <span className="text-[14px] font-normal text-white/70 sm:text-[15px]">{b.unit}</span> : null}
                 </dd>
               </div>
             ))}

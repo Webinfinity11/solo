@@ -39,7 +39,7 @@ export function TextsEditor({ sections, section, rows }: { sections: { key: stri
 
   return (
     <>
-      <PageTitle title="გვერდების ტექსტები" description="ყველა ტექსტი საიტზე, განყოფილებების მიხედვით. ცარიელი ველი საიტზე ცარიელად გამოჩნდება — ძველის დასაბრუნებლად დააჭირეთ „საწყისი“." />
+      <PageTitle title="გვერდების ტექსტები" description="ყველა ტექსტი საიტზე, განყოფილებების მიხედვით. ცარიელი ველი საიტზე ცარიელად გამოჩნდება - ძველის დასაბრუნებლად დააჭირეთ „საწყისი“." />
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
         <nav className="flex flex-wrap gap-1 lg:flex-col">
           {sections.map((s) => (

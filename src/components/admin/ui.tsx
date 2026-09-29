@@ -162,7 +162,7 @@ export function useSave() {
           router.refresh();
         } else setStatus({ ok: false, message: result.error });
       } catch {
-        setStatus({ ok: false, message: "კავშირის შეცდომა — სცადეთ თავიდან." });
+        setStatus({ ok: false, message: "კავშირის შეცდომა - სცადეთ თავიდან." });
       }
     });
   }

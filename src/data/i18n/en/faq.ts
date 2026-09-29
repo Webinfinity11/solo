@@ -28,7 +28,7 @@ export const faq: (FaqItem & { home?: boolean })[] = [
     group: "products",
     question: "What is the difference between sizes (10mg / 20mg / 40mg)?",
     answer:
-      "The size indicates the amount of compound in the vial. The compound and its purity are identical across all sizes — only the quantity differs.",
+      "The size indicates the amount of compound in the vial. The compound and its purity are identical across all sizes - only the quantity differs.",
   },
   {
     group: "products",

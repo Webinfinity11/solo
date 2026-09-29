@@ -32,7 +32,7 @@ export function SettingsEditor({ initial }: { initial: SiteSettings }) {
         <Section title="კონტაქტი">
           <div className="grid gap-4 sm:grid-cols-2">
             <TextInput label="ელ-ფოსტა" type="email" value={s.email} onChange={(email) => update({ email })} />
-            <TextInput label="ტელეფონი" value={s.phone} onChange={(phone) => update({ phone })} hint="ცარიელი — არ გამოჩნდება" />
+            <TextInput label="ტელეფონი" value={s.phone} onChange={(phone) => update({ phone })} hint="ცარიელი - არ გამოჩნდება" />
             <TextInput label="WhatsApp ნომერი" value={s.whatsapp} onChange={(whatsapp) => update({ whatsapp })} hint="საერთაშორისო ფორმატით: +995 5XX XX XX XX · გამოიყენება მთავარი გვერდის ღილაკზე" />
           </div>
         </Section>
