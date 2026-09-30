@@ -9,9 +9,11 @@ import { locales } from "@/i18n/config";
 import { site } from "@/data/site";
 import { getContent } from "@/lib/content/store";
 import { getCurrentCustomer } from "@/lib/customers/actions";
+import { discountAmount, findActivePromo, roundMoney } from "@/lib/promo-codes";
 
 export type OrderItem = { productSlug: string; name: string; variantId: string; label: string; price: number; quantity: number };
-export type PlaceOrderResult = { ok: true; number: string; total: number; payment: "bank" | "cod" } | { ok: false };
+// reason "promo": the code was switched off or deleted after the buyer applied it.
+export type PlaceOrderResult = { ok: true; number: string; total: number; payment: "bank" | "cod" } | { ok: false; reason?: "promo" };
 
 const schema = z.object({
   firstName: z.string().trim().min(1).max(80),
@@ -24,6 +26,7 @@ const schema = z.object({
   payment: z.enum(["bank", "cod"]),
   lang: z.enum(locales),
   items: z.array(z.object({ variantId: z.string().min(1), quantity: z.number().int().min(1).max(99) })).min(1).max(50),
+  promo: z.string().trim().max(40).optional(),
 });
 
 export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
@@ -40,20 +43,28 @@ export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
     if (!product || !variant || !variant.inStock) return { ok: false };
     items.push({ productSlug: product.slug, name: product.name, variantId: variant.id, label: variant.label, price: variant.price, quantity: line.quantity });
   }
-  const total = Math.round(items.reduce((sum, i) => sum + i.price * i.quantity, 0) * 100) / 100;
+  const subtotal = roundMoney(items.reduce((sum, i) => sum + i.price * i.quantity, 0));
 
   try {
     const sql = await db();
     if (!sql) return { ok: false };
+    const promo = o.promo ? await findActivePromo(sql, o.promo) : null;
+    if (o.promo && !promo) return { ok: false, reason: "promo" };
+    const discount = promo ? discountAmount(subtotal, promo.discountPercent) : 0;
+    const total = roundMoney(subtotal - discount);
+    // The creator earns a share of what the buyer actually pays.
+    const commission = promo ? roundMoney((total * promo.commissionPercent) / 100) : 0;
     const customer = await getCurrentCustomer();
     // Short, readable number for the payment reference: SR-260929-4821.
     const date = new Date().toISOString().slice(2, 10).replace(/-/g, "");
     for (let attempt = 0; attempt < 5; attempt++) {
       const number = `SR-${date}-${randomInt(1000, 10000)}`;
       const rows = await sql`
-        insert into orders (number, payment, first_name, last_name, phone, email, city, address, note, items, total, currency, lang, customer_id)
+        insert into orders (number, payment, first_name, last_name, phone, email, city, address, note, items, total, currency, lang, customer_id,
+                            subtotal, discount, promo_code_id, promo_code, commission)
         values (${number}, ${o.payment}, ${o.firstName}, ${o.lastName}, ${o.phone}, ${o.email}, ${o.city}, ${o.address}, ${o.note},
-                ${JSON.stringify(items)}::jsonb, ${total}, ${site.currency}, ${o.lang}, ${customer?.id ?? null})
+                ${JSON.stringify(items)}::jsonb, ${total}, ${site.currency}, ${o.lang}, ${customer?.id ?? null},
+                ${subtotal}, ${discount}, ${promo?.id ?? null}, ${promo?.code ?? null}, ${commission})
         on conflict (number) do nothing
         returning number`;
       if (rows.length) return { ok: true, number, total, payment: o.payment };

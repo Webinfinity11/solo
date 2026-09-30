@@ -10,6 +10,7 @@ import type { SiteContent } from "@/lib/content/types";
 import { db, type Sql } from "@/lib/db";
 import { REVIEWS_TAG } from "@/lib/reviews";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/admin/order-status";
+import { normalizeCode } from "@/lib/promo-codes";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -261,5 +262,67 @@ export async function setOrderStatus(id: number, status: OrderStatus): Promise<A
   const sql = await db();
   if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
   await sql`update orders set status = ${status} where id = ${id}`;
+  return { ok: true };
+}
+
+// ---------- promo codes ----------
+
+const promoSchema = z.object({
+  id: z.number().int().positive().optional(),
+  code: z
+    .string()
+    .transform(normalizeCode)
+    .pipe(z.string().min(3, "კოდი მინიმუმ 3 სიმბოლო").max(30, "კოდი მაქსიმუმ 30 სიმბოლო").regex(/^[A-Z0-9_-]+$/, "კოდი: მხოლოდ ლათინური ასოები, ციფრები, - და _")),
+  owner: z.string().trim().min(1, "მიუთითეთ კრეატორის სახელი").max(120),
+  contact: z.string().trim().max(200),
+  discountPercent: z.number().min(0, "ფასდაკლება 0-100%").max(100, "ფასდაკლება 0-100%"),
+  commissionPercent: z.number().min(0, "საკომისიო 0-100%").max(100, "საკომისიო 0-100%"),
+  active: z.boolean(),
+});
+
+export async function savePromoCode(input: unknown): Promise<ActionResult> {
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
+  const parsed = promoSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "არასწორი მონაცემები" };
+  const p = parsed.data;
+  const sql = await db();
+  if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
+  const taken = await sql`select 1 from promo_codes where code = ${p.code} and id <> ${p.id ?? 0}`;
+  if (taken.length) return { ok: false, error: `კოდი ${p.code} უკვე არსებობს.` };
+  if (p.id) {
+    // Past orders keep the code, percents and commission they were placed with.
+    await sql`update promo_codes set code = ${p.code}, owner = ${p.owner}, contact = ${p.contact}, discount_percent = ${p.discountPercent},
+              commission_percent = ${p.commissionPercent}, active = ${p.active} where id = ${p.id}`;
+  } else {
+    await sql`insert into promo_codes (code, owner, contact, discount_percent, commission_percent, active)
+              values (${p.code}, ${p.owner}, ${p.contact}, ${p.discountPercent}, ${p.commissionPercent}, ${p.active})`;
+  }
+  return { ok: true };
+}
+
+export async function deletePromoCode(id: number): Promise<ActionResult> {
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
+  const sql = await db();
+  if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
+  const used = await sql`select 1 from orders where promo_code_id = ${id} limit 1`;
+  if (used.length) return { ok: false, error: "ამ კოდით უკვე არის შეკვეთები - წაშლის ნაცვლად გამორთეთ, რომ სტატისტიკა შენარჩუნდეს." };
+  await sql`delete from promo_codes where id = ${id}`;
+  return { ok: true };
+}
+
+export async function addPromoPayout(promoCodeId: number, amount: number, note: string): Promise<ActionResult> {
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
+  if (!Number.isFinite(amount) || amount <= 0) return { ok: false, error: "მიუთითეთ თანხა" };
+  const sql = await db();
+  if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
+  await sql`insert into promo_payouts (promo_code_id, amount, note) values (${promoCodeId}, ${Math.round(amount * 100) / 100}, ${note.trim().slice(0, 300)})`;
+  return { ok: true };
+}
+
+export async function deletePromoPayout(id: number): Promise<ActionResult> {
+  if (!(await isAdmin())) return { ok: false, error: "სესია ამოიწურა - შედით თავიდან." };
+  const sql = await db();
+  if (!sql) return { ok: false, error: "ბაზა არ არის დაკავშირებული." };
+  await sql`delete from promo_payouts where id = ${id}`;
   return { ok: true };
 }

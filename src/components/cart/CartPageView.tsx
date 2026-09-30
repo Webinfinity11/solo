@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useCart, useCartHydrated } from "@/lib/cart-store";
 import { useI18n } from "@/i18n/provider";
 import { formatPrice } from "@/lib/utils";
 import { Icon } from "@/components/ui/Icon";
 import { CartLine, useCartLines } from "./CartLine";
+import { PromoField } from "./PromoField";
+import { discountAmount } from "@/lib/promo-codes";
 
 export function CartPageView() {
   const { t, href } = useI18n();
   const clear = useCart((s) => s.clear);
   const { lines, subtotal } = useCartLines();
-  const [promo, setPromo] = useState("");
-  const [promoNote, setPromoNote] = useState(false);
+  const promo = useCart((s) => s.promo);
   const hydrated = useCartHydrated();
+
+  const discount = promo ? discountAmount(subtotal, promo.percent) : 0;
 
   if (!hydrated) return <div aria-busy="true" className="h-[360px] animate-pulse bg-mist" />;
 
@@ -52,36 +54,27 @@ export function CartPageView() {
       </div>
 
       <aside className="border border-line bg-mist p-6 lg:sticky lg:top-[110px]">
-        <form
-          className="mb-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setPromoNote(true);
-          }}
-        >
-          <label htmlFor="promo" className="field-label">
-            {t.cart.promo}
-          </label>
-          <div className="flex">
-            <input id="promo" value={promo} onChange={(e) => setPromo(e.target.value)} className="field min-h-11 border-e-0 bg-white uppercase" />
-            <button type="submit" disabled={!promo.trim()} className="shrink-0 bg-navy px-4 text-[13px] font-bold text-white disabled:opacity-50">
-              {t.cart.promoApply}
-            </button>
-          </div>
-          {promoNote ? <p className="mt-2 text-[12px] text-muted">{t.cart.promoPending}</p> : null}
-        </form>
+        <PromoField className="mb-6" />
         <dl className="space-y-2.5 border-t border-line pt-5 text-[14px]">
           <div className="flex justify-between">
             <dt>{t.cart.subtotal}</dt>
             <dd className="font-bold">{formatPrice(subtotal)}</dd>
           </div>
+          {promo ? (
+            <div className="flex justify-between text-success">
+              <dt>
+                {t.cart.discount} ({promo.code}, -{promo.percent}%)
+              </dt>
+              <dd className="font-bold">-{formatPrice(discount)}</dd>
+            </div>
+          ) : null}
           <div className="flex justify-between gap-4">
             <dt>{t.cart.shipping}</dt>
             <dd className="text-right text-muted">{t.cart.shippingAtCheckout}</dd>
           </div>
           <div className="flex justify-between border-t border-line pt-3 text-[18px] font-bold">
             <dt>{t.cart.total}</dt>
-            <dd>{formatPrice(subtotal)}</dd>
+            <dd>{formatPrice(subtotal - discount)}</dd>
           </div>
         </dl>
         <Link href={href("/checkout")} className="btn btn-navy mt-6 w-full">

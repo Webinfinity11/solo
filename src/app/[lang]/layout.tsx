@@ -17,6 +17,8 @@ import { AgeGate } from "@/components/layout/AgeGate";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { CatalogProvider } from "@/components/layout/CatalogProvider";
 import { StoreHydrator } from "@/components/layout/StoreHydrator";
+import { PromoFromUrl } from "@/components/cart/PromoField";
+import { Suspense } from "react";
 
 const georgian = Noto_Sans_Georgian({
   subsets: ["georgian", "latin"],
@@ -110,6 +112,11 @@ export default async function LangLayout({ children, params }: { children: React
             {site.shopEnabled ? <CartDrawer /> : null}
             <AgeGate />
             <StoreHydrator />
+            {site.shopEnabled ? (
+              <Suspense>
+                <PromoFromUrl />
+              </Suspense>
+            ) : null}
           </CatalogProvider>
         </I18nProvider>
       </body>

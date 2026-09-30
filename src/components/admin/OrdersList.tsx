@@ -67,6 +67,7 @@ export function OrdersList({ orders, products }: { orders: AdminOrder[]; product
                 </span>
                 <span className="text-[13px] text-muted">{tbilisiTime(o.createdAt)}</span>
                 <span className="ms-auto flex items-center gap-4">
+                  {o.promoCode ? <span className="bg-[#eaf5ef] px-2 py-0.5 font-mono text-[11px] font-bold text-success">{o.promoCode}</span> : null}
                   <span className="text-[13px] text-muted">{count} ც.</span>
                   <span className="text-[16px] font-bold">{formatPrice(o.total)}</span>
                   <span aria-hidden="true" className={cn("text-[12px] text-muted transition-transform", open && "rotate-180")}>
@@ -113,6 +114,17 @@ export function OrdersList({ orders, products }: { orders: AdminOrder[]; product
                           </li>
                         );
                       })}
+                      {o.promoCode ? (
+                        <li className="flex flex-wrap items-center justify-between gap-2 px-3 py-3 text-[13px]">
+                          <span>
+                            პრომოკოდი <strong className="font-mono">{o.promoCode}</strong>
+                            <span className="text-muted"> · კრეატორის საკომისიო {formatPrice(o.commission)}</span>
+                          </span>
+                          <span className="font-bold text-success">
+                            {formatPrice(o.subtotal)} − {formatPrice(o.discount)}
+                          </span>
+                        </li>
+                      ) : null}
                       <li className="flex items-center justify-between bg-mist px-3 py-3">
                         <span className="text-[13px] text-muted">მიწოდება: უფასო</span>
                         <span className="text-[17px] font-bold">სულ: {formatPrice(o.total)}</span>

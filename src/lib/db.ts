@@ -64,6 +64,34 @@ async function createSchema(sql: Sql) {
       customer_id integer references customers(id) on delete set null,
       created_at timestamptz not null default now()
     )`;
+  // Creator promo codes: the buyer gets discount_percent off, the code's owner earns
+  // commission_percent of what the buyer paid.
+  await sql`
+    create table if not exists promo_codes (
+      id serial primary key,
+      code text not null unique,
+      owner text not null,
+      contact text not null default '',
+      discount_percent numeric(5, 2) not null default 10,
+      commission_percent numeric(5, 2) not null default 20,
+      active boolean not null default true,
+      created_at timestamptz not null default now()
+    )`;
+  // Commission paid out to a code's owner.
+  await sql`
+    create table if not exists promo_payouts (
+      id serial primary key,
+      promo_code_id integer not null references promo_codes(id) on delete cascade,
+      amount numeric(10, 2) not null,
+      note text not null default '',
+      created_at timestamptz not null default now()
+    )`;
+  // Promo details are copied onto the order, so later edits to the code do not change past orders.
+  await sql`alter table orders add column if not exists promo_code_id integer references promo_codes(id) on delete set null`;
+  await sql`alter table orders add column if not exists promo_code text`;
+  await sql`alter table orders add column if not exists subtotal numeric(10, 2)`;
+  await sql`alter table orders add column if not exists discount numeric(10, 2) not null default 0`;
+  await sql`alter table orders add column if not exists commission numeric(10, 2) not null default 0`;
 }
 
 /** Connected client with the schema in place, or null when DATABASE_URL is not set. */

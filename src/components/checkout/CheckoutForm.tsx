@@ -9,6 +9,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useCart, useCartHydrated } from "@/lib/cart-store";
 import { useI18n } from "@/i18n/provider";
 import { placeOrder } from "@/lib/orders";
+import { discountAmount } from "@/lib/promo-codes";
 import { cn, formatPrice } from "@/lib/utils";
 import { Icon } from "@/components/ui/Icon";
 import { Field } from "@/components/forms/Field";
@@ -32,9 +33,11 @@ export function CheckoutForm() {
   const { t, href, lang } = useI18n();
   const router = useRouter();
   const clear = useCart((s) => s.clear);
+  const promo = useCart((s) => s.promo);
+  const setPromo = useCart((s) => s.setPromo);
   const hydrated = useCartHydrated();
   const [placed, setPlaced] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<"order" | "promo" | null>(null);
   const { lines, subtotal } = useCartLines();
   const c = t.checkout;
   const f = c.fields;
@@ -79,10 +82,17 @@ export function CheckoutForm() {
   }, [customer, getValues, setValue]);
 
   const onSubmit = handleSubmit(async (values) => {
-    setError(false);
+    setError(null);
     const { confirm: _confirm, ...order } = values;
-    const result = await placeOrder({ ...order, lang, items: lines.map((l) => ({ variantId: l.variant.id, quantity: l.quantity })) }).catch(() => ({ ok: false as const }));
-    if (!result.ok) return setError(true);
+    const items = lines.map((l) => ({ variantId: l.variant.id, quantity: l.quantity }));
+    const result = await placeOrder({ ...order, lang, items, promo: promo?.code }).catch(() => ({ ok: false as const, reason: undefined }));
+    if (!result.ok) {
+      if (result.reason === "promo") {
+        setPromo(null);
+        return setError("promo");
+      }
+      return setError("order");
+    }
     setPlaced(true);
     const query = new URLSearchParams({ order: result.number, pay: result.payment, total: String(result.total) });
     router.push(`${href("/checkout/success")}?${query}`);
@@ -112,7 +122,7 @@ export function CheckoutForm() {
   const submitting = formState.isSubmitting;
   const errorBox = error ? (
     <p role="alert" className="border-s-[3px] border-danger bg-[#fbecea] px-4 py-3 text-[14px] text-danger">
-      {c.error}
+      {error === "promo" ? c.promoError : c.error}
     </p>
   ) : null;
 
@@ -172,7 +182,7 @@ export function CheckoutForm() {
         <div className="flex flex-col gap-3 lg:hidden">
           {errorBox}
           <button type="submit" disabled={submitting} className="btn btn-navy w-full text-[15px]">
-            {submitting ? t.common.sending : `${c.place} · ${formatPrice(subtotal)}`}
+            {submitting ? t.common.sending : `${c.place} · ${formatPrice(subtotal - (promo ? discountAmount(subtotal, promo.percent) : 0))}`}
           </button>
         </div>
       </div>

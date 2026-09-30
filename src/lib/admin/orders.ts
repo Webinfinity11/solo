@@ -17,6 +17,11 @@ export type AdminOrder = {
   note: string;
   items: OrderItem[];
   total: number;
+  /** Before the promo discount; equals total for orders without a code. */
+  subtotal: number;
+  discount: number;
+  promoCode: string | null;
+  commission: number;
   currency: string;
   lang: string;
   createdAt: string;
@@ -40,6 +45,10 @@ export async function getOrders(): Promise<AdminOrder[]> {
     note: r.note as string,
     items: r.items as OrderItem[],
     total: Number(r.total),
+    subtotal: r.subtotal == null ? Number(r.total) : Number(r.subtotal),
+    discount: Number(r.discount ?? 0),
+    promoCode: (r.promo_code as string | null) ?? null,
+    commission: Number(r.commission ?? 0),
     currency: r.currency as string,
     lang: r.lang as string,
     createdAt: new Date(r.created_at as string).toISOString(),

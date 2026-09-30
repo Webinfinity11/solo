@@ -4,9 +4,14 @@ import { useI18n } from "@/i18n/provider";
 import { formatPrice } from "@/lib/utils";
 import { ProductImage } from "@/components/brand/ProductImage";
 import type { ResolvedLine } from "@/components/cart/CartLine";
+import { PromoField } from "@/components/cart/PromoField";
+import { useCart } from "@/lib/cart-store";
+import { discountAmount } from "@/lib/promo-codes";
 
 export function OrderSummary({ lines, subtotal, shipping }: { lines: ResolvedLine[]; subtotal: number; shipping: number }) {
   const { t } = useI18n();
+  const promo = useCart((s) => s.promo);
+  const discount = promo ? discountAmount(subtotal, promo.percent) : 0;
   return (
     <aside className="border border-line bg-mist p-5 sm:p-6 lg:sticky lg:top-[110px]">
       <h2 className="mb-4 text-[18px] font-bold">{t.checkout.summary}</h2>
@@ -25,18 +30,27 @@ export function OrderSummary({ lines, subtotal, shipping }: { lines: ResolvedLin
           </li>
         ))}
       </ul>
+      <PromoField className="mt-4 border-t border-line pt-4" />
       <dl className="mt-4 space-y-2 border-t border-line pt-4 text-[14px]">
         <div className="flex justify-between">
           <dt>{t.cart.subtotal}</dt>
           <dd>{formatPrice(subtotal)}</dd>
         </div>
+        {promo ? (
+          <div className="flex justify-between gap-3 text-success">
+            <dt>
+              {t.cart.discount} ({promo.code}, -{promo.percent}%)
+            </dt>
+            <dd className="font-bold">-{formatPrice(discount)}</dd>
+          </div>
+        ) : null}
         <div className="flex justify-between">
           <dt>{t.cart.shipping}</dt>
           <dd>{shipping === 0 ? t.checkout.free : formatPrice(shipping)}</dd>
         </div>
         <div className="flex justify-between border-t border-line pt-3 text-[18px] font-bold">
           <dt>{t.cart.total}</dt>
-          <dd>{formatPrice(subtotal + shipping)}</dd>
+          <dd>{formatPrice(subtotal - discount + shipping)}</dd>
         </div>
       </dl>
     </aside>
