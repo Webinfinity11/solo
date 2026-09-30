@@ -15,6 +15,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Field } from "@/components/forms/Field";
 import { useCartLines } from "@/components/cart/CartLine";
 import { OrderSummary } from "./OrderSummary";
+import { PromoField } from "@/components/cart/PromoField";
 import { useCustomer } from "@/components/account/useCustomer";
 
 function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
@@ -180,6 +181,7 @@ export function CheckoutForm() {
           ) : null}
         </div>
         <div className="flex flex-col gap-3 lg:hidden">
+          <PromoField className="mb-2" />
           {errorBox}
           <button type="submit" disabled={submitting} className="btn btn-navy w-full text-[15px]">
             {submitting ? t.common.sending : `${c.place} · ${formatPrice(subtotal - (promo ? discountAmount(subtotal, promo.percent) : 0))}`}

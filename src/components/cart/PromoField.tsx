@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useId, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { useCart, useCartHydrated } from "@/lib/cart-store";
 import { checkPromo } from "@/lib/promo";
@@ -15,6 +15,8 @@ export function PromoField({ className }: { className?: string }) {
   const [value, setValue] = useState("");
   const [invalid, setInvalid] = useState(false);
   const [pending, startTransition] = useTransition();
+  // Checkout renders the field twice (mobile / desktop), so ids must be unique.
+  const id = useId();
 
   if (promo) {
     return (
@@ -45,12 +47,12 @@ export function PromoField({ className }: { className?: string }) {
   // Not a <form>: on checkout this sits inside the order form, and forms cannot nest.
   return (
     <div className={className}>
-      <label htmlFor="promo" className="field-label">
+      <label htmlFor={id} className="field-label">
         {t.cart.promo}
       </label>
       <div className="flex">
         <input
-          id="promo"
+          id={id}
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
@@ -63,7 +65,7 @@ export function PromoField({ className }: { className?: string }) {
             }
           }}
           aria-invalid={invalid || undefined}
-          aria-describedby={invalid ? "promo-error" : undefined}
+          aria-describedby={invalid ? `${id}-error` : undefined}
           autoCapitalize="characters"
           className="field min-h-11 border-e-0 bg-white uppercase"
         />
@@ -72,7 +74,7 @@ export function PromoField({ className }: { className?: string }) {
         </button>
       </div>
       {invalid ? (
-        <p id="promo-error" className="field-error">
+        <p id={`${id}-error`} className="field-error">
           {t.cart.promoInvalid}
         </p>
       ) : null}

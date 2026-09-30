@@ -30,7 +30,8 @@ export function OrderSummary({ lines, subtotal, shipping }: { lines: ResolvedLin
           </li>
         ))}
       </ul>
-      <PromoField className="mt-4 border-t border-line pt-4" />
+      {/* On phones the promo field sits above the submit button in the form instead. */}
+      <PromoField className="mt-4 hidden border-t border-line pt-4 lg:block" />
       <dl className="mt-4 space-y-2 border-t border-line pt-4 text-[14px]">
         <div className="flex justify-between">
           <dt>{t.cart.subtotal}</dt>
