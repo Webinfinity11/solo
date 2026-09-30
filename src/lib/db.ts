@@ -99,10 +99,14 @@ export async function db(): Promise<Sql | null> {
   const url = process.env.DATABASE_URL;
   if (!url) return null;
   const sql = neon(url);
-  schemaReady ??= createSchema(sql).catch((e) => {
-    schemaReady = null;
-    throw e;
-  });
+  schemaReady ??= createSchema(sql)
+    // Parallel build workers can race on "create table if not exists" (unique_violation /
+    // duplicate_table); the other worker created it, so a second pass succeeds.
+    .catch((e) => (["23505", "42P07"].includes((e as { code?: string }).code ?? "") ? createSchema(sql) : Promise.reject(e)))
+    .catch((e) => {
+      schemaReady = null;
+      throw e;
+    });
   await schemaReady;
   return sql;
 }
