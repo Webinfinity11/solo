@@ -233,6 +233,111 @@ function PromoCard({ promo, siteUrl }: { promo: AdminPromo; siteUrl: string }) {
   );
 }
 
+const money = (v: number) => Math.round(v * 100) / 100;
+const balanceOf = (p: AdminPromo) => Math.max(0, money(p.earned - p.paidOut));
+
+/** Who to pay and how much: one row per creator, summing all of their codes. */
+function PayoutList({ promos }: { promos: AdminPromo[] }) {
+  const { save, pending, status } = useSave();
+  const [confirming, setConfirming] = useState<string | null>(null);
+  const groups = new Map<string, AdminPromo[]>();
+  for (const p of promos) {
+    const key = p.owner.trim().toLowerCase();
+    groups.set(key, [...(groups.get(key) ?? []), p]);
+  }
+  const rows = [...groups.entries()]
+    .map(([key, list]) => ({
+      key,
+      owner: list[0].owner,
+      contact: [...new Set(list.map((p) => p.contact).filter(Boolean))].join(", "),
+      codes: list,
+      earned: money(list.reduce((s, p) => s + p.earned, 0)),
+      paidOut: money(list.reduce((s, p) => s + p.paidOut, 0)),
+      due: money(list.reduce((s, p) => s + balanceOf(p), 0)),
+    }))
+    .filter((r) => r.due > 0)
+    .sort((a, b) => b.due - a.due);
+
+  function markPaid(codes: AdminPromo[]) {
+    const note = `სრული გადახდა ${new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Tbilisi" }).replace(/\//g, ".")}`;
+    save(async () => {
+      // One payout per code, so each code's balance goes to zero.
+      for (const p of codes) {
+        const due = balanceOf(p);
+        if (due <= 0) continue;
+        const result = await addPromoPayout(p.id, due, note);
+        if (!result.ok) return result;
+      }
+      return { ok: true } as const;
+    }, () => setConfirming(null));
+  }
+
+  return (
+    <Section title="კრეატორებისთვის გადასახდელი">
+      {rows.length ? (
+        <div className="overflow-x-auto border border-line">
+          <table className="w-full text-[14px]">
+            <thead className="bg-mist text-[12px] text-muted">
+              <tr>
+                <th className="px-3 py-2 text-start font-bold">კრეატორი</th>
+                <th className="px-3 py-2 text-start font-bold">კონტაქტი</th>
+                <th className="px-3 py-2 text-start font-bold">კოდები</th>
+                <th className="px-3 py-2 text-end font-bold">ნაშოვნი</th>
+                <th className="px-3 py-2 text-end font-bold">გადახდილი</th>
+                <th className="px-3 py-2 text-end font-bold">გადასახდელი</th>
+                <th className="px-3 py-2" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line bg-white">
+              {rows.map((r) => (
+                <tr key={r.key}>
+                  <td className="px-3 py-2.5 font-bold">{r.owner}</td>
+                  <td className="px-3 py-2.5 text-muted">{r.contact || "-"}</td>
+                  <td className="px-3 py-2.5 font-mono text-[13px]">{r.codes.map((p) => p.code).join(", ")}</td>
+                  <td className="px-3 py-2.5 text-end">{formatPrice(r.earned)}</td>
+                  <td className="px-3 py-2.5 text-end text-muted">{formatPrice(r.paidOut)}</td>
+                  <td className="px-3 py-2.5 text-end text-[16px] font-bold text-[#8a6100]">{formatPrice(r.due)}</td>
+                  <td className="px-3 py-2.5 text-end">
+                    {confirming === r.key ? (
+                      <span className="inline-flex gap-2">
+                        <button type="button" disabled={pending} onClick={() => markPaid(r.codes)} className="adm-btn adm-btn-primary whitespace-nowrap">
+                          {pending ? "ინახება…" : `დიახ, ${formatPrice(r.due)}`}
+                        </button>
+                        <button type="button" disabled={pending} onClick={() => setConfirming(null)} className="adm-btn">
+                          არა
+                        </button>
+                      </span>
+                    ) : (
+                      <button type="button" onClick={() => setConfirming(r.key)} className="adm-btn whitespace-nowrap">
+                        გადახდილია ✓
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="bg-mist font-bold">
+              <tr>
+                <td className="px-3 py-2.5" colSpan={5}>
+                  სულ გადასახდელი
+                </td>
+                <td className="px-3 py-2.5 text-end text-[16px]">{formatPrice(money(rows.reduce((s, r) => s + r.due, 0)))}</td>
+                <td />
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      ) : (
+        <p className="text-[14px] text-muted">ამ ეტაპზე გადასახდელი არავისთვის არ არის.</p>
+      )}
+      <p className="mt-2 text-[12px] text-muted">
+        სიაში მოხვდება მხოლოდ „დასრულებული“ შეკვეთების საკომისიო. „გადახდილია“ ჩაწერს გადახდას და კრეატორის ბალანსი განულდება; ნაწილობრივი გადახდისთვის გახსენით კოდი ქვემოთ.
+      </p>
+      <Status status={status} />
+    </Section>
+  );
+}
+
 export function PromoCodesEditor({ promos, siteUrl }: { promos: AdminPromo[]; siteUrl: string }) {
   const toPay = promos.reduce((s, p) => s + Math.max(0, p.earned - p.paidOut), 0);
   const pending = promos.reduce((s, p) => s + p.pending, 0);
@@ -252,6 +357,8 @@ export function PromoCodesEditor({ promos, siteUrl }: { promos: AdminPromo[]; si
           <p className="text-[26px] font-bold">{formatPrice(Math.round(pending * 100) / 100)}</p>
         </div>
       </div>
+
+      <PayoutList promos={promos} />
 
       <Section title="ახალი პრომო კოდი">
         <PromoForm initial={EMPTY} submitLabel="კოდის დამატება" />
