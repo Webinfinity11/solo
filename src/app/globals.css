@@ -224,6 +224,7 @@
     color: var(--navy);
     transition: border-color 0.2s, background 0.2s;
   }
+  .field::placeholder { color: var(--color-muted); opacity: .55; }
   .field:hover { border-color: var(--blue-accent); }
   .field:focus { outline: none; border-color: var(--navy); background: var(--white); }
   .field[aria-invalid="true"] { border-color: var(--color-danger); }

@@ -13,7 +13,6 @@ const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 export function AgeGate() {
   const { t, href } = useI18n();
   const [open, setOpen] = useState(false);
-  const [agreed, setAgreed] = useState(false);
   const [exited, setExited] = useState(false);
 
   useEffect(() => {
@@ -53,25 +52,22 @@ export function AgeGate() {
                 {t.ageGate.title}
               </h2>
               <p className="mb-6 text-[14px] leading-[1.75] text-muted">{t.ageGate.text}</p>
-              <label className="mb-6 flex cursor-pointer items-start gap-3 bg-ice p-4 text-start text-[13px] leading-relaxed">
-                <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 size-[18px] shrink-0 accent-navy" />
-                <span>
-                  {t.ageGate.agree} (
-                  <Link href={href("/legal/terms")} target="_blank" className="underline underline-offset-2">
-                    Terms
-                  </Link>{" "}
-                  ·{" "}
-                  <Link href={href("/legal/ruo-agreement")} target="_blank" className="underline underline-offset-2">
-                    RUO
-                  </Link>
-                  )
-                </span>
-              </label>
+              <p className="mb-6 bg-ice p-4 text-[13px] leading-relaxed">
+                {t.ageGate.agree} (
+                <Link href={href("/legal/terms")} target="_blank" className="underline underline-offset-2">
+                  Terms
+                </Link>{" "}
+                ·{" "}
+                <Link href={href("/legal/ruo-agreement")} target="_blank" className="underline underline-offset-2">
+                  RUO
+                </Link>
+                )
+              </p>
               <div className="grid grid-cols-2 gap-3">
                 <button type="button" onClick={() => setExited(true)} className="btn btn-ghost">
                   {t.ageGate.exit}
                 </button>
-                <button type="button" onClick={accept} disabled={!agreed} className="btn btn-navy">
+                <button type="button" onClick={accept} className="btn btn-navy">
                   <Icon name="check" className="size-[18px]" />
                   {t.ageGate.enter}
                 </button>

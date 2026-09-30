@@ -38,6 +38,7 @@ export function CheckoutForm() {
   const { lines, subtotal } = useCartLines();
   const c = t.checkout;
   const f = c.fields;
+  const ph = c.placeholders;
 
   const schema = z.object({
     firstName: z.string().trim().min(1, t.common.required),
@@ -104,7 +105,7 @@ export function CheckoutForm() {
 
   const input = (name: "firstName" | "lastName" | "phone" | "email" | "city" | "address", props: React.InputHTMLAttributes<HTMLInputElement>, className?: string) => (
     <Field id={`co-${name}`} label={f[name]} error={e[name]?.message} required className={className}>
-      <input id={`co-${name}`} className="field" {...props} {...register(name)} {...invalid(name)} />
+      <input id={`co-${name}`} className="field" placeholder={ph[name]} {...props} {...register(name)} {...invalid(name)} />
     </Field>
   );
 
@@ -132,7 +133,7 @@ export function CheckoutForm() {
             {input("city", { autoComplete: "address-level2" })}
             {input("address", { autoComplete: "street-address" })}
             <Field id="co-note" label={f.note} className="sm:col-span-2">
-              <textarea id="co-note" rows={2} className="field min-h-[70px] py-3" {...register("note")} />
+              <textarea id="co-note" rows={2} placeholder={ph.note} className="field min-h-[70px] py-3" {...register("note")} />
             </Field>
           </div>
           <p className="mt-4 flex items-center gap-2 text-[14px] font-bold text-success">

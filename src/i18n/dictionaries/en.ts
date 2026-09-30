@@ -34,7 +34,7 @@ const en: Dictionary = {
   ageGate: {
     title: "You must be 18+ to enter",
     text: "All products on this site are intended for laboratory research use only. They are not intended for human or animal consumption and are not medicinal products.",
-    agree: "I agree to the Terms & Conditions and the Research Use Only (RUO) Agreement",
+    agree: "By entering this site you automatically agree to the Terms & Conditions and the Research Use Only (RUO) Agreement",
     enter: "I agree",
     exit: "Exit",
     exitMessage: "Sorry - access to this site is restricted to researchers aged 18 and over.",
@@ -531,6 +531,15 @@ const en: Dictionary = {
       city: "City",
       address: "Address",
       note: "Comment (optional)",
+    },
+    placeholders: {
+      firstName: "e.g. John",
+      lastName: "e.g. Smith",
+      phone: "e.g. +995 555 12 34 56",
+      email: "e.g. john@gmail.com",
+      city: "e.g. Tbilisi",
+      address: "e.g. 12 Chavchavadze Ave, apt 5",
+      note: "e.g. Please call before delivery",
     },
     payments: [
       { id: "bank", label: "Bank transfer", text: "You will receive our bank details after placing the order. We ship as soon as the payment arrives." },
