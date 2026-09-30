@@ -537,9 +537,6 @@ const en: Dictionary = {
       lastName: "e.g. Smith",
       phone: "e.g. +995 555 12 34 56",
       email: "e.g. john@gmail.com",
-      city: "e.g. Tbilisi",
-      address: "e.g. 12 Chavchavadze Ave, apt 5",
-      note: "e.g. Please call before delivery",
     },
     payments: [
       { id: "bank", label: "Bank transfer", text: "You will receive our bank details after placing the order. We ship as soon as the payment arrives." },

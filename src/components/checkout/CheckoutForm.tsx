@@ -105,7 +105,7 @@ export function CheckoutForm() {
 
   const input = (name: "firstName" | "lastName" | "phone" | "email" | "city" | "address", props: React.InputHTMLAttributes<HTMLInputElement>, className?: string) => (
     <Field id={`co-${name}`} label={f[name]} error={e[name]?.message} required className={className}>
-      <input id={`co-${name}`} className="field" placeholder={ph[name]} {...props} {...register(name)} {...invalid(name)} />
+      <input id={`co-${name}`} className="field" {...props} {...register(name)} {...invalid(name)} />
     </Field>
   );
 
@@ -121,10 +121,10 @@ export function CheckoutForm() {
       <div className="flex flex-col gap-8">
         <Step n={1} title={c.contact}>
           <div className="grid gap-4 sm:grid-cols-2">
-            {input("firstName", { autoComplete: "given-name" })}
-            {input("lastName", { autoComplete: "family-name" })}
-            {input("phone", { type: "tel", autoComplete: "tel" })}
-            {input("email", { type: "email", autoComplete: "email" })}
+            {input("firstName", { autoComplete: "given-name", placeholder: ph.firstName })}
+            {input("lastName", { autoComplete: "family-name", placeholder: ph.lastName })}
+            {input("phone", { type: "tel", autoComplete: "tel", placeholder: ph.phone })}
+            {input("email", { type: "email", autoComplete: "email", placeholder: ph.email })}
           </div>
         </Step>
 
@@ -133,7 +133,7 @@ export function CheckoutForm() {
             {input("city", { autoComplete: "address-level2" })}
             {input("address", { autoComplete: "street-address" })}
             <Field id="co-note" label={f.note} className="sm:col-span-2">
-              <textarea id="co-note" rows={2} placeholder={ph.note} className="field min-h-[70px] py-3" {...register("note")} />
+              <textarea id="co-note" rows={2} className="field min-h-[70px] py-3" {...register("note")} />
             </Field>
           </div>
           <p className="mt-4 flex items-center gap-2 text-[14px] font-bold text-success">
