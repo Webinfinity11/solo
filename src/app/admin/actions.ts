@@ -68,7 +68,7 @@ const productSchema = z.object({
   featured: z.boolean().optional(),
   status: z.enum(["active", "hidden"]),
   createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  text: localized(z.object({ shortDescription: z.string(), description: z.string() })),
+  text: localized(z.object({ shortDescription: z.string(), description: z.string(), seoTitle: optionalText, seoDescription: optionalText })),
 });
 
 const categorySchema = z.object({
@@ -77,7 +77,7 @@ const categorySchema = z.object({
   order: z.number(),
   icon: z.enum(["metabolic", "growth", "repair", "longevity", "cognitive", "melanocortin", "supplies"]),
   showInFooter: z.boolean(),
-  text: localized(z.object({ name: z.string().trim().min(1, "კატეგორიის სახელი ცარიელია"), description: z.string() })),
+  text: localized(z.object({ name: z.string().trim().min(1, "კატეგორიის სახელი ცარიელია"), description: z.string(), seoTitle: optionalText, seoDescription: optionalText })),
 });
 
 const settingsSchema = z.object({

@@ -19,6 +19,7 @@ import {
   TextArea,
   TextInput,
   PhotoSlot,
+  SeoInput,
   move,
   newId,
   useSave,
@@ -46,7 +47,7 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
     markDirty();
   }
   const setSpec = (key: keyof StoredProduct["specs"], value: string) => update({ specs: { ...p.specs, [key]: value } });
-  const setText = (key: "shortDescription" | "description", value: string) => update({ text: { ...p.text, [lang]: { ...p.text[lang], [key]: value } } });
+  const setText = (key: "shortDescription" | "description" | "seoTitle" | "seoDescription", value: string) => update({ text: { ...p.text, [lang]: { ...p.text[lang], [key]: value } } });
   const setVariant = (i: number, patch: Partial<Variant>) =>
     update({
       variants: p.variants.map((v, j) => {
@@ -207,6 +208,8 @@ export function ProductEditor({ initial, isNew, categories }: { initial: StoredP
                 onChange={(v) => setText("description", v)}
                 hint="აბზაცები გამოყავით ცარიელი ხაზით."
               />
+              <SeoInput label="SEO სათაური (არასავალდებულო, „ | SOLO Research“ თავად ემატება)" limit={45} dir={localeMeta[lang].dir} placeholder={p.name} value={p.text[lang].seoTitle} onChange={(v) => setText("seoTitle", v)} />
+              <SeoInput label="SEO აღწერა (არასავალდებულო)" limit={155} dir={localeMeta[lang].dir} value={p.text[lang].seoDescription} onChange={(v) => setText("seoDescription", v)} />
             </div>
           </Section>
 

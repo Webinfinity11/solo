@@ -273,6 +273,8 @@ export function HeroMotion({ className }: { className?: string }) {
       <img
         src="/images/hero/poster.webp"
         alt=""
+        // The poster is the home page's LCP element: fetch it ahead of fonts and scripts.
+        fetchPriority="high"
         className={cn("absolute inset-0 h-full w-full object-cover object-[68%_46%] transition-opacity rtl:object-[32%_46%] duration-300", ready && "opacity-0")}
       />
     </div>

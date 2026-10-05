@@ -21,7 +21,7 @@ export type StoredProduct = {
   featured?: boolean;
   status: "active" | "hidden";
   createdAt: string;
-  text: Localized<{ shortDescription: string; description: string }>;
+  text: Localized<{ shortDescription: string; description: string; seoTitle?: string; seoDescription?: string }>;
 };
 
 export type StoredCategory = {
@@ -30,7 +30,7 @@ export type StoredCategory = {
   order: number;
   icon: CategoryIcon;
   showInFooter: boolean;
-  text: Localized<{ name: string; description: string }>;
+  text: Localized<{ name: string; description: string; seoTitle?: string; seoDescription?: string }>;
 };
 
 export type SiteSettings = {

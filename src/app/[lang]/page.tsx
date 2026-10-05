@@ -10,6 +10,8 @@ import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { Accordion } from "@/components/ui/Accordion";
 import { mtavruli } from "@/lib/utils";
+import { site } from "@/data/site";
+import { localeMeta } from "@/i18n/config";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { alternates } = await resolveLang(params);
@@ -18,16 +20,43 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang, t, href } = await resolveLang(params);
-  const [featured, products, faq] = await Promise.all([getFeaturedProducts(lang), getProducts(lang), getFaq(lang)]);
+  const [featured, products, faq, settings] = await Promise.all([getFeaturedProducts(lang), getProducts(lang), getFaq(lang), getSettings()]);
   // Second section: the rest of the peptide range, products with photos first.
   const peptides = products
     .filter((p) => !p.featured && p.categorySlug !== "lab-supplies")
     .sort((a, b) => Number(b.images.length > 0) - Number(a.images.length > 0))
     .slice(0, 8);
 
+  // Organization + WebSite schema, built from the admin settings so contact changes carry over.
+  const sameAs = settings.social.map((s) => s.href).filter((url) => /^https?:\/\//.test(url));
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${site.url}/#organization`,
+        name: site.name,
+        url: site.url,
+        logo: `${site.url}/images/brand/logo.png`,
+        email: settings.email || undefined,
+        telephone: settings.phone || undefined,
+        sameAs: sameAs.length ? sameAs : undefined,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${site.url}/#website`,
+        name: site.name,
+        url: site.url,
+        inLanguage: localeMeta[lang].htmlLang,
+        publisher: { "@id": `${site.url}/#organization` },
+      },
+    ],
+  };
+
   return (
     <>
-      <Hero t={t} href={href} whatsapp={(await getSettings()).whatsapp} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <Hero t={t} href={href} whatsapp={settings.whatsapp} />
 
       <section aria-labelledby="featured-title" className="bg-mist py-14 sm:py-16">
         <div className="container-site">

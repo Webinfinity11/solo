@@ -33,11 +33,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   const product = await getProduct(lang, slug);
   if (!product) return {};
+  const title = product.seoTitle || product.name;
+  const description = product.seoDescription || `${product.name} - ${product.shortDescription}`;
   return {
-    title: product.name,
-    description: `${product.name} - ${product.shortDescription}`,
+    title,
+    description,
     alternates: alternates(`/products/${slug}`),
-    openGraph: { images: product.images[0] ? [{ url: product.images[0] }] : undefined },
+    openGraph: { siteName: site.name, title: `${title} | SOLO Research`, description, images: product.images[0] ? [{ url: product.images[0] }] : [site.ogImage] },
   };
 }
 
@@ -81,7 +83,8 @@ export default async function ProductPage({ params }: { params: Params }) {
     description: product.shortDescription,
     sku: product.variants[0].sku,
     brand: { "@type": "Brand", name: "SOLO Research" },
-    image: product.images.map((src) => `${site.url}${src}`),
+    // Admin uploads are full Vercel Blob URLs; only site-relative paths get the domain.
+    image: product.images.map((src) => (/^https?:\/\//.test(src) ? src : `${site.url}${src}`)),
     category: category?.name,
     aggregateRating: reviews.length ? { "@type": "AggregateRating", ratingValue: rating.toFixed(1), reviewCount: reviews.length } : undefined,
     // Prices are published only while the shop is enabled.

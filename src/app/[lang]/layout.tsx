@@ -19,6 +19,11 @@ import { CatalogProvider } from "@/components/layout/CatalogProvider";
 import { StoreHydrator } from "@/components/layout/StoreHydrator";
 import { PromoFromUrl } from "@/components/cart/PromoField";
 import { Suspense } from "react";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
+// GA4 measurement ID (G-…) from the client's Google Analytics property; unset = no analytics script.
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 const georgian = Noto_Sans_Georgian({
   subsets: ["georgian", "latin"],
@@ -75,7 +80,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       siteName: "SOLO Research",
       locale: localeMeta[lang].ogLocale,
       type: "website",
-      images: [{ url: "/images/site/hero-vial.webp", width: 373, height: 355 }],
+      images: [site.ogImage],
     },
   };
 }
@@ -119,7 +124,9 @@ export default async function LangLayout({ children, params }: { children: React
             ) : null}
           </CatalogProvider>
         </I18nProvider>
+        <SpeedInsights />
       </body>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }

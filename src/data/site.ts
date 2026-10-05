@@ -5,6 +5,8 @@ export const site = {
   shopEnabled: true,
   name: "SOLO Research",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://soloresearch.ge",
+  /** Share image for pages without their own photo (1200×630). */
+  ogImage: { url: "/images/site/og-default.jpg", width: 1200, height: 630 },
   currency: "GEL",
   currencySymbol: "₾",
   freeShippingThreshold: 200,

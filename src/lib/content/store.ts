@@ -25,6 +25,18 @@ export const getContent = cache(async (): Promise<SiteContent> => {
   return withDefaults(await readCached());
 });
 
+/** When the content was last saved in the admin (the sitemap's lastmod); undefined without a database. */
+export const getContentUpdatedAt = unstable_cache(
+  async (): Promise<string | undefined> => {
+    const sql = await db();
+    if (!sql) return undefined;
+    const [row] = (await sql`select max(updated_at) as at from site_content`) as { at: string | Date | null }[];
+    return row?.at ? new Date(row.at).toISOString() : undefined;
+  },
+  ["site-content-updated-at"],
+  { tags: [CONTENT_TAG] },
+);
+
 /** Uncached read for the admin, so the editor always shows what is in the database. */
 export async function getContentFresh(): Promise<SiteContent> {
   return withDefaults(await readStored());

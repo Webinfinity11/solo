@@ -4,7 +4,7 @@ import { useState } from "react";
 import { localeMeta, locales, type Locale } from "@/i18n/config";
 import type { StoredCategory } from "@/lib/content/types";
 import { saveCategories } from "@/app/admin/actions";
-import { Checkbox, LangTabs, PageTitle, SaveBar, Section, TextArea, TextInput, move, newId, useSave } from "./ui";
+import { Checkbox, LangTabs, PageTitle, SaveBar, Section, SeoInput, TextArea, TextInput, move, newId, useSave } from "./ui";
 
 export function CategoriesEditor({ initial, counts }: { initial: StoredCategory[]; counts: Record<string, number> }) {
   const [list, setList] = useState(initial);
@@ -72,6 +72,23 @@ export function CategoriesEditor({ initial, counts }: { initial: StoredCategory[
               />
               <div className="flex items-end pb-2">
                 <Checkbox label="ფუტერში" checked={c.showInFooter} onChange={(showInFooter) => patch(i, { showInFooter })} />
+              </div>
+              <SeoInput
+                label={`SEO სათაური (${lang.toUpperCase()}, არასავალდებულო)`}
+                limit={45}
+                dir={localeMeta[lang].dir}
+                placeholder={c.text[lang].name}
+                value={c.text[lang].seoTitle}
+                onChange={(seoTitle) => patch(i, { text: { ...c.text, [lang]: { ...c.text[lang], seoTitle } } })}
+              />
+              <div className="md:col-span-2">
+                <SeoInput
+                  label={`SEO აღწერა (${lang.toUpperCase()}, არასავალდებულო)`}
+                  limit={155}
+                  dir={localeMeta[lang].dir}
+                  value={c.text[lang].seoDescription}
+                  onChange={(seoDescription) => patch(i, { text: { ...c.text, [lang]: { ...c.text[lang], seoDescription } } })}
+                />
               </div>
             </div>
           </Section>

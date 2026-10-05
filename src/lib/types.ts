@@ -7,6 +7,9 @@ export type Category = {
   slug: string;
   name: string;
   description?: string;
+  /** Optional search-result title and description set in the admin; empty = name / description. */
+  seoTitle?: string;
+  seoDescription?: string;
   image?: string;
   order: number;
 };
@@ -44,6 +47,9 @@ export type Product = {
   categorySlug: string;
   shortDescription: string;
   description: string; // paragraphs separated by blank lines
+  /** Optional search-result title and description set in the admin; empty = the defaults. */
+  seoTitle?: string;
+  seoDescription?: string;
   images: string[];
   variants: Variant[];
   specs: ProductSpecs;

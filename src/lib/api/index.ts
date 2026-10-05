@@ -19,6 +19,8 @@ function localizeProduct(record: StoredProduct, lang: Locale): Product {
     categorySlug: record.categorySlug,
     shortDescription: text?.shortDescription ?? "",
     description: text?.description ?? "",
+    seoTitle: text?.seoTitle || undefined,
+    seoDescription: text?.seoDescription || undefined,
     images: record.images,
     variants: record.variants,
     specs: { ...record.specs, form: kind.form, storage: kind.storage, appearance: kind.appearance },
@@ -63,6 +65,8 @@ export async function getCategories(lang: Locale): Promise<CategoryWithCount[]> 
       showInFooter: c.showInFooter,
       name: c.text[lang]?.name || c.slug,
       description: c.text[lang]?.description,
+      seoTitle: c.text[lang]?.seoTitle || undefined,
+      seoDescription: c.text[lang]?.seoDescription || undefined,
       productCount: products.filter((p) => p.categorySlug === c.slug).length,
     }));
 }

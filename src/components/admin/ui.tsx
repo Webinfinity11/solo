@@ -37,6 +37,23 @@ export function TextInput({
   );
 }
 
+/** Optional SEO text with a character counter that turns red past the limit. Empty = the page's default. */
+export function SeoInput({ label, value, onChange, limit, placeholder, dir }: { label: string; value: string | undefined; onChange: (v: string) => void; limit: number; placeholder?: string; dir?: "ltr" | "rtl" }) {
+  const id = useId();
+  const length = (value ?? "").length;
+  return (
+    <div className="min-w-0">
+      <div className="flex items-baseline justify-between gap-2">
+        <Label htmlFor={id}>{label}</Label>
+        <span className={cn("text-[12px] tabular-nums", length > limit ? "font-bold text-red-600" : "text-muted")}>
+          {length} / {limit}
+        </span>
+      </div>
+      <input id={id} dir={dir} className={cn("adm-input", length > limit && "border-red-600")} value={value ?? ""} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
 export function NumberInput({ label, value, onChange, className, step = "any" }: { label?: string; value: number | undefined; onChange: (v: number | undefined) => void; className?: string; step?: string }) {
   const id = useId();
   return (

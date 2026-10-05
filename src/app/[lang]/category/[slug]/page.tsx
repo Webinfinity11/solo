@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { locales } from "@/i18n/config";
 import { resolveLang } from "@/i18n/server";
 import { getCategories, getCategory, getProducts } from "@/lib/api";
+import { site } from "@/data/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { CatalogView } from "@/components/catalog/CatalogView";
 
@@ -22,7 +23,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   const category = await getCategory(lang, slug);
   if (!category) return {};
-  return { title: category.name, description: category.description, alternates: alternates(`/category/${slug}`) };
+  const title = category.seoTitle || category.name;
+  const description = category.seoDescription || category.description;
+  return { title, description, alternates: alternates(`/category/${slug}`), openGraph: { siteName: site.name, title: `${title} | SOLO Research`, description, images: [site.ogImage] } };
 }
 
 export default async function CategoryPage({ params }: { params: Params }) {
